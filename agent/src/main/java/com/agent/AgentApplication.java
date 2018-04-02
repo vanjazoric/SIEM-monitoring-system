@@ -12,8 +12,8 @@ public class AgentApplication {
 
 	public static void main(String[] args) throws ParseException {
 		SpringApplication.run(AgentApplication.class, args);
-		
 		OperatingSystemLogController c = new OperatingSystemLogController();
 		c.getOSlogs();
+
 	}
 }
