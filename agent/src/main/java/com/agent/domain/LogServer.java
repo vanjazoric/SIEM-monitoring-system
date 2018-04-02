@@ -1,5 +1,7 @@
 package com.agent.domain;
 
+import java.util.Date;
+
 public class LogServer extends Log{
 	
 	private String clientIp;
@@ -16,6 +18,17 @@ public class LogServer extends Log{
 	
 	private int sizeOfReturnedObj;
 
+	public LogServer(Date timeStamp,String clientIp,String logHost,String method,String messageId,String resourceRequest,int httpStatus,int sizeOfReturnedObj){
+    	super((long) (0),timeStamp,new Agent());
+    	this.clientIp=clientIp;
+    	this.logHost=logHost;
+    	this.messageId=messageId;
+    	this.method=method;
+    	this.resourceRequest=resourceRequest;
+    	this.httpStatus=httpStatus;
+    	this.sizeOfReturnedObj=sizeOfReturnedObj;
+	}
+	
 	public String getClientIp() {
 		return clientIp;
 	}
@@ -78,7 +91,5 @@ public class LogServer extends Log{
 				+ method + ", resourceRequest=" + resourceRequest + ", httpStatus=" + httpStatus
 				+ ", sizeOfReturnedObj=" + sizeOfReturnedObj + "]";
 	}
-
-	
 
 }
