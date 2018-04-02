@@ -31,35 +31,35 @@ def generate():
         message = message_id[messageId]
         priority = priorityList[randint(0, 2)]
         if(messageId == 1 and priority == "Informational"):
-            line = str(logId) + " " + timeStamp + " " + str(eventId_1_Info) + " " + priority + " " + application + " " + str(messageId) + " " + message
+            line = str(logId) + ";" + timeStamp + ";" + str(eventId_1_Info) + ";" + priority + ";" + application + ";" + str(messageId) + ";" + message
         elif(messageId == 2 and priority == "Informational"):
-            line = str(logId) + " " + timeStamp + " " + str(eventId_2_Info) + " " + priority + " " + application + " " + str(messageId) + " " + message
+            line = str(logId) + ";" + timeStamp + ";" + str(eventId_2_Info) + ";" + priority + ";" + application + ";" + str(messageId) + ";" + message
         elif(messageId == 3 and priority == "Informational"):
-            line = str(logId) + " " + timeStamp + " " + str(eventId_3_Info) + " " + priority + " " + application + " " + str(messageId) + " " + message
+            line = str(logId) + ";" + timeStamp + ";" + str(eventId_3_Info) + ";" + priority + ";" + application + ";" + str(messageId) + ";" + message
         elif (messageId == 4 and priority == "Informational"):
-            line = str(logId) + " " + timeStamp + " " + str(eventId_4_Info) + " " + priority + " " + application + " " + str(messageId) + " " + message
+            line = str(logId) + ";" + timeStamp + ";" + str(eventId_4_Info) + ";" + priority + ";" + application + ";" + str(messageId) + ";" + message
         elif (messageId == 5 and priority == "Informational"):
-            line = str(logId) + " " + timeStamp + " " + str(eventId_5_Info) + " " + priority + " " + application + " " + str(messageId) + " " + message
+            line = str(logId) + ";" + timeStamp + ";" + str(eventId_5_Info) + ";" + priority + ";" + application + ";" + str(messageId) + ";" + message
         elif(messageId == 1 and priority == "Error"):
-            line = str(logId) + " " + timeStamp + " " + str(eventId_1_Err) + " " + priority + " " + application + " " + str(messageId) + " " + message
+            line = str(logId) + ";" + timeStamp + ";" + str(eventId_1_Err) + ";" + priority + ";" + application + ";" + str(messageId) + ";" + message
         elif (messageId == 2 and priority == "Error"):
-            line = str(logId) + " " + timeStamp + " " + str(eventId_2_Err) + " " + priority + " " + application + " " + str(messageId) + " " + message
+            line = str(logId) + ";" + timeStamp + ";" + str(eventId_2_Err) + ";" + priority + ";" + application + ";" + str(messageId) + ";" + message
         elif (messageId == 3 and priority == "Error"):
-            line = str(logId) + " " + timeStamp + " " + str(eventId_3_Err) + " " + priority + " " + application + " " + str(messageId) + " " + message
+            line = str(logId) + ";" + timeStamp + ";" + str(eventId_3_Err) + ";" + priority + ";" + application + ";" + str(messageId) + ";" + message
         elif (messageId == 4 and priority == "Error"):
-            line = str(logId) + " " + timeStamp + " " + str(eventId_4_Err) + " " + priority + " " + application + " " + str(messageId) + " " + message
+            line = str(logId) + ";" + timeStamp + ";" + str(eventId_4_Err) + ";" + priority + ";" + application + ";" + str(messageId) + ";" + message
         elif (messageId == 5 and priority == "Error"):
-            line = str(logId) + " " + timeStamp + " " + str(eventId_5_Err) + " " + priority + " " + application + " " + str(messageId) + " " + message
+            line = str(logId) + ";" + timeStamp + ";" + str(eventId_5_Err) + ";" + priority + ";" + application + ";" + str(messageId) + ";" + message
         elif (messageId == 1 and priority == "Warning"):
-            line = str(logId) + " " + timeStamp + " " + str(eventId_1_Warn) + " " + priority + " " + application + " " + str(messageId) + " " + message
+            line = str(logId) + ";" + timeStamp + ";" + str(eventId_1_Warn) + ";" + priority + ";" + application + ";" + str(messageId) + ";" + message
         elif (messageId == 2 and priority == "Warning"):
-            line = str(logId) + " " + timeStamp + " " + str(eventId_2_Warn) + " " + priority + " " + application + " " + str(messageId) + " " + message
+            line = str(logId) + ";" + timeStamp + ";" + str(eventId_2_Warn) + ";" + priority + ";" + application + ";" + str(messageId) + ";" + message
         elif (messageId == 3 and priority == "Warning"):
-            line = str(logId) + " " + timeStamp + " " + str(eventId_3_Warn) + " " + priority + " " + application + " " + str(messageId) + " " + message
+            line = str(logId) + ";" + timeStamp + ";" + str(eventId_3_Warn) + ";" + priority + ";" + application + ";" + str(messageId) + ";" + message
         elif (messageId == 4 and priority == "Warning"):
-            line = str(logId) + " " + timeStamp + " " + str(eventId_4_Warn) + " " + priority + " " + application + " " + str(messageId) + " " + message
+            line = str(logId) + ";" + timeStamp + ";" + str(eventId_4_Warn) + ";" + priority + ";" + application + ";" + str(messageId) + ";" + message
         else:
-            line = str(logId) + " " + timeStamp + " " + str(eventId_5_Warn) + " " + priority + " " + application + " " + str(messageId) + " " + message
+            line = str(logId) + ";" + timeStamp + ";" + str(eventId_5_Warn) + ";" + priority + ";" + application + ";" + str(messageId) + ";" + message
 
         logId += 1
         file.write(line+ "\n")
