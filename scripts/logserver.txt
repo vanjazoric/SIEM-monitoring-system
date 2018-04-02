@@ -1,0 +1,9 @@
+2018-04-02 22:02:29 127.0.0.1 scrooge 9003 DELETE iscrooge61.seclutions.com:80/bali/fdss 500 2241
+2018-04-02 22:02:39 127.0.0.1 scrooge 4000 GET /foo/bar.html 201 757
+2018-04-02 22:02:44 127.0.0.1 scrooge 9001 POST /apache_pb.gif 404 2397
+2018-04-02 22:02:46 192.168.1.1 host1 9003 DELETE /foo/bar.html 200 2249
+2018-04-02 22:02:48 192.168.1.1 scrooge 4000 PUT /apache_pb.gif 404 2497
+2018-04-02 22:02:52 192.168.1.1 host1 9003 PUT /apache_pb.gif 500 981
+2018-04-02 22:02:55 192.168.1.1 scrooge 4000 GET /apache_pb.gif 500 1027
+2018-04-02 22:03:03 127.0.0.1 host1 9001 POST /apache_pb.gif 500 600
+2018-04-02 22:03:07 127.0.0.1 host1 9001 POST /apache_pb.gif 200 1310
