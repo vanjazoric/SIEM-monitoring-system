@@ -8,6 +8,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.agent.controller.ApplicationLogController;
+import com.agent.controller.LogFirewallController;
 import com.agent.controller.OperatingSystemLogController;
 import com.agent.domain.ApplicationLog;
 
@@ -20,6 +21,8 @@ public class AgentApplication {
 		c.getOSlogs();
 		ApplicationLogController alc = new ApplicationLogController();
 		alc.loadApplicationLogs("logs.txt");
+		LogFirewallController lfc = new LogFirewallController();
+		lfc.parse();
 
 	}
 }

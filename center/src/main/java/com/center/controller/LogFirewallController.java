@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.center.domain.LogFirewall;
+import com.center.domain.OperatingSystemLog;
 import com.center.service.LogFirewallService;
 
 @RestController
@@ -22,6 +23,16 @@ public class LogFirewallController {
 
 	@Autowired
 	LogFirewallService logfirewallService;
+	
+	@CrossOrigin
+	@RequestMapping(value = "/createall", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ArrayList<LogFirewall>> createFirewallLogs(
+			@RequestBody ArrayList<LogFirewall> logs) throws Exception {
+		for (LogFirewall log : logs) {
+			logfirewallService.create(log);
+		}
+		return new ResponseEntity<ArrayList<LogFirewall>>(HttpStatus.OK);
+	}
 	
 	@CrossOrigin
 	@RequestMapping(value = "/create", 
