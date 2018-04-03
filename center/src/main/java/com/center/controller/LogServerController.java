@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.center.domain.LogServer;
+import com.center.domain.OperatingSystemLog;
 import com.center.service.LogServerService;
 
 @RestController
@@ -23,27 +24,16 @@ public class LogServerController {
 	@Autowired
 	LogServerService logserverService;
 	
+	
 	@CrossOrigin
-	@RequestMapping(value = "/create", 
-	method = RequestMethod.POST,
-	consumes = MediaType.APPLICATION_JSON_VALUE,
-	produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<LogServer> createLogServer(@RequestBody LogServer logserver)
-    {
-		LogServer exists = logserverService.findOne(logserver.getId());
-		
-		if(exists != null){
-			return new ResponseEntity<LogServer>(HttpStatus.CONFLICT);
+	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ArrayList<LogServer>> createOperatingSystemLog(
+			@RequestBody ArrayList<LogServer> logs) throws Exception {
+		for (LogServer log : logs) {
+			logserverService.create(log);
 		}
-        
-		LogServer saved = null;
-		try {
-			saved = logserverService.create(logserver);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-        return new ResponseEntity<LogServer>(saved, HttpStatus.CREATED);
-    }
+		return new ResponseEntity<ArrayList<LogServer>>(HttpStatus.OK);
+	}
 	
 	@CrossOrigin
 	@RequestMapping(value = "/update", 
