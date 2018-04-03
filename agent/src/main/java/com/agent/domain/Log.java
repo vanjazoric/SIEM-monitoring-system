@@ -22,7 +22,7 @@ public class Log {
 	//private Long processId;
 
 	//private Long MessageId;
-
+    
 	private Agent agent;
 
 	public Log() {
