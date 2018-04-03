@@ -2,6 +2,9 @@ package com.agent.domain;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 public class Log {
 
 	private Long id;

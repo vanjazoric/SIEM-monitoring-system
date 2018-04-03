@@ -2,6 +2,7 @@ package com.center.domain;
 
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,7 +18,7 @@ public class Agent {
 	@Column(name="id", unique=true, nullable=false)
 	private Long id;
 	
-	@OneToMany
+	@OneToMany(cascade = CascadeType.ALL)
 	private Set<Log> logs;
 
 	public Agent() {
