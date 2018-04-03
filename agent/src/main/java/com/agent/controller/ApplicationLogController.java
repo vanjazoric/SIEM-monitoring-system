@@ -10,17 +10,25 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.agent.domain.Agent;
 import com.agent.domain.ApplicationLog;
+import com.agent.domain.OperatingSystemLog;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 @RestController
 @RequestMapping(value = "/applicationLog")
 public class ApplicationLogController {
 	
-	public ArrayList<ApplicationLog> loadApplicationLogs(String filename) throws IOException {
+	public void loadApplicationLogs(String filename) throws IOException {
 		// TODO Auto-generated method stub
 		ArrayList<ApplicationLog> logs = new ArrayList<ApplicationLog>();
 		File relativeFile = new File(".."+File.separator+"scripts"+File.separator+filename);
@@ -52,7 +60,26 @@ public class ApplicationLogController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}		
-		return logs;
+		sendToCenter(logs);
+	}
+	
+	public void sendToCenter(ArrayList<ApplicationLog> logs) throws IOException {
+		HttpClient httpClient = HttpClientBuilder.create().build();
+		CloseableHttpResponse response = null;
+		try {
+			HttpPost request = new HttpPost("http://localhost:8888/applicationLogs/saveAll");
+			Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create();
+			StringEntity postingString = new StringEntity(gson.toJson(logs));
+			request.setEntity(postingString);
+			request.setHeader("Content-type", "application/json");
+			response = (CloseableHttpResponse) httpClient.execute(request);
+		//	String json = EntityUtils.toString(response.getEntity());
+		//	System.out.println(json);
+		} catch (Exception ex) {
+			
+		} finally {
+			response.close();
+		}
 	}
 
 }

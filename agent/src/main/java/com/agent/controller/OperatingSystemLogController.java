@@ -3,18 +3,26 @@
  */
 package com.agent.controller;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
-
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.agent.domain.Agent;
 import com.agent.domain.Level;
 import com.agent.domain.OperatingSystemLog;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.sun.jna.platform.win32.Advapi32Util.EventLogIterator;
 import com.sun.jna.platform.win32.Advapi32Util.EventLogRecord;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 
 /**
  * @author Vanja
@@ -46,7 +54,7 @@ public class OperatingSystemLogController {
 	 * ResponseEntity<OperatingSystemLog>(saved, HttpStatus.CONFLICT); }
 	 */
 
-	public void getOSlogs() throws ParseException {
+	public void getOSlogs() throws ParseException, IOException {
 		ArrayList<OperatingSystemLog> logs = new ArrayList<OperatingSystemLog>();
 		EventLogIterator iter = new EventLogIterator("System");
 		int counter = 0;
@@ -71,6 +79,27 @@ public class OperatingSystemLogController {
 			OperatingSystemLog log = new OperatingSystemLog(id, level, date,
 					source, eventId, new Agent());
 			logs.add(log);
+		}
+		sendToCenter(logs);
+	}
+
+	public void sendToCenter(ArrayList<OperatingSystemLog> logs)
+			throws IOException {
+		HttpClient httpClient = HttpClientBuilder.create().build();
+		CloseableHttpResponse response = null;
+		try {
+			HttpPost request = new HttpPost("http://localhost:8888/OSlogs");
+			Gson gson = new GsonBuilder().setDateFormat(
+					"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create();
+			StringEntity postingString = new StringEntity(gson.toJson(logs));
+			request.setEntity(postingString);
+			request.setHeader("Content-type", "application/json");
+			response = (CloseableHttpResponse) httpClient.execute(request);
+		//	String json = EntityUtils.toString(response.getEntity());
+		//	System.out.println(json);
+		} catch (Exception ex) {
+		} finally {
+			response.close();
 		}
 	}
 }

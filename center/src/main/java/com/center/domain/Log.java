@@ -1,18 +1,33 @@
-package com.agent.domain;
+package com.center.domain;
 
 import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.ManyToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.InheritanceType;
 
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
+@PrimaryKeyJoinColumn(name = "id")
 public class Log {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name="id", unique=true, nullable = false)
 	private Long id;
 
 	//private String priority;
 
 	//private String version;
 
+	@Column
 	private Date timeStamp;
 
 	//private String hostName;
@@ -23,6 +38,7 @@ public class Log {
 
 	//private Long MessageId;
 
+	@ManyToOne(cascade = CascadeType.ALL)
 	private Agent agent;
 
 	public Log() {

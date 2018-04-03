@@ -1,0 +1,126 @@
+package com.center.controller;
+
+import java.util.ArrayList;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.center.domain.ApplicationLog;
+import com.center.domain.OperatingSystemLog;
+import com.center.service.ApplicationLogService;
+
+@RestController
+@RequestMapping(value = "/applicationLogs")
+public class ApplicationLogController {
+
+	@Autowired
+	ApplicationLogService applicationlogService;
+
+	@CrossOrigin
+	@RequestMapping(
+		method = RequestMethod.POST,
+		consumes = MediaType.APPLICATION_JSON_VALUE,
+		produces = MediaType.APPLICATION_JSON_VALUE
+	)
+    public ResponseEntity<ApplicationLog> createApplicationLog(@RequestBody ApplicationLog applicationlog) throws Exception
+    {
+		ApplicationLog saved = new ApplicationLog();
+		saved.setId(applicationlog.getId());
+		saved.setTimeStamp(applicationlog.getTimeStamp());
+		saved.setAgent(applicationlog.getAgent());
+		saved.setEventId(applicationlog.getEventId());
+		saved.setPriority(applicationlog.getPriority());
+		saved.setApplication(applicationlog.getApplication());
+		saved.setMessageId(applicationlog.getMessageId());
+		saved.setMessage(applicationlog.getMessage());
+		saved = applicationlogService.save(saved);
+		return new ResponseEntity<ApplicationLog>(saved, HttpStatus.CREATED);
+    }
+	
+	@CrossOrigin
+	@RequestMapping(
+			value = "/saveAll",
+			method = RequestMethod.POST, 
+			consumes = MediaType.APPLICATION_JSON_VALUE, 
+			produces = MediaType.APPLICATION_JSON_VALUE
+	)
+	public ResponseEntity<ArrayList<ApplicationLog>> createOperatingSystemLog(
+			@RequestBody ArrayList<ApplicationLog> logs) throws Exception {
+		for (ApplicationLog log : logs) {
+			applicationlogService.save(log);
+		}
+		return new ResponseEntity<ArrayList<ApplicationLog>>(HttpStatus.OK);
+	}
+
+	
+	@CrossOrigin
+	@RequestMapping(
+			method = RequestMethod.PUT,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE
+	)
+    public ResponseEntity<ApplicationLog> updateApplicationLog(@RequestBody ApplicationLog applicationlog) throws Exception
+    {
+		ApplicationLog saved = applicationlogService.findOne(applicationlog.getId());
+		if(saved == null){
+			return new ResponseEntity<ApplicationLog>(HttpStatus.BAD_REQUEST);
+		}
+		saved.setTimeStamp(applicationlog.getTimeStamp());
+		saved.setAgent(applicationlog.getAgent());
+		saved.setEventId(applicationlog.getEventId());
+		saved.setPriority(applicationlog.getPriority());
+		saved.setApplication(applicationlog.getApplication());
+		saved.setMessageId(applicationlog.getMessageId());
+		saved.setMessage(applicationlog.getMessage());
+		saved = applicationlogService.save(saved);
+		return new ResponseEntity<ApplicationLog>(saved, HttpStatus.OK);
+    }
+	
+	@CrossOrigin
+	@RequestMapping(
+			value = "/{id}",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE
+	)
+	public ResponseEntity<ApplicationLog> getApplicationLog(@PathVariable Long id) {
+		ApplicationLog applicationLog = applicationlogService.findOne(id);
+		if(applicationLog == null){
+			return new ResponseEntity<ApplicationLog>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<ApplicationLog>(applicationLog, HttpStatus.OK);
+	}
+	
+	@CrossOrigin
+	@RequestMapping(
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE
+	)
+	public ResponseEntity<ArrayList<ApplicationLog>> getApplicationLogs() {
+		ArrayList<ApplicationLog> applicationLogs = (ArrayList<ApplicationLog>) applicationlogService.findAll();
+		return new ResponseEntity< ArrayList<ApplicationLog> >(applicationLogs, HttpStatus.OK);
+	}
+	
+	@CrossOrigin
+	@RequestMapping(
+			value = "/{id}",
+			method = RequestMethod.DELETE,
+			produces = MediaType.APPLICATION_JSON_VALUE
+	)
+	public ResponseEntity<ApplicationLog> deleteApplicationLogById(@PathVariable Long id) throws Exception {
+		ApplicationLog applicationLog = applicationlogService.findOne(id);
+		if(applicationLog != null){
+			applicationlogService.delete(id);
+			return new ResponseEntity<ApplicationLog>(HttpStatus.OK);
+		}
+		return new ResponseEntity<ApplicationLog>(HttpStatus.NOT_FOUND);
+	}
+	
+}
