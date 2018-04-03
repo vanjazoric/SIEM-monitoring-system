@@ -36,9 +36,13 @@ public class Log {
 		this.agent = agent;
 	}
 
+	public Long getId() {
+		return id;
+	}
 
-
-
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public Date getTimeStamp() {
 		return timeStamp;

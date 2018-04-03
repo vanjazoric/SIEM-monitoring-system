@@ -27,24 +27,15 @@ public class ApplicationLogServiceImpl implements ApplicationLogService{
 	}
 
 	@Override
-	public ApplicationLog create(ApplicationLog applicationlog) throws Exception {
+	public ApplicationLog save(ApplicationLog applicationlog) throws Exception {
 		// TODO Auto-generated method stub
-		return applicationlogRepository.save(applicationlog);
-		
+		return applicationlogRepository.save(applicationlog);		
 	}
 
 	@Override
-	public ApplicationLog update(ApplicationLog applicationlog) throws Exception {
+	public void delete(Long id) throws Exception {
 		// TODO Auto-generated method stub
-		return applicationlogRepository.save(applicationlog);
+		applicationlogRepository.delete(id);
 	}
-
-	@Override
-	public void delete(ApplicationLog applicationlog) throws Exception {
-		// TODO Auto-generated method stub
-		applicationlogRepository.delete(applicationlog);
-		
-	}
-
 	
 }

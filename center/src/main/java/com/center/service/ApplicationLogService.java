@@ -10,10 +10,8 @@ public interface ApplicationLogService {
 
 	ApplicationLog findOne(Long id);
 
-	ApplicationLog create(ApplicationLog applicationlog) throws Exception;
+	ApplicationLog save(ApplicationLog applicationlog) throws Exception;
 
-	ApplicationLog update(ApplicationLog applicationlog) throws Exception;
-
-	void delete(ApplicationLog applicationlog) throws Exception;
+	void delete(Long id) throws Exception;
 
 }
