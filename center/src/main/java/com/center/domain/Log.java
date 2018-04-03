@@ -38,7 +38,7 @@ public class Log {
 
 	//private Long MessageId;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	private Agent agent;
 
 	public Log() {
