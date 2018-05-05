@@ -27,7 +27,7 @@ import com.google.gson.GsonBuilder;
 @RequestMapping(value = "/applicationLog")
 public class ApplicationLogController {
 	
-	public void loadApplicationLogs(String filename) throws IOException {
+	public void loadApplicationLogs(String filename, String sendTo) throws IOException {
 		// TODO Auto-generated method stub
 		ArrayList<ApplicationLog> logs = new ArrayList<ApplicationLog>();
 		File relativeFile = new File(".."+File.separator+"scripts"+File.separator+filename);
@@ -59,14 +59,14 @@ public class ApplicationLogController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}		
-		sendToCenter(logs);
+		sendToCenter(logs, sendTo);
 	}
 	
-	public void sendToCenter(ArrayList<ApplicationLog> logs) throws IOException {
+	public void sendToCenter(ArrayList<ApplicationLog> logs, String sendTo) throws IOException {
 		HttpClient httpClient = HttpClientBuilder.create().build();
 		CloseableHttpResponse response = null;
 		try {
-			HttpPost request = new HttpPost("http://localhost:8888/applicationLogs/saveAll");
+			HttpPost request = new HttpPost(sendTo + "/saveAll");
 			Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create();
 			StringEntity postingString = new StringEntity(gson.toJson(logs));
 			request.setEntity(postingString);

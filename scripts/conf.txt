@@ -1,0 +1,4 @@
+fw firewallLogs.txt http://localhost:8888/logfirewall
+os null http://localhost:8888/OSlogs
+appl logs.txt http://localhost:8888/applicationLogs
+ls logserver.txt http://localhost:8888/logserver
