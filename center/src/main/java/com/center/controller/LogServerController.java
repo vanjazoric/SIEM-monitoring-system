@@ -21,29 +21,18 @@ import com.center.repository.LogServerRepository;
 public class LogServerController {
 
 	@Autowired
-	LogServerRepository logServerRepository;
+	LogServerRepository logserverRepository;
+	
 	
 	@CrossOrigin
-	@RequestMapping(value = "/create", 
-	method = RequestMethod.POST,
-	consumes = MediaType.APPLICATION_JSON_VALUE,
-	produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<LogServer> createLogServer(@RequestBody LogServer logserver)
-    {
-		LogServer exists = logServerRepository.findOne(logserver.getId());
-		
-		if(exists != null){
-			return new ResponseEntity<LogServer>(HttpStatus.CONFLICT);
+	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ArrayList<LogServer>> createOperatingSystemLog(
+			@RequestBody ArrayList<LogServer> logs) throws Exception {
+		for (LogServer log : logs) {
+			logserverRepository.insert(log);
 		}
-        
-		LogServer saved = null;
-		try {
-			saved = logServerRepository.save(logserver);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-        return new ResponseEntity<LogServer>(saved, HttpStatus.CREATED);
-    }
+		return new ResponseEntity<ArrayList<LogServer>>(HttpStatus.OK);
+	}
 	
 	@CrossOrigin
 	@RequestMapping(value = "/update", 
@@ -52,7 +41,7 @@ public class LogServerController {
 	produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<LogServer> updateLogServer(@RequestBody LogServer logserver)
     {
-		LogServer exists = logServerRepository.findOne(logserver.getId());
+		LogServer exists = logserverRepository.findOne(logserver.getId());
 		
 		if(exists == null){
 			return new ResponseEntity<LogServer>(HttpStatus.NOT_FOUND);
@@ -60,7 +49,7 @@ public class LogServerController {
         
 		LogServer saved = null;
 		try {
-			saved = logServerRepository.save(logserver);
+			saved = logserverRepository.save(logserver);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -73,7 +62,7 @@ public class LogServerController {
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<LogServer> getLogServer(@PathVariable String id) {
-		LogServer logserver = logServerRepository.findOne(id);
+		LogServer logserver = logserverRepository.findOne(id);
 		
 		if(logserver == null){
 			return new ResponseEntity<LogServer>(HttpStatus.NOT_FOUND);
@@ -89,7 +78,7 @@ public class LogServerController {
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity< ArrayList<LogServer> > getLogServers() {
-		ArrayList<LogServer> logservers = (ArrayList<LogServer>) logServerRepository.findAll();
+		ArrayList<LogServer> logservers = (ArrayList<LogServer>) logserverRepository.findAll();
 		return new ResponseEntity< ArrayList<LogServer> >(logservers,
 				HttpStatus.OK);
 	}
@@ -100,14 +89,14 @@ public class LogServerController {
 			method = RequestMethod.DELETE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<LogServer> deleteLogServerById(@PathVariable String id) {
-		LogServer logserver = logServerRepository.findOne(id);
+		LogServer logserver = logserverRepository.findOne(id);
 		
 		if(logserver == null){
 			return new ResponseEntity<LogServer>(HttpStatus.NOT_FOUND);
 		}
 
 		try {
-			logServerRepository.delete(logserver);
+			logserverRepository.delete(logserver);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -121,14 +110,14 @@ public class LogServerController {
 	produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<LogServer> deleteLogServer(@RequestBody LogServer logserver)
     {
-		LogServer exists = logServerRepository.findOne(logserver.getId());
+		LogServer exists = logserverRepository.findOne(logserver.getId());
 		
 		if(exists == null){
 			return new ResponseEntity<LogServer>(HttpStatus.NOT_FOUND);
 		}
         
 		try {
-			logServerRepository.delete(logserver);
+			logserverRepository.delete(logserver);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

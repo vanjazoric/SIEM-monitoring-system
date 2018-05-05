@@ -17,124 +17,109 @@ import com.center.domain.ApplicationLog;
 import com.center.repository.ApplicationLogRepository;
 
 @RestController
-@RequestMapping(value = "/applicationlog")
+@RequestMapping(value = "/applicationLogs")
 public class ApplicationLogController {
 
 	@Autowired
-	ApplicationLogRepository applicationLogRepository;
+	ApplicationLogRepository applicationlogRepository;
 
-	
 	@CrossOrigin
-	@RequestMapping(value = "/create", 
-	method = RequestMethod.POST,
-	consumes = MediaType.APPLICATION_JSON_VALUE,
-	produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApplicationLog> createApplicationLog(@RequestBody ApplicationLog applicationlog)
+	@RequestMapping(
+		method = RequestMethod.POST,
+		consumes = MediaType.APPLICATION_JSON_VALUE,
+		produces = MediaType.APPLICATION_JSON_VALUE
+	)
+    public ResponseEntity<ApplicationLog> createApplicationLog(@RequestBody ApplicationLog applicationlog) throws Exception
     {
-		ApplicationLog exists = applicationLogRepository.findOne(applicationlog.getId());
-		
-		if(exists != null){
-			return new ResponseEntity<ApplicationLog>(HttpStatus.CONFLICT);
-		}
-        
-		ApplicationLog saved = null;
-		try {
-			saved = applicationLogRepository.insert(applicationlog);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-        return new ResponseEntity<ApplicationLog>(saved, HttpStatus.CREATED);
-    }
-	
-	@CrossOrigin
-	@RequestMapping(value = "/update", 
-	method = RequestMethod.PUT,
-	consumes = MediaType.APPLICATION_JSON_VALUE,
-	produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApplicationLog> updateApplicationLog(@RequestBody ApplicationLog applicationlog)
-    {
-		ApplicationLog exists = applicationLogRepository.findOne(applicationlog.getId());
-		
-		if(exists == null){
-			return new ResponseEntity<ApplicationLog>(HttpStatus.NOT_FOUND);
-		}
-        
-		ApplicationLog saved = null;
-		try {
-			saved = applicationLogRepository.save(applicationlog);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-        return new ResponseEntity<ApplicationLog>(saved, HttpStatus.OK);
+		ApplicationLog saved = new ApplicationLog();
+		saved.setId(applicationlog.getId());
+		saved.setTimeStamp(applicationlog.getTimeStamp());
+		saved.setAgent(applicationlog.getAgent());
+		saved.setEventId(applicationlog.getEventId());
+		saved.setPriority(applicationlog.getPriority());
+		saved.setApplication(applicationlog.getApplication());
+		saved.setMessageId(applicationlog.getMessageId());
+		saved.setMessage(applicationlog.getMessage());
+		saved = applicationlogRepository.save(saved);
+		return new ResponseEntity<ApplicationLog>(saved, HttpStatus.CREATED);
     }
 	
 	@CrossOrigin
 	@RequestMapping(
-			value = "/{id}/get",
+			value = "/saveAll",
+			method = RequestMethod.POST, 
+			consumes = MediaType.APPLICATION_JSON_VALUE, 
+			produces = MediaType.APPLICATION_JSON_VALUE
+	)
+	public ResponseEntity<ArrayList<ApplicationLog>> createOperatingSystemLog(
+			@RequestBody ArrayList<ApplicationLog> logs) throws Exception {
+		for (ApplicationLog log : logs) {
+			applicationlogRepository.save(log);
+		}
+		return new ResponseEntity<ArrayList<ApplicationLog>>(HttpStatus.OK);
+	}
+
+	
+	@CrossOrigin
+	@RequestMapping(
+			method = RequestMethod.PUT,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE
+	)
+    public ResponseEntity<ApplicationLog> updateApplicationLog(@RequestBody ApplicationLog applicationlog) throws Exception
+    {
+		ApplicationLog saved = applicationlogRepository.findOne(applicationlog.getId());
+		if(saved == null){
+			return new ResponseEntity<ApplicationLog>(HttpStatus.BAD_REQUEST);
+		}
+		saved.setTimeStamp(applicationlog.getTimeStamp());
+		saved.setAgent(applicationlog.getAgent());
+		saved.setEventId(applicationlog.getEventId());
+		saved.setPriority(applicationlog.getPriority());
+		saved.setApplication(applicationlog.getApplication());
+		saved.setMessageId(applicationlog.getMessageId());
+		saved.setMessage(applicationlog.getMessage());
+		saved = applicationlogRepository.save(saved);
+		return new ResponseEntity<ApplicationLog>(saved, HttpStatus.OK);
+    }
+	
+	@CrossOrigin
+	@RequestMapping(
+			value = "/{id}",
 			method = RequestMethod.GET,
-			produces = MediaType.APPLICATION_JSON_VALUE)
+			produces = MediaType.APPLICATION_JSON_VALUE
+	)
 	public ResponseEntity<ApplicationLog> getApplicationLog(@PathVariable String id) {
-		ApplicationLog applicationlog = applicationLogRepository.findOne(id);
-		
-		if(applicationlog == null){
+		ApplicationLog applicationLog = applicationlogRepository.findOne(id);
+		if(applicationLog == null){
 			return new ResponseEntity<ApplicationLog>(HttpStatus.NOT_FOUND);
 		}
-
-		return new ResponseEntity<ApplicationLog>(applicationlog,
-				HttpStatus.OK);
+		return new ResponseEntity<ApplicationLog>(applicationLog, HttpStatus.OK);
 	}
 	
 	@CrossOrigin
 	@RequestMapping(
-			value = "/getAll",
 			method = RequestMethod.GET,
-			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity< ArrayList<ApplicationLog> > getApplicationLogs() {
-		ArrayList<ApplicationLog> applicationlogs = (ArrayList<ApplicationLog>) applicationLogRepository.findAll();
-		return new ResponseEntity< ArrayList<ApplicationLog> >(applicationlogs,
-				HttpStatus.OK);
+			produces = MediaType.APPLICATION_JSON_VALUE
+	)
+	public ResponseEntity<ArrayList<ApplicationLog>> getApplicationLogs() {
+		ArrayList<ApplicationLog> applicationLogs = (ArrayList<ApplicationLog>) applicationlogRepository.findAll();
+		return new ResponseEntity< ArrayList<ApplicationLog> >(applicationLogs, HttpStatus.OK);
 	}
 	
 	@CrossOrigin
 	@RequestMapping(
-			value = "/{id}/delete",
+			value = "/{id}",
 			method = RequestMethod.DELETE,
-			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApplicationLog> deleteApplicationLogById(@PathVariable String id) {
-		ApplicationLog applicationlog = applicationLogRepository.findOne(id);
-		
-		if(applicationlog == null){
-			return new ResponseEntity<ApplicationLog>(HttpStatus.NOT_FOUND);
+			produces = MediaType.APPLICATION_JSON_VALUE
+	)
+	public ResponseEntity<ApplicationLog> deleteApplicationLogById(@PathVariable String id) throws Exception {
+		ApplicationLog applicationLog = applicationlogRepository.findOne(id);
+		if(applicationLog != null){
+			applicationlogRepository.delete(id);
+			return new ResponseEntity<ApplicationLog>(HttpStatus.OK);
 		}
-
-		try {
-			applicationLogRepository.delete(applicationlog);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return new ResponseEntity<ApplicationLog>(HttpStatus.OK);
+		return new ResponseEntity<ApplicationLog>(HttpStatus.NOT_FOUND);
 	}
-	
-	@CrossOrigin
-	@RequestMapping(value = "/delete", 
-	method = RequestMethod.DELETE,
-	consumes = MediaType.APPLICATION_JSON_VALUE,
-	produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApplicationLog> deleteApplicationLog(@RequestBody ApplicationLog applicationlog)
-    {
-		ApplicationLog exists = applicationLogRepository.findOne(applicationlog.getId());
-		
-		if(exists == null){
-			return new ResponseEntity<ApplicationLog>(HttpStatus.NOT_FOUND);
-		}
-        
-		try {
-			applicationLogRepository.delete(applicationlog);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        return new ResponseEntity<ApplicationLog>(HttpStatus.OK);
-    }
 	
 }

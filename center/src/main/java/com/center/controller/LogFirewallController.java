@@ -24,6 +24,16 @@ public class LogFirewallController {
 	LogFirewallRepository logFirewallRepository;
 	
 	@CrossOrigin
+	@RequestMapping(value = "/createall", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ArrayList<LogFirewall>> createFirewallLogs(
+			@RequestBody ArrayList<LogFirewall> logs) throws Exception {
+		for (LogFirewall log : logs) {
+			logFirewallRepository.insert(log);
+		}
+		return new ResponseEntity<ArrayList<LogFirewall>>(HttpStatus.OK);
+	}
+	
+	@CrossOrigin
 	@RequestMapping(value = "/create", 
 	method = RequestMethod.POST,
 	consumes = MediaType.APPLICATION_JSON_VALUE,
