@@ -1,35 +1,24 @@
 package com.center.domain;
 
 import java.util.Date;
+import org.springframework.data.annotation.TypeAlias;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.PrimaryKeyJoinColumn;
-
-@Entity
-@PrimaryKeyJoinColumn(name = "id")
+@Document(collection = "logs")
+@TypeAlias("log_app")
 public class ApplicationLog extends Log{
 	
-	@Column
 	private int eventId;
-	
-	@Column
 	private String priority;
-	
-	@Column
 	private String application;
-	
-	@Column
 	private Long messageId;
-	
-	@Column
 	private String message;
 
 	public ApplicationLog() {
 		super();
 	}
 
-	public ApplicationLog(Long id, Date timeStamp, Agent agent, int eventId, 
+	public ApplicationLog(String id, Date timeStamp, Agent agent, int eventId, 
 			String priority, String application, Long messageId, String message) {
 		super(id, timeStamp, agent);
 		this.eventId = eventId;

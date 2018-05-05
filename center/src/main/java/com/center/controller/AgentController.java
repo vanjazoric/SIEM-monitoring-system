@@ -14,14 +14,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.center.domain.Agent;
-import com.center.service.AgentService;
+import com.center.repository.AgentRepository;
 
 @RestController
 @RequestMapping(value = "/agent")
 public class AgentController {
 
 	@Autowired
-	AgentService agentService;
+	AgentRepository agentRepository;
 	
 	@CrossOrigin
 	@RequestMapping(value = "/create", 
@@ -30,7 +30,7 @@ public class AgentController {
 	produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Agent> createAgent(@RequestBody Agent agent)
     {
-		Agent exists = agentService.findOne(agent.getId());
+		Agent exists = agentRepository.findOne(agent.getId());
 		
 		if(exists != null){
 			return new ResponseEntity<Agent>(HttpStatus.CONFLICT);
@@ -38,7 +38,7 @@ public class AgentController {
         
 		Agent saved = null;
 		try {
-			saved = agentService.create(agent);
+			saved = agentRepository.insert(agent);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -52,7 +52,7 @@ public class AgentController {
 	produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Agent> updateAgent(@RequestBody Agent agent)
     {
-		Agent exists = agentService.findOne(agent.getId());
+		Agent exists = agentRepository.findOne(agent.getId());
 		
 		if(exists == null){
 			return new ResponseEntity<Agent>(HttpStatus.NOT_FOUND);
@@ -60,7 +60,7 @@ public class AgentController {
         
 		Agent saved = null;
 		try {
-			saved = agentService.update(agent);
+			saved = agentRepository.save(agent);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -73,7 +73,7 @@ public class AgentController {
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Agent> getAgent(@PathVariable String id) {
-		Agent agent = agentService.findOne(Long.parseLong(id));
+		Agent agent = agentRepository.findOne(id);
 		
 		if(agent == null){
 			return new ResponseEntity<Agent>(HttpStatus.NOT_FOUND);
@@ -89,7 +89,7 @@ public class AgentController {
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity< ArrayList<Agent> > getAgents() {
-		ArrayList<Agent> agents = (ArrayList<Agent>) agentService.findAll();
+		ArrayList<Agent> agents = (ArrayList<Agent>) agentRepository.findAll();
 		return new ResponseEntity< ArrayList<Agent> >(agents,
 				HttpStatus.OK);
 	}
@@ -100,14 +100,14 @@ public class AgentController {
 			method = RequestMethod.DELETE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Agent> deleteAgentById(@PathVariable String id) {
-		Agent agent = agentService.findOne(Long.parseLong(id));
+		Agent agent = agentRepository.findOne(id);
 		
 		if(agent == null){
 			return new ResponseEntity<Agent>(HttpStatus.NOT_FOUND);
 		}
 
 		try {
-			agentService.delete(agent);
+			agentRepository.delete(agent);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -121,14 +121,14 @@ public class AgentController {
 	produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Agent> deleteAgent(@RequestBody Agent agent)
     {
-		Agent exists = agentService.findOne(agent.getId());
+		Agent exists = agentRepository.findOne(agent.getId());
 		
 		if(exists == null){
 			return new ResponseEntity<Agent>(HttpStatus.NOT_FOUND);
 		}
         
 		try {
-			agentService.delete(agent);
+			agentRepository.delete(agent);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

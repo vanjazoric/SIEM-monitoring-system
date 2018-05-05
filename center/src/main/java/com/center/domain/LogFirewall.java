@@ -1,31 +1,21 @@
 package com.center.domain;
 
 import java.util.Date;
+import org.springframework.data.annotation.TypeAlias;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.PrimaryKeyJoinColumn;
-
-@Entity
-@PrimaryKeyJoinColumn(name = "id")
+@Document(collection = "logs")
+@TypeAlias("log_firewall")
 public class LogFirewall extends Log {
-	@Column
+
 	private String action;
-	@Column
 	private String protocol;
-	@Column
 	private String srcIp;
-	@Column
 	private String dstIp;
-	@Column
 	private String srcPort;
-	@Column
 	private String dstPort;
-	@Column
 	private int size;
-	@Column
 	private String tcpflags;
-	@Column
 	private String tcpsync;
 
 	public LogFirewall() {
@@ -47,7 +37,7 @@ public class LogFirewall extends Log {
 		this.tcpsync = tcpsync;
 	}
 
-	public LogFirewall(Long id, Date timeStamp, Agent agent, String action,
+	public LogFirewall(String id, Date timeStamp, Agent agent, String action,
 			String protocol, String srcIp, String dstIp, String srcPort,
 			String dstPort, int size, String tcpflags, String tcpsync) {
 		super(id, timeStamp, agent);

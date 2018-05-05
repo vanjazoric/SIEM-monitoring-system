@@ -2,38 +2,34 @@ package com.center.domain;
 
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 
-@Entity
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "centers")
 public class Center {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="id", unique=true, nullable = false)
-	private Long id;
 	
-	@OneToMany
+	@Id
+	private String id;
+	@DBRef
 	private Set<Agent> agents;
 
 	public Center() {
 		super();
 	}
 
-	public Center(Long id, Set<Agent> agents) {
+	public Center(String id, Set<Agent> agents) {
 		super();
 		this.id = id;
 		this.agents = agents;
 	}
 
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

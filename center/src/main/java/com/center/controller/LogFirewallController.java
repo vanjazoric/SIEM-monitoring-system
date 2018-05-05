@@ -14,14 +14,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.center.domain.LogFirewall;
-import com.center.service.LogFirewallService;
+import com.center.repository.LogFirewallRepository;
 
 @RestController
 @RequestMapping(value = "/logfirewall")
 public class LogFirewallController {
 
 	@Autowired
-	LogFirewallService logfirewallService;
+	LogFirewallRepository logFirewallRepository;
 	
 	@CrossOrigin
 	@RequestMapping(value = "/create", 
@@ -30,7 +30,7 @@ public class LogFirewallController {
 	produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<LogFirewall> createLogFirewall(@RequestBody LogFirewall logfirewall)
     {
-		LogFirewall exists = logfirewallService.findOne(logfirewall.getId());
+		LogFirewall exists = logFirewallRepository.findOne(logfirewall.getId());
 		
 		if(exists != null){
 			return new ResponseEntity<LogFirewall>(HttpStatus.CONFLICT);
@@ -38,7 +38,7 @@ public class LogFirewallController {
         
 		LogFirewall saved = null;
 		try {
-			saved = logfirewallService.create(logfirewall);
+			saved = logFirewallRepository.insert(logfirewall);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -52,7 +52,7 @@ public class LogFirewallController {
 	produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<LogFirewall> updateLogFirewall(@RequestBody LogFirewall logfirewall)
     {
-		LogFirewall exists = logfirewallService.findOne(logfirewall.getId());
+		LogFirewall exists = logFirewallRepository.findOne(logfirewall.getId());
 		
 		if(exists == null){
 			return new ResponseEntity<LogFirewall>(HttpStatus.NOT_FOUND);
@@ -60,7 +60,7 @@ public class LogFirewallController {
         
 		LogFirewall saved = null;
 		try {
-			saved = logfirewallService.update(logfirewall);
+			saved = logFirewallRepository.save(logfirewall);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -73,7 +73,7 @@ public class LogFirewallController {
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<LogFirewall> getLogFirewall(@PathVariable String id) {
-		LogFirewall logfirewall = logfirewallService.findOne(Long.parseLong(id));
+		LogFirewall logfirewall = logFirewallRepository.findOne(id);
 		
 		if(logfirewall == null){
 			return new ResponseEntity<LogFirewall>(HttpStatus.NOT_FOUND);
@@ -89,7 +89,7 @@ public class LogFirewallController {
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity< ArrayList<LogFirewall> > getLogFirewalls() {
-		ArrayList<LogFirewall> logfirewalls = (ArrayList<LogFirewall>) logfirewallService.findAll();
+		ArrayList<LogFirewall> logfirewalls = (ArrayList<LogFirewall>) logFirewallRepository.findAll();
 		return new ResponseEntity< ArrayList<LogFirewall> >(logfirewalls,
 				HttpStatus.OK);
 	}
@@ -100,14 +100,14 @@ public class LogFirewallController {
 			method = RequestMethod.DELETE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<LogFirewall> deleteLogFirewallById(@PathVariable String id) {
-		LogFirewall logfirewall = logfirewallService.findOne(Long.parseLong(id));
+		LogFirewall logfirewall = logFirewallRepository.findOne(id);
 		
 		if(logfirewall == null){
 			return new ResponseEntity<LogFirewall>(HttpStatus.NOT_FOUND);
 		}
 
 		try {
-			logfirewallService.delete(logfirewall);
+			logFirewallRepository.delete(logfirewall);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -121,14 +121,14 @@ public class LogFirewallController {
 	produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<LogFirewall> deleteLogFirewall(@RequestBody LogFirewall logfirewall)
     {
-		LogFirewall exists = logfirewallService.findOne(logfirewall.getId());
+		LogFirewall exists = logFirewallRepository.findOne(logfirewall.getId());
 		
 		if(exists == null){
 			return new ResponseEntity<LogFirewall>(HttpStatus.NOT_FOUND);
 		}
         
 		try {
-			logfirewallService.delete(logfirewall);
+			logFirewallRepository.delete(logfirewall);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

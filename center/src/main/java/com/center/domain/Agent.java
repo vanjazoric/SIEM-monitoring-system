@@ -2,40 +2,35 @@ package com.center.domain;
 
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 
-@Entity
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "agents")
 public class Agent {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="id", unique=true, nullable=false)
-	private Long id;
+	private String id;
 	
-	@OneToMany(cascade = CascadeType.ALL)
+	@DBRef
 	private Set<Log> logs;
 
 	public Agent() {
 		super();
 	}
 
-	public Agent(Long id, Set<Log> logs) {
+	public Agent(String id, Set<Log> logs) {
 		super();
 		this.id = id;
 		this.logs = logs;
 	}
 
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

@@ -14,19 +14,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.center.domain.Log;
-import com.center.service.LogService;
+import com.center.repository.LogRepository;
 
 @RestController
 @RequestMapping(value = "/log")
 public class LogController {
 
 	@Autowired
-	LogService logService;
+	LogRepository logRepository;
 
 	@CrossOrigin
 	@RequestMapping(value = "/create", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Log> createLog(@RequestBody Log log) {
-		Log exists = logService.findOne(log.getId());
+		Log exists = logRepository.findOne(log.getId());
 
 		if (exists != null) {
 			return new ResponseEntity<Log>(HttpStatus.CONFLICT);
@@ -34,7 +34,7 @@ public class LogController {
 
 		Log saved = null;
 		try {
-			saved = logService.create(log);
+			saved = logRepository.insert(log);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -44,7 +44,7 @@ public class LogController {
 	@CrossOrigin
 	@RequestMapping(value = "/update", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Log> updateLog(@RequestBody Log log) {
-		Log exists = logService.findOne(log.getId());
+		Log exists = logRepository.findOne(log.getId());
 
 		if (exists == null) {
 			return new ResponseEntity<Log>(HttpStatus.NOT_FOUND);
@@ -52,7 +52,7 @@ public class LogController {
 
 		Log saved = null;
 		try {
-			saved = logService.update(log);
+			saved = logRepository.save(log);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -62,7 +62,7 @@ public class LogController {
 	@CrossOrigin
 	@RequestMapping(value = "/{id}/get", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Log> getLog(@PathVariable String id) {
-		Log log = logService.findOne(Long.parseLong(id));
+		Log log = logRepository.findOne(id);
 
 		if (log == null) {
 			return new ResponseEntity<Log>(HttpStatus.NOT_FOUND);
@@ -74,21 +74,21 @@ public class LogController {
 	@CrossOrigin
 	@RequestMapping(value = "/getAll", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ArrayList<Log>> getLogs() {
-		ArrayList<Log> logs = (ArrayList<Log>) logService.findAll();
+		ArrayList<Log> logs = (ArrayList<Log>) logRepository.findAll();
 		return new ResponseEntity<ArrayList<Log>>(logs, HttpStatus.OK);
 	}
 
 	@CrossOrigin
 	@RequestMapping(value = "/{id}/delete", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Log> deleteLogById(@PathVariable String id) {
-		Log log = logService.findOne(Long.parseLong(id));
+		Log log = logRepository.findOne(id);
 
 		if (log == null) {
 			return new ResponseEntity<Log>(HttpStatus.NOT_FOUND);
 		}
 
 		try {
-			logService.delete(log);
+			logRepository.delete(log);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -98,14 +98,14 @@ public class LogController {
 	@CrossOrigin
 	@RequestMapping(value = "/delete", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Log> deleteLog(@RequestBody Log log) {
-		Log exists = logService.findOne(log.getId());
+		Log exists = logRepository.findOne(log.getId());
 
 		if (exists == null) {
 			return new ResponseEntity<Log>(HttpStatus.NOT_FOUND);
 		}
 
 		try {
-			logService.delete(log);
+			logRepository.delete(log);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

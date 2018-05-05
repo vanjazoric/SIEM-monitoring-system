@@ -14,21 +14,21 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.center.domain.OperatingSystemLog;
-import com.center.service.OperatingSystemLogService;
+import com.center.repository.OperatingSystemLogRepository;
 
 @RestController
 @RequestMapping(value = "/OSlogs")
 public class OperatingSystemLogController {
 
 	@Autowired
-	OperatingSystemLogService operatingsystemlogService;
+	OperatingSystemLogRepository OSlogRepository;
 
 	@CrossOrigin
 	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ArrayList<OperatingSystemLog>> createOperatingSystemLog(
 			@RequestBody ArrayList<OperatingSystemLog> logs) throws Exception {
 		for (OperatingSystemLog log : logs) {
-			operatingsystemlogService.create(log);
+			OSlogRepository.insert(log);
 		}
 		return new ResponseEntity<ArrayList<OperatingSystemLog>>(HttpStatus.OK);
 	}
@@ -37,7 +37,7 @@ public class OperatingSystemLogController {
 	@RequestMapping(value = "/update", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<OperatingSystemLog> updateOperatingSystemLog(
 			@RequestBody OperatingSystemLog operatingsystemlog) {
-		OperatingSystemLog exists = operatingsystemlogService
+		OperatingSystemLog exists = OSlogRepository
 				.findOne(operatingsystemlog.getId());
 
 		if (exists == null) {
@@ -46,7 +46,7 @@ public class OperatingSystemLogController {
 
 		OperatingSystemLog saved = null;
 		try {
-			saved = operatingsystemlogService.update(operatingsystemlog);
+			saved = OSlogRepository.save(operatingsystemlog);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -57,8 +57,8 @@ public class OperatingSystemLogController {
 	@RequestMapping(value = "/{id}/get", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<OperatingSystemLog> getOperatingSystemLog(
 			@PathVariable String id) {
-		OperatingSystemLog operatingsystemlog = operatingsystemlogService
-				.findOne(Long.parseLong(id));
+		OperatingSystemLog operatingsystemlog = OSlogRepository
+				.findOne(id);
 
 		if (operatingsystemlog == null) {
 			return new ResponseEntity<OperatingSystemLog>(
@@ -72,7 +72,7 @@ public class OperatingSystemLogController {
 	@CrossOrigin
 	@RequestMapping(value = "/getAll", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ArrayList<OperatingSystemLog>> getOperatingSystemLogs() {
-		ArrayList<OperatingSystemLog> operatingsystemlogs = (ArrayList<OperatingSystemLog>) operatingsystemlogService
+		ArrayList<OperatingSystemLog> operatingsystemlogs = (ArrayList<OperatingSystemLog>) OSlogRepository
 				.findAll();
 		return new ResponseEntity<ArrayList<OperatingSystemLog>>(
 				operatingsystemlogs, HttpStatus.OK);
@@ -82,15 +82,15 @@ public class OperatingSystemLogController {
 	@RequestMapping(value = "/{id}/delete", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<OperatingSystemLog> deleteOperatingSystemLogById(
 			@PathVariable String id) {
-		OperatingSystemLog operatingsystemlog = operatingsystemlogService
-				.findOne(Long.parseLong(id));
+		OperatingSystemLog operatingsystemlog = OSlogRepository
+				.findOne(id);
 
 		if (operatingsystemlog == null) {
 			return new ResponseEntity<OperatingSystemLog>(HttpStatus.NOT_FOUND);
 		}
 
 		try {
-			operatingsystemlogService.delete(operatingsystemlog);
+			OSlogRepository.delete(operatingsystemlog);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -101,7 +101,7 @@ public class OperatingSystemLogController {
 	@RequestMapping(value = "/delete", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<OperatingSystemLog> deleteOperatingSystemLog(
 			@RequestBody OperatingSystemLog operatingsystemlog) {
-		OperatingSystemLog exists = operatingsystemlogService
+		OperatingSystemLog exists = OSlogRepository
 				.findOne(operatingsystemlog.getId());
 
 		if (exists == null) {
@@ -109,7 +109,7 @@ public class OperatingSystemLogController {
 		}
 
 		try {
-			operatingsystemlogService.delete(operatingsystemlog);
+			OSlogRepository.delete(operatingsystemlog);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -1,9 +1,8 @@
 package com.center.repository;
-
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
 import com.center.domain.Center;
 
-public interface CenterRepository extends JpaRepository<Center, Long> {
+public interface CenterRepository extends MongoRepository<Center, String> {
 
 }

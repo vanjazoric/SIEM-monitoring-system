@@ -1,47 +1,34 @@
 package com.center.domain;
 
 import java.util.Date;
+import org.springframework.data.annotation.TypeAlias;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.PrimaryKeyJoinColumn;
+@Document(collection = "logs")
+@TypeAlias("log_server")
+public class LogServer extends Log {
 
-@Entity
-@PrimaryKeyJoinColumn(name = "id")
-public class LogServer extends Log{
-	
-	@Column
 	private String clientIp;
-	
-	@Column
 	private String logHost;
-	
-	@Column
 	private String messageId;
-	
-	@Column
 	private String method;
-	
-	@Column
-	private String resourceRequest; 
-	
-	@Column
+	private String resourceRequest;
 	private int httpStatus;
-	
-	@Column
 	private int sizeOfReturnedObj;
 
-	public LogServer(Date timeStamp,String clientIp,String logHost,String method,String messageId,String resourceRequest,int httpStatus,int sizeOfReturnedObj){
-    	super((long) (0),timeStamp,new Agent());
-    	this.clientIp=clientIp;
-    	this.logHost=logHost;
-    	this.messageId=messageId;
-    	this.method=method;
-    	this.resourceRequest=resourceRequest;
-    	this.httpStatus=httpStatus;
-    	this.sizeOfReturnedObj=sizeOfReturnedObj;
+	public LogServer(String id, Date timeStamp, String clientIp, String logHost,
+			String method, String messageId, String resourceRequest,
+			int httpStatus, int sizeOfReturnedObj, Agent agent) {
+		super(id, timeStamp, agent);
+		this.clientIp = clientIp;
+		this.logHost = logHost;
+		this.messageId = messageId;
+		this.method = method;
+		this.resourceRequest = resourceRequest;
+		this.httpStatus = httpStatus;
+		this.sizeOfReturnedObj = sizeOfReturnedObj;
 	}
-	
+
 	public String getClientIp() {
 		return clientIp;
 	}
@@ -100,9 +87,10 @@ public class LogServer extends Log{
 
 	@Override
 	public String toString() {
-		return "LogServer [clientIp=" + clientIp + ", logHost=" + logHost + ", messageId=" + messageId + ", method="
-				+ method + ", resourceRequest=" + resourceRequest + ", httpStatus=" + httpStatus
-				+ ", sizeOfReturnedObj=" + sizeOfReturnedObj + "]";
+		return "LogServer [clientIp=" + clientIp + ", logHost=" + logHost
+				+ ", messageId=" + messageId + ", method=" + method
+				+ ", resourceRequest=" + resourceRequest + ", httpStatus="
+				+ httpStatus + ", sizeOfReturnedObj=" + sizeOfReturnedObj + "]";
 	}
 
 }

@@ -5,37 +5,28 @@ package com.center.domain;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.PrimaryKeyJoinColumn;
+import org.springframework.data.annotation.TypeAlias;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * @author Vanja
  *
  */
-@Entity
-@PrimaryKeyJoinColumn(name = "id")
+
+@Document(collection = "logs")
+@TypeAlias("log_OS")
 public class OperatingSystemLog extends Log {
 
-	@Enumerated(EnumType.STRING)
-	private Level level;
-	
-	@Column
+	private String level;
 	private int eventId;
-	
-	@Column
 	private String taskCategory;
-	
-	@Column
 	private String source;
 
 	public OperatingSystemLog() {
 		super();
 	}
 
-	public OperatingSystemLog(Long id, Level level, Date timeStamp,
+	public OperatingSystemLog(String id, String level, Date timeStamp,
 			String source, int eventId, Agent agent) {
 		super(id, timeStamp, agent);
 		this.eventId = eventId;
@@ -43,7 +34,7 @@ public class OperatingSystemLog extends Log {
 		this.source = source;
 	}
 	
-	public OperatingSystemLog(Long id, Level level, Date timeStamp,
+	public OperatingSystemLog(String id, String level, Date timeStamp,
 			String source, int eventId, String taskCategory, Agent agent) {
 		super(id, timeStamp, agent);
 		this.eventId = eventId;
@@ -52,11 +43,11 @@ public class OperatingSystemLog extends Log {
 		this.taskCategory = taskCategory;
 	}
 
-	public Level getLevel() {
+	public String getLevel() {
 		return level;
 	}
 
-	public void setLevel(Level level) {
+	public void setLevel(String level) {
 		this.level = level;
 	}
 

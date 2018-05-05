@@ -14,14 +14,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.center.domain.ApplicationLog;
-import com.center.service.ApplicationLogService;
+import com.center.repository.ApplicationLogRepository;
 
 @RestController
 @RequestMapping(value = "/applicationlog")
 public class ApplicationLogController {
 
 	@Autowired
-	ApplicationLogService applicationlogService;
+	ApplicationLogRepository applicationLogRepository;
 
 	
 	@CrossOrigin
@@ -31,7 +31,7 @@ public class ApplicationLogController {
 	produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApplicationLog> createApplicationLog(@RequestBody ApplicationLog applicationlog)
     {
-		ApplicationLog exists = applicationlogService.findOne(applicationlog.getId());
+		ApplicationLog exists = applicationLogRepository.findOne(applicationlog.getId());
 		
 		if(exists != null){
 			return new ResponseEntity<ApplicationLog>(HttpStatus.CONFLICT);
@@ -39,7 +39,7 @@ public class ApplicationLogController {
         
 		ApplicationLog saved = null;
 		try {
-			saved = applicationlogService.create(applicationlog);
+			saved = applicationLogRepository.insert(applicationlog);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -53,7 +53,7 @@ public class ApplicationLogController {
 	produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApplicationLog> updateApplicationLog(@RequestBody ApplicationLog applicationlog)
     {
-		ApplicationLog exists = applicationlogService.findOne(applicationlog.getId());
+		ApplicationLog exists = applicationLogRepository.findOne(applicationlog.getId());
 		
 		if(exists == null){
 			return new ResponseEntity<ApplicationLog>(HttpStatus.NOT_FOUND);
@@ -61,7 +61,7 @@ public class ApplicationLogController {
         
 		ApplicationLog saved = null;
 		try {
-			saved = applicationlogService.update(applicationlog);
+			saved = applicationLogRepository.save(applicationlog);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -74,7 +74,7 @@ public class ApplicationLogController {
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApplicationLog> getApplicationLog(@PathVariable String id) {
-		ApplicationLog applicationlog = applicationlogService.findOne(Long.parseLong(id));
+		ApplicationLog applicationlog = applicationLogRepository.findOne(id);
 		
 		if(applicationlog == null){
 			return new ResponseEntity<ApplicationLog>(HttpStatus.NOT_FOUND);
@@ -90,7 +90,7 @@ public class ApplicationLogController {
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity< ArrayList<ApplicationLog> > getApplicationLogs() {
-		ArrayList<ApplicationLog> applicationlogs = (ArrayList<ApplicationLog>) applicationlogService.findAll();
+		ArrayList<ApplicationLog> applicationlogs = (ArrayList<ApplicationLog>) applicationLogRepository.findAll();
 		return new ResponseEntity< ArrayList<ApplicationLog> >(applicationlogs,
 				HttpStatus.OK);
 	}
@@ -101,14 +101,14 @@ public class ApplicationLogController {
 			method = RequestMethod.DELETE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApplicationLog> deleteApplicationLogById(@PathVariable String id) {
-		ApplicationLog applicationlog = applicationlogService.findOne(Long.parseLong(id));
+		ApplicationLog applicationlog = applicationLogRepository.findOne(id);
 		
 		if(applicationlog == null){
 			return new ResponseEntity<ApplicationLog>(HttpStatus.NOT_FOUND);
 		}
 
 		try {
-			applicationlogService.delete(applicationlog);
+			applicationLogRepository.delete(applicationlog);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -122,14 +122,14 @@ public class ApplicationLogController {
 	produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApplicationLog> deleteApplicationLog(@RequestBody ApplicationLog applicationlog)
     {
-		ApplicationLog exists = applicationlogService.findOne(applicationlog.getId());
+		ApplicationLog exists = applicationLogRepository.findOne(applicationlog.getId());
 		
 		if(exists == null){
 			return new ResponseEntity<ApplicationLog>(HttpStatus.NOT_FOUND);
 		}
         
 		try {
-			applicationlogService.delete(applicationlog);
+			applicationLogRepository.delete(applicationlog);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

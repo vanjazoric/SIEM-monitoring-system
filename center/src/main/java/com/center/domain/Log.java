@@ -2,32 +2,20 @@ package com.center.domain;
 
 import java.util.Date;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.ManyToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.InheritanceType;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-@PrimaryKeyJoinColumn(name = "id")
+@Document(collection = "logs")
 public class Log {
-
+	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="id", unique=true, nullable = false)
-	private Long id;
+	private String id;
 
 	//private String priority;
 
 	//private String version;
 
-	@Column
 	private Date timeStamp;
 
 	//private String hostName;
@@ -38,25 +26,25 @@ public class Log {
 
 	//private Long MessageId;
 
-	@ManyToOne
+	@DBRef
 	private Agent agent;
 
 	public Log() {
 		super();
 	}
 
-	public Log(Long id, Date timeStamp, Agent agent) {
+	public Log(String id, Date timeStamp, Agent agent) {
 		super();
 		this.id = id;
         this.timeStamp=timeStamp;
 		this.agent = agent;
 	}
 
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

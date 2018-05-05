@@ -14,14 +14,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.center.domain.LogServer;
-import com.center.service.LogServerService;
+import com.center.repository.LogServerRepository;
 
 @RestController
 @RequestMapping(value = "/logserver")
 public class LogServerController {
 
 	@Autowired
-	LogServerService logserverService;
+	LogServerRepository logServerRepository;
 	
 	@CrossOrigin
 	@RequestMapping(value = "/create", 
@@ -30,7 +30,7 @@ public class LogServerController {
 	produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<LogServer> createLogServer(@RequestBody LogServer logserver)
     {
-		LogServer exists = logserverService.findOne(logserver.getId());
+		LogServer exists = logServerRepository.findOne(logserver.getId());
 		
 		if(exists != null){
 			return new ResponseEntity<LogServer>(HttpStatus.CONFLICT);
@@ -38,7 +38,7 @@ public class LogServerController {
         
 		LogServer saved = null;
 		try {
-			saved = logserverService.create(logserver);
+			saved = logServerRepository.save(logserver);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -52,7 +52,7 @@ public class LogServerController {
 	produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<LogServer> updateLogServer(@RequestBody LogServer logserver)
     {
-		LogServer exists = logserverService.findOne(logserver.getId());
+		LogServer exists = logServerRepository.findOne(logserver.getId());
 		
 		if(exists == null){
 			return new ResponseEntity<LogServer>(HttpStatus.NOT_FOUND);
@@ -60,7 +60,7 @@ public class LogServerController {
         
 		LogServer saved = null;
 		try {
-			saved = logserverService.update(logserver);
+			saved = logServerRepository.save(logserver);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -73,7 +73,7 @@ public class LogServerController {
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<LogServer> getLogServer(@PathVariable String id) {
-		LogServer logserver = logserverService.findOne(Long.parseLong(id));
+		LogServer logserver = logServerRepository.findOne(id);
 		
 		if(logserver == null){
 			return new ResponseEntity<LogServer>(HttpStatus.NOT_FOUND);
@@ -89,7 +89,7 @@ public class LogServerController {
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity< ArrayList<LogServer> > getLogServers() {
-		ArrayList<LogServer> logservers = (ArrayList<LogServer>) logserverService.findAll();
+		ArrayList<LogServer> logservers = (ArrayList<LogServer>) logServerRepository.findAll();
 		return new ResponseEntity< ArrayList<LogServer> >(logservers,
 				HttpStatus.OK);
 	}
@@ -100,14 +100,14 @@ public class LogServerController {
 			method = RequestMethod.DELETE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<LogServer> deleteLogServerById(@PathVariable String id) {
-		LogServer logserver = logserverService.findOne(Long.parseLong(id));
+		LogServer logserver = logServerRepository.findOne(id);
 		
 		if(logserver == null){
 			return new ResponseEntity<LogServer>(HttpStatus.NOT_FOUND);
 		}
 
 		try {
-			logserverService.delete(logserver);
+			logServerRepository.delete(logserver);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -121,14 +121,14 @@ public class LogServerController {
 	produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<LogServer> deleteLogServer(@RequestBody LogServer logserver)
     {
-		LogServer exists = logserverService.findOne(logserver.getId());
+		LogServer exists = logServerRepository.findOne(logserver.getId());
 		
 		if(exists == null){
 			return new ResponseEntity<LogServer>(HttpStatus.NOT_FOUND);
 		}
         
 		try {
-			logserverService.delete(logserver);
+			logServerRepository.delete(logserver);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
