@@ -8,17 +8,21 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.agent.domain.Agent;
 import com.agent.domain.LogFirewall;
+import com.agent.domain.LogServer;
+import com.agent.service.LogFirewallService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -26,14 +30,13 @@ import com.google.gson.GsonBuilder;
 @RequestMapping(value = "/firewallLog")
 public class LogFirewallController {
 
-	public void parse() {
+	public void parse(String listenFrom, String sendTo) {
 
 		ArrayList<LogFirewall> logs = new ArrayList<LogFirewall>();
 
 		File relativeFile = new File(".." + File.separator + "scripts"
-				+ File.separator + "firewallLogs.txt");
+				+ File.separator + listenFrom);
 		try {
-			@SuppressWarnings("resource")
 			BufferedReader in = new BufferedReader(new FileReader(
 					relativeFile.getCanonicalPath()));
 			String line;
@@ -65,7 +68,7 @@ public class LogFirewallController {
 			for (LogFirewall lf : logs) {
 				System.out.println(lf);
 			}
-			sendToCenter(logs);
+			sendToCenter(logs, sendTo);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -76,12 +79,12 @@ public class LogFirewallController {
 
 	}
 	
-	public void sendToCenter(ArrayList<LogFirewall> logs)
+	public void sendToCenter(ArrayList<LogFirewall> logs, String sendTo)
 			throws IOException {
 		HttpClient httpClient = HttpClientBuilder.create().build();
 		CloseableHttpResponse response = null;
 		try {
-			HttpPost request = new HttpPost("http://localhost:8888/logfirewall/createall");
+			HttpPost request = new HttpPost(sendTo + "/createall");
 			Gson gson = new GsonBuilder().setDateFormat(
 					"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create();
 			StringEntity postingString = new StringEntity(gson.toJson(logs));

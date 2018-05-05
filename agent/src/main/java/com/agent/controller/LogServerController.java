@@ -31,10 +31,10 @@ public class LogServerController {
 	@Autowired
 	LogServerService logServerService;
 
-	public void readLogs() {
+	public void readLogs(String listenFrom, String sendTo) {
 		ArrayList<LogServer> logs = new ArrayList<>();
 		File relativeFile = new File(".." + File.separator + "scripts"
-				+ File.separator + "logserver.txt");
+				+ File.separator + listenFrom);
 		try {
 			BufferedReader in = new BufferedReader(new FileReader(
 					relativeFile.getCanonicalPath()));
@@ -56,7 +56,7 @@ public class LogServerController {
 				logs.add(l);
 			}
 			in.close();
-			sendToCenter(logs);
+			sendToCenter(logs, sendTo);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -64,11 +64,11 @@ public class LogServerController {
 
 	}
 
-	public void sendToCenter(ArrayList<LogServer> logs) throws IOException {
+	public void sendToCenter(ArrayList<LogServer> logs, String sendTo) throws IOException {
 		HttpClient httpClient = HttpClientBuilder.create().build();
 		CloseableHttpResponse response = null;
 		try {
-			HttpPost request = new HttpPost("http://localhost:8888/logserver");
+			HttpPost request = new HttpPost(sendTo);
 			Gson gson = new GsonBuilder().setDateFormat(
 					"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create();
 			StringEntity postingString = new StringEntity(gson.toJson(logs));

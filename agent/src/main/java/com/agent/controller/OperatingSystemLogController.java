@@ -53,7 +53,7 @@ public class OperatingSystemLogController {
 	 * ResponseEntity<OperatingSystemLog>(saved, HttpStatus.CONFLICT); }
 	 */
 
-	public void getOSlogs() throws ParseException, IOException {
+	public void getOSlogs(String sendTo) throws ParseException, IOException {
 		ArrayList<OperatingSystemLog> logs = new ArrayList<OperatingSystemLog>();
 		EventLogIterator iter = new EventLogIterator("System");
 		int counter = 0;
@@ -79,15 +79,16 @@ public class OperatingSystemLogController {
 					source, eventId, new Agent());
 			logs.add(log);
 		}
-		sendToCenter(logs);
+		sendToCenter(logs, sendTo);
 	}
 
-	public void sendToCenter(ArrayList<OperatingSystemLog> logs)
+	public void sendToCenter(ArrayList<OperatingSystemLog> logs, String sendTo)
 			throws IOException {
 		HttpClient httpClient = HttpClientBuilder.create().build();
 		CloseableHttpResponse response = null;
 		try {
-			HttpPost request = new HttpPost("http://localhost:8888/OSlogs");
+			HttpPost request = new HttpPost(sendTo);
+			//HttpPost request = new HttpPost("http://localhost:8888/OSlogs");
 			Gson gson = new GsonBuilder().setDateFormat(
 					"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create();
 			StringEntity postingString = new StringEntity(gson.toJson(logs));
