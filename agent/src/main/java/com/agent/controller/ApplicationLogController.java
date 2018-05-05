@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.agent.domain.Agent;
 import com.agent.domain.ApplicationLog;
-import com.agent.domain.OperatingSystemLog;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 

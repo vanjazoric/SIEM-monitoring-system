@@ -8,21 +8,17 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.agent.domain.Agent;
 import com.agent.domain.LogFirewall;
-import com.agent.domain.LogServer;
-import com.agent.service.LogFirewallService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -37,6 +33,7 @@ public class LogFirewallController {
 		File relativeFile = new File(".." + File.separator + "scripts"
 				+ File.separator + "firewallLogs.txt");
 		try {
+			@SuppressWarnings("resource")
 			BufferedReader in = new BufferedReader(new FileReader(
 					relativeFile.getCanonicalPath()));
 			String line;

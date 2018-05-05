@@ -16,6 +16,12 @@ public class LogServer extends Log {
 	private int httpStatus;
 	private int sizeOfReturnedObj;
 
+	
+	
+	public LogServer() {
+		super();
+	}
+
 	public LogServer(String id, Date timeStamp, String clientIp, String logHost,
 			String method, String messageId, String resourceRequest,
 			int httpStatus, int sizeOfReturnedObj, Agent agent) {

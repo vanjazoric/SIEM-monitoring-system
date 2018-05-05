@@ -28,6 +28,7 @@ public class OperatingSystemLogController {
 	public ResponseEntity<ArrayList<OperatingSystemLog>> createOperatingSystemLog(
 			@RequestBody ArrayList<OperatingSystemLog> logs) throws Exception {
 		for (OperatingSystemLog log : logs) {
+			System.out.println(log);
 			OSlogRepository.insert(log);
 		}
 		return new ResponseEntity<ArrayList<OperatingSystemLog>>(HttpStatus.OK);

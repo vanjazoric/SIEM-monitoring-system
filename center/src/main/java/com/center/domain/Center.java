@@ -11,7 +11,7 @@ public class Center {
 	
 	@Id
 	private String id;
-	@DBRef
+	//@DBRef
 	private Set<Agent> agents;
 
 	public Center() {

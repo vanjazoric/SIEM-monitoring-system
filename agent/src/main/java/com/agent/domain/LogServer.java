@@ -2,33 +2,39 @@ package com.agent.domain;
 
 import java.util.Date;
 
-public class LogServer extends Log{
-	
-	private String clientIp;
-	
-	private String logHost;
-	
-	private String messageId;
-	
-	private String method;
-	
-	private String resourceRequest; 
-	
-	private int httpStatus;
-	
-	private int sizeOfReturnedObj;
+public class LogServer extends Log {
 
-	public LogServer(Date timeStamp,String clientIp,String logHost,String method,String messageId,String resourceRequest,int httpStatus,int sizeOfReturnedObj){
-    	super((long) (0),timeStamp,new Agent());
-    	this.clientIp=clientIp;
-    	this.logHost=logHost;
-    	this.messageId=messageId;
-    	this.method=method;
-    	this.resourceRequest=resourceRequest;
-    	this.httpStatus=httpStatus;
-    	this.sizeOfReturnedObj=sizeOfReturnedObj;
-	}
+	private String clientIp;
+
+	private String logHost;
+
+	private String messageId;
+
+	private String method;
+
+	private String resourceRequest;
+
+	private int httpStatus;
+
+	private int sizeOfReturnedObj;
 	
+	public LogServer() {
+		super();
+	}
+
+	public LogServer(Long id, Date timeStamp, String clientIp, String logHost,
+			String method, String messageId, String resourceRequest,
+			int httpStatus, int sizeOfReturnedObj, Agent agent) {
+		super(id, timeStamp, agent);
+		this.clientIp = clientIp;
+		this.logHost = logHost;
+		this.messageId = messageId;
+		this.method = method;
+		this.resourceRequest = resourceRequest;
+		this.httpStatus = httpStatus;
+		this.sizeOfReturnedObj = sizeOfReturnedObj;
+	}
+
 	public String getClientIp() {
 		return clientIp;
 	}
@@ -87,9 +93,10 @@ public class LogServer extends Log{
 
 	@Override
 	public String toString() {
-		return "LogServer [clientIp=" + clientIp + ", logHost=" + logHost + ", messageId=" + messageId + ", method="
-				+ method + ", resourceRequest=" + resourceRequest + ", httpStatus=" + httpStatus
-				+ ", sizeOfReturnedObj=" + sizeOfReturnedObj + "]";
+		return "LogServer [clientIp=" + clientIp + ", logHost=" + logHost
+				+ ", messageId=" + messageId + ", method=" + method
+				+ ", resourceRequest=" + resourceRequest + ", httpStatus="
+				+ httpStatus + ", sizeOfReturnedObj=" + sizeOfReturnedObj + "]";
 	}
 
 }

@@ -26,7 +26,7 @@ public class Log {
 
 	//private Long MessageId;
 
-	@DBRef
+	//@DBRef
 	private Agent agent;
 
 	public Log() {

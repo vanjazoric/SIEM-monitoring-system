@@ -12,7 +12,7 @@ public class Agent {
 	@Id
 	private String id;
 	
-	@DBRef
+	//@DBRef
 	private Set<Log> logs;
 
 	public Agent() {
