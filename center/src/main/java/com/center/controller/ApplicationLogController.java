@@ -1,6 +1,9 @@
 package com.center.controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.center.domain.ApplicationLog;
@@ -120,6 +124,47 @@ public class ApplicationLogController {
 			return new ResponseEntity<ApplicationLog>(HttpStatus.OK);
 		}
 		return new ResponseEntity<ApplicationLog>(HttpStatus.NOT_FOUND);
+	}
+	
+	@RequestMapping(
+			params = "applicationName",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE
+	)
+	public ResponseEntity<ArrayList<ApplicationLog>> getApplicationLogsByApplicationName(@RequestParam String applicationName){
+		ArrayList<ApplicationLog> logs = applicationlogRepository.findApplicationLogByApplication(applicationName);
+		if(logs.isEmpty()){
+			return new ResponseEntity<ArrayList<ApplicationLog>>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<ArrayList<ApplicationLog>>(logs, HttpStatus.OK);
+	}
+	
+	@RequestMapping(
+			params = "priority",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE
+	)
+	public ResponseEntity<ArrayList<ApplicationLog>> getApplicationLogsByPriority(@RequestParam String priority){
+		ArrayList<ApplicationLog> logs = applicationlogRepository.findApplicationLogByPriority(priority);
+		if(logs.isEmpty()){
+			return new ResponseEntity<ArrayList<ApplicationLog>>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<ArrayList<ApplicationLog>>(logs, HttpStatus.OK);
+	}
+	
+	@RequestMapping(
+			params = "timeStamp",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE
+	)
+	public ResponseEntity<ArrayList<ApplicationLog>> getApplicationLogsByTimeStamp(@RequestParam String timeStamp) throws ParseException{
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date date = (Date) simpleDateFormat.parse(timeStamp);
+		ArrayList<ApplicationLog> logs = applicationlogRepository.findApplicationLogByTimeStamp(date);
+		if(logs.isEmpty()){
+			return new ResponseEntity<ArrayList<ApplicationLog>>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<ArrayList<ApplicationLog>>(logs, HttpStatus.OK);
 	}
 	
 }
