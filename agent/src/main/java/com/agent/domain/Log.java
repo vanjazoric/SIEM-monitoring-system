@@ -8,15 +8,15 @@ public class Log {
 
 	//private String priority;
 
-	//private String version;
+	private String version;
 
 	private Date timeStamp;
 
-	//private String hostName;
+	private String hostName;
 
 	//private String application;
 
-	//private Long processId;
+	private Long processId;
 
 	//private Long MessageId;
     
@@ -55,6 +55,30 @@ public class Log {
 
 	public void setAgent(Agent agent) {
 		this.agent = agent;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	public String getHostName() {
+		return hostName;
+	}
+
+	public void setHostName(String hostName) {
+		this.hostName = hostName;
+	}
+
+	public Long getProcessId() {
+		return processId;
+	}
+
+	public void setProcessId(Long processId) {
+		this.processId = processId;
 	}
 
 	@Override

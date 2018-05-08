@@ -8,25 +8,25 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "logs")
 public class Log {
-	
+
 	@Id
 	private String id;
 
 	//private String priority;
 
-	//private String version;
+	private String version;
 
 	private Date timeStamp;
 
-	//private String hostName;
+	private String hostName;
 
 	//private String application;
 
-	//private Long processId;
+	private Long processId;
 
 	//private Long MessageId;
 
-	//@DBRef
+	// @DBRef
 	private Agent agent;
 
 	public Log() {
@@ -36,7 +36,7 @@ public class Log {
 	public Log(String id, Date timeStamp, Agent agent) {
 		super();
 		this.id = id;
-        this.timeStamp=timeStamp;
+		this.timeStamp = timeStamp;
 		this.agent = agent;
 	}
 
@@ -46,6 +46,30 @@ public class Log {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	public String getHostName() {
+		return hostName;
+	}
+
+	public void setHostName(String hostName) {
+		this.hostName = hostName;
+	}
+
+	public Long getProcessId() {
+		return processId;
+	}
+
+	public void setProcessId(Long processId) {
+		this.processId = processId;
 	}
 
 	public Date getTimeStamp() {
@@ -66,9 +90,8 @@ public class Log {
 
 	@Override
 	public String toString() {
-		return "Log [id=" + id + ", timeStamp=" + timeStamp + ", agent=" + agent + "]";
+		return "Log [id=" + id + ", timeStamp=" + timeStamp + ", agent="
+				+ agent + "]";
 	}
-
-
 
 }
