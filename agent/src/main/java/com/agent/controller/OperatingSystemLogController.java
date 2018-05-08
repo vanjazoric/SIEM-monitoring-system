@@ -3,6 +3,8 @@
  */
 package com.agent.controller;
 
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
+
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -53,7 +55,7 @@ public class OperatingSystemLogController {
 	 * ResponseEntity<OperatingSystemLog>(saved, HttpStatus.CONFLICT); }
 	 */
 
-	public void getOSlogs(String sendTo) throws ParseException, IOException {
+	public ArrayList<OperatingSystemLog> getOSlogs() throws ParseException, IOException {
 		ArrayList<OperatingSystemLog> logs = new ArrayList<OperatingSystemLog>();
 		EventLogIterator iter = new EventLogIterator("System");
 		int counter = 0;
@@ -79,7 +81,7 @@ public class OperatingSystemLogController {
 					source, eventId, new Agent());
 			logs.add(log);
 		}
-		sendToCenter(logs, sendTo);
+		return logs;
 	}
 
 	public void sendToCenter(ArrayList<OperatingSystemLog> logs, String sendTo)

@@ -31,7 +31,7 @@ public class LogServerController {
 	@Autowired
 	LogServerService logServerService;
 
-	public void readLogs(String listenFrom, String sendTo) {
+	public ArrayList<LogServer> readLogs(String listenFrom) {
 		ArrayList<LogServer> logs = new ArrayList<>();
 		File relativeFile = new File(".." + File.separator + "scripts"
 				+ File.separator + listenFrom);
@@ -56,11 +56,11 @@ public class LogServerController {
 				logs.add(l);
 			}
 			in.close();
-			sendToCenter(logs, sendTo);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return logs;
 
 	}
 

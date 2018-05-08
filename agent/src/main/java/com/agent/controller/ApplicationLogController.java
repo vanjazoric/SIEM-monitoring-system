@@ -27,7 +27,7 @@ import com.google.gson.GsonBuilder;
 @RequestMapping(value = "/applicationLog")
 public class ApplicationLogController {
 	
-	public void loadApplicationLogs(String filename, String sendTo) throws IOException {
+	public ArrayList<ApplicationLog> loadApplicationLogs(String filename) throws IOException {
 		// TODO Auto-generated method stub
 		ArrayList<ApplicationLog> logs = new ArrayList<ApplicationLog>();
 		File relativeFile = new File(".."+File.separator+"scripts"+File.separator+filename);
@@ -50,7 +50,6 @@ public class ApplicationLogController {
 		    	logs.add(al);
 		    	counter+=1;
 			}
-			System.out.println(logs.size());
 			in.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -58,8 +57,8 @@ public class ApplicationLogController {
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}		
-		sendToCenter(logs, sendTo);
+		}	
+		return logs;
 	}
 	
 	public void sendToCenter(ArrayList<ApplicationLog> logs, String sendTo) throws IOException {

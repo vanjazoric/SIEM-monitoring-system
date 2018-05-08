@@ -30,7 +30,7 @@ import com.google.gson.GsonBuilder;
 @RequestMapping(value = "/firewallLog")
 public class LogFirewallController {
 
-	public void parse(String listenFrom, String sendTo) {
+	public ArrayList<LogFirewall> parse(String listenFrom) {
 
 		ArrayList<LogFirewall> logs = new ArrayList<LogFirewall>();
 
@@ -65,10 +65,6 @@ public class LogFirewallController {
 				logs.add(lf);
 				counter++;
 			}
-			for (LogFirewall lf : logs) {
-				System.out.println(lf);
-			}
-			sendToCenter(logs, sendTo);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -76,6 +72,7 @@ public class LogFirewallController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return logs;
 
 	}
 	
