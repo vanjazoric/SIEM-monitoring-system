@@ -77,7 +77,7 @@ public class OperatingSystemLogController {
 			String source = record.getSource();
 			int eventId = record.getStatusCode();
 
-			OperatingSystemLog log = new OperatingSystemLog(id, level, date,
+			OperatingSystemLog log = new OperatingSystemLog(null, level, date,
 					source, eventId, new Agent());
 			logs.add(log);
 		}

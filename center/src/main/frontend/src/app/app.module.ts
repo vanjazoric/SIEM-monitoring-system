@@ -6,6 +6,10 @@ import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { HomePageComponent } from './components/home-page/home-page.component';
+import { AppLogsComponent } from './components/app-logs/app-logs.component';
+import { OSLogsComponent } from './components/os-logs/os-logs.component';
+import { ServerLogsComponent } from './components/server-logs/server-logs.component';
+import { FirewallLogsComponent } from './components/firewall-logs/firewall-logs.component';
 
 const appRoutes: Routes = [
     { path: '', component: AppComponent},
@@ -15,12 +19,17 @@ const appRoutes: Routes = [
 @NgModule({
     declarations: [
         AppComponent,
-       HomePageComponent
+       HomePageComponent,
+       AppLogsComponent,
+       OSLogsComponent,
+       ServerLogsComponent,
+       FirewallLogsComponent
     ],
     imports: [
         BrowserModule,
         HttpModule,
         HttpClientModule,
+        FormsModule,
         RouterModule.forRoot(
             appRoutes,
             { enableTracing: true })
