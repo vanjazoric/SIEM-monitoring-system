@@ -9,7 +9,7 @@ import { HomePageComponent } from './components/home-page/home-page.component';
 
 const appRoutes: Routes = [
     { path: '', component: AppComponent},
-    { path: 'mrs', component: HomePageComponent }
+    { path: 'center', component: HomePageComponent }
 ];
 
 @NgModule({
