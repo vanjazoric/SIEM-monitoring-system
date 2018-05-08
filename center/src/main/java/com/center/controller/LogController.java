@@ -14,14 +14,30 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.center.domain.Log;
+import com.center.repository.ApplicationLogRepository;
+import com.center.repository.LogFirewallRepository;
 import com.center.repository.LogRepository;
+import com.center.repository.LogServerRepository;
+import com.center.repository.OperatingSystemLogRepository;
 
 @RestController
-@RequestMapping(value = "/log")
+@RequestMapping(value = "/logs")
 public class LogController {
 
 	@Autowired
 	LogRepository logRepository;
+	
+	@Autowired
+	OperatingSystemLogRepository osLogRep;
+	
+	@Autowired
+	ApplicationLogRepository appLogRep;
+	
+	@Autowired
+	LogServerRepository serverLogRep;
+	
+	@Autowired
+	LogFirewallRepository firewallLogRep;
 
 	@CrossOrigin
 	@RequestMapping(value = "/create", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -72,8 +88,9 @@ public class LogController {
 	}
 
 	@CrossOrigin
-	@RequestMapping(value = "/getAll", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ArrayList<Log>> getLogs() {
+		System.out.println("STIGAO U CENTAR");
 		ArrayList<Log> logs = (ArrayList<Log>) logRepository.findAll();
 		return new ResponseEntity<ArrayList<Log>>(logs, HttpStatus.OK);
 	}

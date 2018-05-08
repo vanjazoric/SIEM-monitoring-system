@@ -11,6 +11,7 @@ public class Agent {
 	
 	@Id
 	private String id;
+	private String name;
 	
 	//@DBRef
 	private Set<Log> logs;
@@ -18,10 +19,11 @@ public class Agent {
 	public Agent() {
 		super();
 	}
-
-	public Agent(String id, Set<Log> logs) {
+	
+	public Agent(String id, String name, Set<Log> logs) {
 		super();
 		this.id = id;
+		this.name = name;
 		this.logs = logs;
 	}
 
@@ -31,6 +33,14 @@ public class Agent {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public Set<Log> getLogs() {
