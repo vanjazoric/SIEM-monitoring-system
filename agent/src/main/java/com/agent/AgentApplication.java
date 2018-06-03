@@ -26,7 +26,7 @@ public class AgentApplication {
 //		LogFirewallController lfc = new LogFirewallController();
 //		lfc.parse();
 		AgentController ac = new AgentController();
-		ac.run("conf.txt");
+		ac.run("conf.json");
 
 	}
 }
