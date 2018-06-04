@@ -2,38 +2,35 @@ package com.agent.controller;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.agent.domain.Agent;
 import com.agent.domain.LogFirewall;
-import com.agent.domain.LogServer;
-import com.agent.service.LogFirewallService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 @RestController
 @RequestMapping(value = "/firewallLog")
 public class LogFirewallController {
+	public int sleepTime = 30000;
 
-	public ArrayList<LogFirewall> parse(String listenFrom) {
-
-		ArrayList<LogFirewall> logs = new ArrayList<LogFirewall>();
-
+	public void parse(String listenFrom, String confFile, String sendTo) {
 		File relativeFile = new File(".." + File.separator + "scripts"
 				+ File.separator + listenFrom);
 		try {
@@ -41,10 +38,12 @@ public class LogFirewallController {
 					relativeFile.getCanonicalPath()));
 			String line;
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			int counter = 0;
 			while ((line = in.readLine()) != null) {
-				if (counter >= 15) {
-					break;
+				try {
+					Thread.sleep(sleepTime);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 				String tokens[] = line.trim().split(" ");
 				Long id = null;
@@ -62,9 +61,11 @@ public class LogFirewallController {
 				LogFirewall lf = new LogFirewall(id, timeStamp, agent, action,
 						protocol, srcIp, dstIp, srcPort, dstPort, size,
 						tcpflags, tcpsync);
-				logs.add(lf);
-				counter++;
+				if(filterLog(lf, confFile)){
+					sendToCenter(lf, sendTo);
+				}
 			}
+			in.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -72,27 +73,73 @@ public class LogFirewallController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return logs;
-
 	}
 	
-	public void sendToCenter(ArrayList<LogFirewall> logs, String sendTo)
+	public void sendToCenter(LogFirewall log, String sendTo)
 			throws IOException {
 		HttpClient httpClient = HttpClientBuilder.create().build();
 		CloseableHttpResponse response = null;
 		try {
-			HttpPost request = new HttpPost(sendTo + "/createall");
+			HttpPost request = new HttpPost(sendTo + "/create");
 			Gson gson = new GsonBuilder().setDateFormat(
 					"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create();
-			StringEntity postingString = new StringEntity(gson.toJson(logs));
+			StringEntity postingString = new StringEntity(gson.toJson(log));
 			request.setEntity(postingString);
 			request.setHeader("Content-type", "application/json");
 			response = (CloseableHttpResponse) httpClient.execute(request);
-		//	String json = EntityUtils.toString(response.getEntity());
-		//	System.out.println(json);
 		} catch (Exception ex) {
+			
 		} finally {
 			response.close();
 		}
+	}
+	
+	public boolean filterLog(LogFirewall fw_log, String confFile){
+		JSONParser parser = new JSONParser();
+		String path = ".." + File.separator + "scripts" + File.separator + confFile;
+		try {
+			JSONObject jsonObject = (JSONObject) parser.parse(new FileReader(path));
+			JSONObject fwObject = (JSONObject) jsonObject.get("fw");
+			JSONObject fwFilterObject = (JSONObject) fwObject.get("fw_filter");
+			Set<String> fwFilterParams = fwFilterObject.keySet();
+			int numOfKey = 0;
+			for (String param : fwFilterParams) {
+				if(param.equals("timeStamp")){
+					SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					try {
+						Date date = simpleDateFormat.parse((String)fwFilterObject.get(param));
+						Date currentDate = new Date();
+						if(fw_log.getTimeStamp().after(date) && fw_log.getTimeStamp().before(currentDate)){
+							numOfKey++;
+						}
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}else if(param.equals("priority")){
+					String[] priorityValues = fwFilterObject.get(param).toString().toLowerCase().split("\\|");
+					for (String pv : priorityValues) {
+						if(fw_log.toString().toLowerCase().contains(pv)){
+							numOfKey++;
+						}
+					}
+				}else if(fw_log.toString().toLowerCase().contains(fwFilterObject.get(param).toString().toLowerCase())){
+					numOfKey++;
+				}
+			}
+			if(numOfKey == fwFilterParams.size()){
+				return true;
+			}
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (org.json.simple.parser.ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
 	}
 }

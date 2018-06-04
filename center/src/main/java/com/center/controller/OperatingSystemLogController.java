@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.center.domain.LogServer;
 import com.center.domain.OperatingSystemLog;
 import com.center.repository.OperatingSystemLogRepository;
 
@@ -37,6 +38,25 @@ public class OperatingSystemLogController {
 		}
 		return new ResponseEntity<ArrayList<OperatingSystemLog>>(HttpStatus.OK);
 	}
+	@CrossOrigin
+	@RequestMapping(
+		value = "/create", 
+		method = RequestMethod.POST,
+		consumes = MediaType.APPLICATION_JSON_VALUE,
+		produces = MediaType.APPLICATION_JSON_VALUE
+	)
+    public ResponseEntity<OperatingSystemLog> createOperatingSystemLog(@RequestBody OperatingSystemLog operatingSystemLog)
+    {
+		OperatingSystemLog saved = new OperatingSystemLog();
+		saved.setTimeStamp(operatingSystemLog.getTimeStamp());
+		saved.setAgent(operatingSystemLog.getAgent());
+		saved.setLevel(operatingSystemLog.getLevel());
+		saved.setEventId(operatingSystemLog.getEventId());
+		saved.setTaskCategory(operatingSystemLog.getTaskCategory());
+		saved.setSource(operatingSystemLog.getSource());
+		saved = OSlogRepository.insert(saved);
+        return new ResponseEntity<OperatingSystemLog>(saved, HttpStatus.CREATED);
+    }
 
 	@CrossOrigin
 	@RequestMapping(value = "/update", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

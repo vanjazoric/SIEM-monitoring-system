@@ -15,18 +15,8 @@ import com.agent.controller.OperatingSystemLogController;
 @SpringBootApplication
 public class AgentApplication {
 
-	public static void main(String[] args) throws ParseException, IOException {
-//		SpringApplication.run(AgentApplication.class, args);
-//		LogServerController c = new LogServerController();
-//		c.readLogs();
-//		OperatingSystemLogController osc = new OperatingSystemLogController();
-//		osc.getOSlogs();
-//		ApplicationLogController alc = new ApplicationLogController();
-//		alc.loadApplicationLogs("logs.txt");
-//		LogFirewallController lfc = new LogFirewallController();
-//		lfc.parse();
+	public static void main(String[] args) throws ParseException, IOException, NumberFormatException, InterruptedException{
 		AgentController ac = new AgentController();
 		ac.run("conf.json");
-
 	}
 }

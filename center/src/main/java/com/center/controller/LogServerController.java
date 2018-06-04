@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.center.domain.LogFirewall;
 import com.center.domain.LogServer;
 import com.center.repository.LogServerRepository;
 
@@ -27,6 +28,28 @@ public class LogServerController {
 	@Autowired
 	LogServerRepository logserverRepository;
 	
+	@CrossOrigin
+	@RequestMapping(
+		value = "/create", 
+		method = RequestMethod.POST,
+		consumes = MediaType.APPLICATION_JSON_VALUE,
+		produces = MediaType.APPLICATION_JSON_VALUE
+	)
+    public ResponseEntity<LogServer> createLogServer(@RequestBody LogServer logserver)
+    {
+		LogServer saved = new LogServer();
+		saved.setTimeStamp(logserver.getTimeStamp());
+		saved.setAgent(logserver.getAgent());
+		saved.setClientIp(logserver.getClientIp());
+		saved.setLogHost(logserver.getLogHost());
+		saved.setMessageId(logserver.getMessageId());
+		saved.setMethod(logserver.getMethod());
+		saved.setResourceRequest(logserver.getResourceRequest());
+		saved.setHttpStatus(logserver.getHttpStatus());
+		saved.setSizeOfReturnedObj(logserver.getSizeOfReturnedObj());
+		saved = logserverRepository.insert(saved);
+        return new ResponseEntity<LogServer>(saved, HttpStatus.CREATED);
+    }
 	
 	@CrossOrigin
 	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

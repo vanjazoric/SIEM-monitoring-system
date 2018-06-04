@@ -38,25 +38,29 @@ public class LogFirewallController {
 	}
 	
 	@CrossOrigin
-	@RequestMapping(value = "/create", 
-	method = RequestMethod.POST,
-	consumes = MediaType.APPLICATION_JSON_VALUE,
-	produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(
+		value = "/create", 
+		method = RequestMethod.POST,
+		consumes = MediaType.APPLICATION_JSON_VALUE,
+		produces = MediaType.APPLICATION_JSON_VALUE
+	)
     public ResponseEntity<LogFirewall> createLogFirewall(@RequestBody LogFirewall logfirewall)
     {
-		LogFirewall exists = logFirewallRepository.findOne(logfirewall.getId());
+		LogFirewall saved = new LogFirewall();
+		saved.setTimeStamp(logfirewall.getTimeStamp());
+		saved.setAgent(logfirewall.getAgent());
+		saved.setAction(logfirewall.getAction());
+		saved.setProtocol(logfirewall.getProtocol());
+		saved.setSrcIp(logfirewall.getSrcIp());
+		saved.setDstIp(logfirewall.getDstIp());
+		saved.setSrcPort(logfirewall.getSrcPort());
+		saved.setDstPort(logfirewall.getDstPort());
+		saved.setSize(logfirewall.getSize());
+		saved.setTcpflags(logfirewall.getTcpflags());
+		saved.setTcpsync(logfirewall.getTcpsync());
+		saved = logFirewallRepository.insert(saved);
+		return new ResponseEntity<LogFirewall>(saved, HttpStatus.CREATED);
 		
-		if(exists != null){
-			return new ResponseEntity<LogFirewall>(HttpStatus.CONFLICT);
-		}
-        
-		LogFirewall saved = null;
-		try {
-			saved = logFirewallRepository.insert(logfirewall);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-        return new ResponseEntity<LogFirewall>(saved, HttpStatus.CREATED);
     }
 	
 	@CrossOrigin
