@@ -19,7 +19,7 @@ def generate():
     eventId_3_Warn = 512
     eventId_4_Warn = 513
     eventId_5_Warn = 514
-    priorityList = ["Informational", "Error", "Warning"]
+    priorityList = ["Information", "Error", "Warning"]
     application = "Image processing application"
     message_id = {1 : "The image is saved", 2 : "The picture is loaded",
                   3 : "The picture is enlarged", 4 : "The image is rotated",
@@ -30,15 +30,15 @@ def generate():
         messageId = randint(1, 5)
         message = message_id[messageId]
         priority = priorityList[randint(0, 2)]
-        if(messageId == 1 and priority == "Informational"):
+        if(messageId == 1 and priority == "Information"):
             line = str(logId) + ";" + timeStamp + ";" + str(eventId_1_Info) + ";" + priority + ";" + application + ";" + str(messageId) + ";" + message
-        elif(messageId == 2 and priority == "Informational"):
+        elif(messageId == 2 and priority == "Information"):
             line = str(logId) + ";" + timeStamp + ";" + str(eventId_2_Info) + ";" + priority + ";" + application + ";" + str(messageId) + ";" + message
-        elif(messageId == 3 and priority == "Informational"):
+        elif(messageId == 3 and priority == "Information"):
             line = str(logId) + ";" + timeStamp + ";" + str(eventId_3_Info) + ";" + priority + ";" + application + ";" + str(messageId) + ";" + message
-        elif (messageId == 4 and priority == "Informational"):
+        elif (messageId == 4 and priority == "Information"):
             line = str(logId) + ";" + timeStamp + ";" + str(eventId_4_Info) + ";" + priority + ";" + application + ";" + str(messageId) + ";" + message
-        elif (messageId == 5 and priority == "Informational"):
+        elif (messageId == 5 and priority == "Information"):
             line = str(logId) + ";" + timeStamp + ";" + str(eventId_5_Info) + ";" + priority + ";" + application + ";" + str(messageId) + ";" + message
         elif(messageId == 1 and priority == "Error"):
             line = str(logId) + ";" + timeStamp + ";" + str(eventId_1_Err) + ";" + priority + ";" + application + ";" + str(messageId) + ";" + message
