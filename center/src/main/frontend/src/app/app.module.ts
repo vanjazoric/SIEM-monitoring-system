@@ -13,9 +13,13 @@ import { FirewallLogsComponent } from './components/firewall-logs/firewall-logs.
 import { AlarmsComponent } from './components/alarms/alarms.component';
 
 const appRoutes: Routes = [
-    { path: '', component: AppComponent},
+    { path: 'alarms', component: AlarmsComponent},
+    { path: '', component: HomePageComponent },
     { path: 'center', component: HomePageComponent },
-    { path: 'alarms', component: AlarmsComponent}
+    { path: 'app-logs', component: AppLogsComponent },
+    { path: 'server-logs', component: ServerLogsComponent },
+    { path: 'OS-logs', component: OSLogsComponent },
+    { path: 'firewall-logs', component: FirewallLogsComponent }
 ];
 
 @NgModule({

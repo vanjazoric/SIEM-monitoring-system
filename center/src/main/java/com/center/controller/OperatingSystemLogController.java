@@ -62,8 +62,8 @@ public class OperatingSystemLogController {
 	@RequestMapping(value = "/update", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<OperatingSystemLog> updateOperatingSystemLog(
 			@RequestBody OperatingSystemLog operatingsystemlog) {
-		OperatingSystemLog exists = OSlogRepository
-				.findOne(operatingsystemlog.getId());
+		OperatingSystemLog exists = OSlogRepository.findOne(operatingsystemlog
+				.getId());
 
 		if (exists == null) {
 			return new ResponseEntity<OperatingSystemLog>(HttpStatus.NOT_FOUND);
@@ -79,11 +79,10 @@ public class OperatingSystemLogController {
 	}
 
 	@CrossOrigin
-	@RequestMapping(value = "/{id}/get", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<OperatingSystemLog> getOperatingSystemLog(
 			@PathVariable String id) {
-		OperatingSystemLog operatingsystemlog = OSlogRepository
-				.findOne(id);
+		OperatingSystemLog operatingsystemlog = OSlogRepository.findOne(id);
 
 		if (operatingsystemlog == null) {
 			return new ResponseEntity<OperatingSystemLog>(
@@ -95,10 +94,10 @@ public class OperatingSystemLogController {
 	}
 
 	@CrossOrigin
-	@RequestMapping(value = "/getAll", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ArrayList<OperatingSystemLog>> getOperatingSystemLogs() {
 		ArrayList<OperatingSystemLog> operatingsystemlogs = (ArrayList<OperatingSystemLog>) OSlogRepository
-				.findAll();
+				.findAllByClass("log_OS");
 		return new ResponseEntity<ArrayList<OperatingSystemLog>>(
 				operatingsystemlogs, HttpStatus.OK);
 	}
@@ -107,8 +106,7 @@ public class OperatingSystemLogController {
 	@RequestMapping(value = "/{id}/delete", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<OperatingSystemLog> deleteOperatingSystemLogById(
 			@PathVariable String id) {
-		OperatingSystemLog operatingsystemlog = OSlogRepository
-				.findOne(id);
+		OperatingSystemLog operatingsystemlog = OSlogRepository.findOne(id);
 
 		if (operatingsystemlog == null) {
 			return new ResponseEntity<OperatingSystemLog>(HttpStatus.NOT_FOUND);
@@ -126,8 +124,8 @@ public class OperatingSystemLogController {
 	@RequestMapping(value = "/delete", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<OperatingSystemLog> deleteOperatingSystemLog(
 			@RequestBody OperatingSystemLog operatingsystemlog) {
-		OperatingSystemLog exists = OSlogRepository
-				.findOne(operatingsystemlog.getId());
+		OperatingSystemLog exists = OSlogRepository.findOne(operatingsystemlog
+				.getId());
 
 		if (exists == null) {
 			return new ResponseEntity<OperatingSystemLog>(HttpStatus.NOT_FOUND);
@@ -140,20 +138,88 @@ public class OperatingSystemLogController {
 		}
 		return new ResponseEntity<OperatingSystemLog>(HttpStatus.OK);
 	}
-	
-	@RequestMapping(
-			params = "timeStamp",
-			method = RequestMethod.GET,
-			produces = MediaType.APPLICATION_JSON_VALUE
-	)
-	public ResponseEntity<ArrayList<OperatingSystemLog>> getOperatingSystemLogsByTimeStamp(@RequestParam String timeStamp) throws ParseException{
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Date date = (Date) simpleDateFormat.parse(timeStamp);
-		ArrayList<OperatingSystemLog> logs = OSlogRepository.findOperatingSystemByTimeStamp(date);
-		if(logs.isEmpty()){
-			return new ResponseEntity<ArrayList<OperatingSystemLog>>(HttpStatus.NOT_FOUND);
+
+	@CrossOrigin
+	@RequestMapping(params = "level", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ArrayList<OperatingSystemLog>> getOperatingSystemLogByLevel(
+			@RequestParam(value = "level") String level) {
+		ArrayList<OperatingSystemLog> logs = new ArrayList<OperatingSystemLog>();
+		String p1 = level.toUpperCase();
+		String p2 = "";
+		String p3 = "";
+		if (level.contains("|")) {
+			String[] levels = level.replaceAll("\\s", "").split("\\|");
+			p1 = levels[0];
+			if (!levels[1].equals("")) {
+				p2 = levels[1];
+			}
+			if (levels.length > 2) {
+				if (!levels[2].equals("")) {
+					p3 = levels[2];
+				}
+			}
 		}
-		return new ResponseEntity<ArrayList<OperatingSystemLog>>(logs, HttpStatus.OK);
+			logs = OSlogRepository.findOperatingSystemLogByLevel(p1, p2, p3);
+			if (logs.isEmpty()) {
+				return new ResponseEntity<ArrayList<OperatingSystemLog>>(
+						HttpStatus.NOT_FOUND);
+			}
+		return new ResponseEntity<ArrayList<OperatingSystemLog>>(logs,
+				HttpStatus.OK);
+	}
+
+	@CrossOrigin
+	@RequestMapping(params = "source", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ArrayList<OperatingSystemLog>> getOperatingSystemLogBySource(
+			@RequestParam(value = "source") String method) {
+		System.out.println(method);
+		ArrayList<OperatingSystemLog> logs = OSlogRepository
+				.findOperatingSystemLogBySource(method.toUpperCase());
+		if (logs.isEmpty()) {
+			return new ResponseEntity<ArrayList<OperatingSystemLog>>(
+					HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<ArrayList<OperatingSystemLog>>(logs,
+				HttpStatus.OK);
+	}
+
+	@CrossOrigin
+	@RequestMapping(params = "eventId", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ArrayList<OperatingSystemLog>> getOperatingSystemLogByEventId(
+			@RequestParam(value = "eventId") int eventId) {
+		ArrayList<OperatingSystemLog> logs = OSlogRepository
+				.findOperatingSystemLogByEventId(eventId);
+		if (logs.isEmpty()) {
+			return new ResponseEntity<ArrayList<OperatingSystemLog>>(
+					HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<ArrayList<OperatingSystemLog>>(logs,
+				HttpStatus.OK);
+	}
+
+	@CrossOrigin
+	@RequestMapping(value = "/{startDate}/{endDate}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ArrayList<OperatingSystemLog>> searchlogs(
+			@PathVariable String startDate, @PathVariable String endDate)
+			throws ParseException {
+		System.out.println(startDate);
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
+				"yyyy-MM-dd'T'HH:mm");
+		Date start = (Date) simpleDateFormat.parse(startDate);
+		Date end = (Date) simpleDateFormat.parse(endDate);
+		ArrayList<OperatingSystemLog> logs = OSlogRepository
+				.findAllByClass("OS_logs");
+		System.out.println(start);
+		ArrayList<OperatingSystemLog> finded = new ArrayList<OperatingSystemLog>();
+		for (OperatingSystemLog log : logs) {
+			if (log.getTimeStamp().after(start)
+					&& log.getTimeStamp().before(end)) {
+				finded.add(log);
+			}
+		}
+		System.out.println(finded.size());
+		return new ResponseEntity<ArrayList<OperatingSystemLog>>(finded,
+				HttpStatus.OK);
 	}
 
 }

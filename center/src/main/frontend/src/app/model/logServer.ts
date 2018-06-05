@@ -1,7 +1,7 @@
 import { Agent } from './agent';
 import {Log} from './log';
 
-class LogServer extends Log {
+export class LogServer extends Log {
     public id: number;
     public timeStamp: Date;
     public clientIp: string;

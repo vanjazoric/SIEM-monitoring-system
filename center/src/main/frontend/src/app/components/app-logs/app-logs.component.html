@@ -1,3 +1,132 @@
-<p>
-  app-logs works!
-</p>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+	<a class="navbar-brand" href="#">SIEM centar</a>
+	<button class="navbar-toggler" type="button" data-toggle="collapse"
+		data-target="#navbarColor01" aria-controls="navbarColor01"
+		aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+	</button>
+
+	<div class="collapse navbar-collapse" id="navbarColor01">
+		<ul class="navbar-nav mr-auto">
+			<li class="nav-item"><a class="nav-link" href="center">Svi
+					logovi&emsp;<span class="sr-only">(current)</span>
+			</a></li>
+			<li class="nav-item active"><a class="nav-link" href="app-logs">Logovi
+					aplikacija&emsp;<span class="sr-only">(current)</span>
+			</a></li>
+			<li class="nav-item"><a class="nav-link" href="server-logs">Logovi
+					servera&emsp;<span class="sr-only">(current)</span>
+			</a></li>
+			<li class="nav-item"><a class="nav-link" href="OS-logs">Logovi
+					operativnog sistema&emsp;<span class="sr-only">(current)</span>
+			</a></li>
+			<li class="nav-item"><a class="nav-link" href="firewall-logs">Logovi
+					firewall-a <span class="sr-only">(current)</span>
+			</a></li>
+		</ul>
+	</div>
+</nav>
+
+<div class="jumbotron">
+	<p class="display-5">
+		Broj aplikativnih logova:&nbsp; <b>{{numOfLogs}}</b>.
+	</p>
+	<div class="jumbotron" id="timeJum">
+		<form>
+			<legend style="font-size: 15px;">Prikaz logova u određenom
+				vremenskom periodu</legend>
+			<div class="form-group">
+				<label for="startTime">Od:</label> <input type="datetime-local"
+					class="form-control" id="startTime" [(ngModel)]="startDate"
+					name="startTime">
+			</div>
+			<div class="form-group">
+				<label for="endTime">Do:</label> <input type="datetime-local"
+					class="form-control" id="endTime" [(ngModel)]="endDate"
+					name="endTime">
+			</div>
+			<button type="submit" (click)="searchLogs()" class="btn btn-primary">Filtriraj</button>
+		</form>
+	</div>
+	<div class="jumbotron" id="searchJum">
+		<table>
+			<tr>
+				<td><label for="idSearch">Pretraga po ID-u:&emsp;</label></td>
+				<td><input class="searchInput" id="idSearch" type="text"
+					[(ngModel)]="id"></td>
+				<td>&emsp;
+					<button type="button" class="btn btn-primary btn-xs"
+						(click)="searchById()">Traži</button>
+				</td>
+			</tr>
+			<tr height=10px></tr>
+			<tr>
+				<td><label for="appSearch">Pretraga po nazivu
+						aplikacije:&emsp;</label></td>
+				<td><input class="searchInput" id="appSearch" type="text"
+					[(ngModel)]="app"></td>
+				<td>&emsp;
+					<button (click)="searchByApp()" type="button"
+						class="btn btn-primary btn-xs">Traži</button>
+				</td>
+			</tr>
+			<tr height=10px></tr>
+			<tr>
+				<td><label for="messageSearch">Pretraga po sadržaju
+						poruke:&emsp;</label></td>
+				<td><input class="searchInput" id="messageSearch" type="text"
+					[(ngModel)]="message"></td>
+				<td>&emsp;
+					<button (click)="searchByMessage()" type="button"
+						class="btn btn-primary btn-xs">Traži</button>
+				</td>
+			</tr>
+			<tr height=10px></tr>
+			<tr>
+				<td><label for="messageSearch">Pretraga po
+						prioritetu:&emsp;</label></td>
+				<td><input class="searchInput"
+					placeholder="Ukucaj jedan kriterijum ili više razdvojenih kosom crtom"
+					id="messageSearch" type="text" [(ngModel)]="priority"></td>
+				<td>&emsp;
+					<button (click)="searchByPriority()" type="button"
+						class="btn btn-primary btn-xs">Traži</button>
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td><p id="note">*Moguće vrednosti su Informational,
+						Warning i Error.</p></td>
+			</tr>
+			<tr>
+				<td><a href="app-logs">Poništi sve filtere</a></td>
+				<td></td>
+			</tr>
+		</table>
+	</div>
+</div>
+<div>
+	<table class="table">
+		<thead>
+			<tr>
+				<th></th>
+				<th>Vreme</th>
+				<th>ID</th>
+				<th>Naziv aplikacije</th>
+				<th>Prioritet</th>
+				<th>(ID poruke) poruka</th>
+
+			</tr>
+		</thead>
+		<tbody>
+			<tr *ngFor="let log of logs">
+				<td>&#8227;</td>
+				<td>{{log.timeStamp | date :'dd.MM.yyyy. HH:mm'}} h</td>
+				<td>{{log.id}}</td>
+				<th>{{log.application}}</th>
+				<th>{{log.priority}}</th>
+				<th>({{log.messageId}}) {{log.message}}</th>
+			</tr>
+		</tbody>
+	</table>
+</div>

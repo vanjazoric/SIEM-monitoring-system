@@ -1,7 +1,7 @@
 import { Agent } from './agent';
 import { Log } from './log';
 
-class OperatingSystemLog extends Log {
+export class OperatingSystemLog extends Log {
     public id: number;
     public timeStamp: Date;
     public agent: Agent;
