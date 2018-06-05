@@ -1,7 +1,7 @@
 import { Agent } from './agent';
 import {Log} from './log';
 
-class LogFirewall extends Log {
+export class LogFirewall extends Log {
     public id: number;
     public timeStamp: Date;
     public agent: Agent;

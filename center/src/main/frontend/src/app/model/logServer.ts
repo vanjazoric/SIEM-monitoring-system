@@ -1,7 +1,7 @@
 import { Agent } from './agent';
 import {Log} from './log';
 
-class LogServer extends Log {
+export class LogServer extends Log {
     public id: number;
     public timeStamp: Date;
     public clientIp: string;
@@ -24,12 +24,13 @@ class LogServer extends Log {
         httpStatus: number,
         sizeOfReturnedObj: number,
         messageId: number) {
-        super(id, timeStamp, messageId, agent);
+        super(id, timeStamp, agent);
         this.clientIp = clientiIp;
         this.logHost = logHostL
         this.method = method;
         this.resourceRequest = resourceRequest;
         this.httpStatus = httpStatus;
         this.sizeOfReturnedObj = sizeOfReturnedObj;
+        this.messageId = messageId;
     }
 }

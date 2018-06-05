@@ -12,18 +12,22 @@ import { ServerLogsComponent } from './components/server-logs/server-logs.compon
 import { FirewallLogsComponent } from './components/firewall-logs/firewall-logs.component';
 
 const appRoutes: Routes = [
-    { path: '', component: AppComponent},
-    { path: 'center', component: HomePageComponent }
+    { path: '', component: HomePageComponent },
+    { path: 'center', component: HomePageComponent },
+    { path: 'app-logs', component: AppLogsComponent },
+    { path: 'server-logs', component: ServerLogsComponent },
+    { path: 'OS-logs', component: OSLogsComponent },
+    { path: 'firewall-logs', component: FirewallLogsComponent }
 ];
 
 @NgModule({
     declarations: [
         AppComponent,
-       HomePageComponent,
-       AppLogsComponent,
-       OSLogsComponent,
-       ServerLogsComponent,
-       FirewallLogsComponent
+        HomePageComponent,
+        AppLogsComponent,
+        OSLogsComponent,
+        ServerLogsComponent,
+        FirewallLogsComponent
     ],
     imports: [
         BrowserModule,

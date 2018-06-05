@@ -1,7 +1,7 @@
 import {Log} from './log';
 import {Agent} from './agent'
 
-class ApplicationLog extends Log {
+export class ApplicationLog extends Log {
     public id: number;
     public timeStamp: Date;
     public agent: Agent;
@@ -20,9 +20,10 @@ class ApplicationLog extends Log {
         application: string,
         messageId: number,
         message: string) {
-        super(id, timeStamp, messageId, agent);
+        super(id, timeStamp, agent);
         this.eventId = eventId;
         this.application = application;
         this.message = message;
+        this.messageId = messageId;
     }
 }

@@ -16,7 +16,11 @@ export class HomePageComponent implements OnInit {
     endDate: string;
 
     constructor(private router: Router,
-        private centerService: CenterService) { }
+        private centerService: CenterService) {
+        setTimeout(function() {
+            location.reload();
+        }, 50000); //svakih 30 sekundi se dobavljaju novi logovi    
+    }
 
 
     searchLogs() {

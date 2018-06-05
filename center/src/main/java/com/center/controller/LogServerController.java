@@ -26,76 +26,64 @@ public class LogServerController {
 
 	@Autowired
 	LogServerRepository logserverRepository;
-	
-	
+
 	@CrossOrigin
 	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ArrayList<LogServer>> createOperatingSystemLog(
+	public ResponseEntity<ArrayList<LogServer>> createLogServer(
 			@RequestBody ArrayList<LogServer> logs) throws Exception {
 		for (LogServer log : logs) {
 			logserverRepository.insert(log);
 		}
 		return new ResponseEntity<ArrayList<LogServer>>(HttpStatus.OK);
 	}
-	
+
 	@CrossOrigin
-	@RequestMapping(value = "/update", 
-	method = RequestMethod.PUT,
-	consumes = MediaType.APPLICATION_JSON_VALUE,
-	produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<LogServer> updateLogServer(@RequestBody LogServer logserver)
-    {
+	@RequestMapping(value = "/update", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<LogServer> updateLogServer(
+			@RequestBody LogServer logserver) {
 		LogServer exists = logserverRepository.findOne(logserver.getId());
-		
-		if(exists == null){
+
+		if (exists == null) {
 			return new ResponseEntity<LogServer>(HttpStatus.NOT_FOUND);
 		}
-        
+
 		LogServer saved = null;
 		try {
 			saved = logserverRepository.save(logserver);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-        return new ResponseEntity<LogServer>(saved, HttpStatus.OK);
-    }
-	
+		return new ResponseEntity<LogServer>(saved, HttpStatus.OK);
+	}
+
 	@CrossOrigin
-	@RequestMapping(
-			value = "/{id}/get",
-			method = RequestMethod.GET,
-			produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/{id}/get", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<LogServer> getLogServer(@PathVariable String id) {
 		LogServer logserver = logserverRepository.findOne(id);
-		
-		if(logserver == null){
+
+		if (logserver == null) {
 			return new ResponseEntity<LogServer>(HttpStatus.NOT_FOUND);
 		}
 
-		return new ResponseEntity<LogServer>(logserver,
+		return new ResponseEntity<LogServer>(logserver, HttpStatus.OK);
+	}
+
+	@CrossOrigin
+	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ArrayList<LogServer>> getLogServers() {
+		ArrayList<LogServer> logservers = (ArrayList<LogServer>) logserverRepository
+				.findAllByClass("log_server");
+		System.out.println(logservers.size());
+		return new ResponseEntity<ArrayList<LogServer>>(logservers,
 				HttpStatus.OK);
 	}
-	
+
 	@CrossOrigin
-	@RequestMapping(
-			value = "/getAll",
-			method = RequestMethod.GET,
-			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity< ArrayList<LogServer> > getLogServers() {
-		ArrayList<LogServer> logservers = (ArrayList<LogServer>) logserverRepository.findAll();
-		return new ResponseEntity< ArrayList<LogServer> >(logservers,
-				HttpStatus.OK);
-	}
-	
-	@CrossOrigin
-	@RequestMapping(
-			value = "/{id}/delete",
-			method = RequestMethod.DELETE,
-			produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/{id}/delete", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<LogServer> deleteLogServerById(@PathVariable String id) {
 		LogServer logserver = logserverRepository.findOne(id);
-		
-		if(logserver == null){
+
+		if (logserver == null) {
 			return new ResponseEntity<LogServer>(HttpStatus.NOT_FOUND);
 		}
 
@@ -106,55 +94,121 @@ public class LogServerController {
 		}
 		return new ResponseEntity<LogServer>(HttpStatus.OK);
 	}
-	
+
 	@CrossOrigin
-	@RequestMapping(value = "/delete", 
-	method = RequestMethod.DELETE,
-	consumes = MediaType.APPLICATION_JSON_VALUE,
-	produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<LogServer> deleteLogServer(@RequestBody LogServer logserver)
-    {
+	@RequestMapping(value = "/delete", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<LogServer> deleteLogServer(
+			@RequestBody LogServer logserver) {
 		LogServer exists = logserverRepository.findOne(logserver.getId());
-		
-		if(exists == null){
+
+		if (exists == null) {
 			return new ResponseEntity<LogServer>(HttpStatus.NOT_FOUND);
 		}
-        
+
 		try {
 			logserverRepository.delete(logserver);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        return new ResponseEntity<LogServer>(HttpStatus.OK);
-    }
-	
-	@RequestMapping(
-			params = "timeStamp",
-			method = RequestMethod.GET,
-			produces = MediaType.APPLICATION_JSON_VALUE
-	)
-	public ResponseEntity<ArrayList<LogServer>> getLogServerByTimeStamp(@RequestParam String timeStamp) throws ParseException{
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Date date = (Date) simpleDateFormat.parse(timeStamp);
-		ArrayList<LogServer> logs = logserverRepository.findLogServerByTimeStamp(date);
-		if(logs.isEmpty()){
-			return new ResponseEntity<ArrayList<LogServer>>(HttpStatus.NOT_FOUND);
+		return new ResponseEntity<LogServer>(HttpStatus.OK);
+	}
+
+	@CrossOrigin
+	@RequestMapping(value = "/{startDate}/{endDate}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ArrayList<LogServer>> searchlogs(
+			@PathVariable String startDate, @PathVariable String endDate)
+			throws ParseException {
+		System.out.println(startDate);
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
+				"yyyy-MM-dd'T'HH:mm");
+		Date start = (Date) simpleDateFormat.parse(startDate);
+		Date end = (Date) simpleDateFormat.parse(endDate);
+		ArrayList<LogServer> logs = logserverRepository
+				.findAllByClass("log_server");
+		System.out.println(start);
+		ArrayList<LogServer> finded = new ArrayList<LogServer>();
+		for (LogServer log : logs) {
+			if (log.getTimeStamp().after(start)
+					&& log.getTimeStamp().before(end)) {
+				finded.add(log);
+			}
+		}
+		System.out.println(finded.size());
+		return new ResponseEntity<ArrayList<LogServer>>(finded, HttpStatus.OK);
+	}
+
+	@CrossOrigin
+	@RequestMapping(params = "ip", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ArrayList<LogServer>> getLogServerByIP(
+			@RequestParam(value = "ip") String ip) {
+		ArrayList<LogServer> logs = logserverRepository
+				.findLogServerByClientIp(ip);
+		if (logs.isEmpty()) {
+			return new ResponseEntity<ArrayList<LogServer>>(
+					HttpStatus.NOT_FOUND);
 		}
 		return new ResponseEntity<ArrayList<LogServer>>(logs, HttpStatus.OK);
 	}
-	
-	@RequestMapping(
-			params = "method",
-			method = RequestMethod.GET,
-			produces = MediaType.APPLICATION_JSON_VALUE
-	)
-	public ResponseEntity<ArrayList<LogServer>> getLogServerByMethod(@RequestParam String method){
-		ArrayList<LogServer> logs = logserverRepository.findLogServerByMethod(method);
-		if(logs.isEmpty()){
-			return new ResponseEntity<ArrayList<LogServer>>(HttpStatus.NOT_FOUND);
+
+	@CrossOrigin
+	@RequestMapping(params = "method", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ArrayList<LogServer>> getLogServerByMethod(
+			@RequestParam(value = "method") String method) {
+		ArrayList<LogServer> logs = new ArrayList<LogServer>();
+		System.out.println(method);
+		String p1 = method.toUpperCase();
+		String p2 = "";
+		String p3 = "";
+		if (method.contains("|")) {
+			String[] methods = method.replaceAll("\\s", "").split("\\|");
+			p1 = methods[0];
+			if (!methods[1].equals("")) {
+				p2 = methods[1];
+			}
+			if (methods.length > 2) {
+				if (!methods[2].equals("")) {
+					p3 = methods[2];
+				}
+			}
+		}
+		logs = logserverRepository.findLogServerByMethod(p1, p2, p3);
+		if (logs.isEmpty()) {
+			return new ResponseEntity<ArrayList<LogServer>>(
+					HttpStatus.NOT_FOUND);
 		}
 		return new ResponseEntity<ArrayList<LogServer>>(logs, HttpStatus.OK);
 	}
-	
+
+	@CrossOrigin
+	@RequestMapping(params = "http", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ArrayList<LogServer>> getLogServerByHTTP(
+			@RequestParam(value = "http") String http) {
+		ArrayList<LogServer> logs = new ArrayList<LogServer>();
+		String p1 = http;
+		int p2 = 0;
+		int p3 = 0;
+		if (http.contains("|")) {
+			String[] tokens = http.replaceAll("\\s", "").split("\\|");
+			p1 = tokens[0];
+			if (!tokens[1].equals("")) {
+				p2 = Integer.parseInt(tokens[1]);
+			}
+			if (tokens.length > 2) {
+				if (!tokens[2].equals("")) {
+					p3 = Integer.parseInt(tokens[2]);
+				}
+			}
+		}
+		System.out.println(logs);
+		logs = logserverRepository.findLogServerByHttpStatus(
+				Integer.parseInt(p1), p2, p3);
+		System.out.println(logs.size());
+		if (logs.isEmpty()) {
+			return new ResponseEntity<ArrayList<LogServer>>(
+					HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<ArrayList<LogServer>>(logs, HttpStatus.OK);
+	}
+
 }

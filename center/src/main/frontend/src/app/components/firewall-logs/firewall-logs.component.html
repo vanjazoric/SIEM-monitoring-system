@@ -1,3 +1,148 @@
-<p>
-  firewall-logs works!
-</p>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+	<a class="navbar-brand" href="#">SIEM centar</a>
+	<button class="navbar-toggler" type="button" data-toggle="collapse"
+		data-target="#navbarColor01" aria-controls="navbarColor01"
+		aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+	</button>
+
+	<div class="collapse navbar-collapse" id="navbarColor01">
+		<ul class="navbar-nav mr-auto">
+			<li class="nav-item"><a class="nav-link" href="center">Svi
+					logovi&emsp;<span class="sr-only">(current)</span>
+			</a></li>
+			<li class="nav-item"><a class="nav-link" href="app-logs">Logovi
+					aplikacija&emsp;<span class="sr-only">(current)</span>
+			</a></li>
+			<li class="nav-item"><a class="nav-link" href="server-logs">Logovi
+					servera&emsp;<span class="sr-only">(current)</span>
+			</a></li>
+			<li class="nav-item"><a class="nav-link" href="OS-logs">Logovi
+					operativnog sistema&emsp;<span class="sr-only">(current)</span>
+			</a></li>
+			<li class="nav-item active"><a class="nav-link"
+				href="firewall-logs">Logovi firewall-a <span class="sr-only">(current)</span>
+			</a></li>
+		</ul>
+	</div>
+</nav>
+
+<div class="jumbotron">
+	<p class="display-5">
+		Broj logova firewall-a:&nbsp; <b>{{numOfLogs}}</b>.
+	</p>
+	<div class="jumbotron" id="timeJum">
+		<form>
+			<legend style="font-size: 15px;">Prikaz logova u određenom
+				vremenskom periodu</legend>
+			<div class="form-group">
+				<label for="startTime">Od:</label> <input type="datetime-local"
+					class="form-control" id="startTime" [(ngModel)]="startDate"
+					name="startTime">
+			</div>
+			<div class="form-group">
+				<label for="endTime">Do:</label> <input type="datetime-local"
+					class="form-control" id="endTime" [(ngModel)]="endDate"
+					name="endTime">
+			</div>
+			<button type="submit" (click)="searchLogs()" class="btn btn-primary">Filtriraj</button>
+		</form>
+	</div>
+	<div class="jumbotron" id="searchJum">
+		<table>
+			<tr>
+				<td><label for="actionSearch">Pretraga po akciji:&emsp;</label></td>
+				<td><input
+					placeholder="Ukucaj jedan kriterijum ili više razdvojenih kosom crtom"
+					class="searchInput" id="actionSearch" type="text"
+					[(ngModel)]="action"></td>
+				<td>&emsp;
+					<button (click)="searchByAction()" type="button"
+						class="btn btn-primary btn-xs">Traži</button>
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td><p id="note">*Moguće vrednosti su OPEN, CLOSE i DROP.</p></td>
+			</tr>
+			<tr height=10px></tr>
+			<tr>
+				<td><label for="protocolSearch">Pretraga po
+						protokolu:&emsp;</label></td>
+				<td><input
+					placeholder="Ukucaj jedan kriterijum ili više razdvojenih kosom crtom"
+					class="searchInput" id="protocolSearch" type="text"
+					[(ngModel)]="protocol"></td>
+				<td>&emsp;
+					<button type="button" class="btn btn-primary btn-xs"
+						(click)="searchByProtocol()">Traži</button>
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td><p id="note">*Moguće vrednosti su HTTP, TCP i IP.</p></td>
+			</tr>
+			<tr>
+				<td><label for="srcSearch">Pretraga po srcIP:&emsp;</label></td>
+				<td><input class="searchInput" id="srcSearch" type="text"
+					[(ngModel)]="srcIp"></td>
+				<td>&emsp;
+					<button (click)="searchBySrcIp()" type="button"
+						class="btn btn-primary btn-xs">Traži</button>
+				</td>
+			</tr>
+			<tr>
+				<td><label for="dstSearch">Pretraga po dstIP:&emsp;</label></td>
+				<td><input class="searchInput" id="dstSearch" type="text"
+					[(ngModel)]="dstIp"></td>
+				<td>&emsp;
+					<button (click)="searchByDstIp()" type="button"
+						class="btn btn-primary btn-xs">Traži</button>
+				</td>
+			</tr>
+			<tr height=20px></tr>
+			<tr>
+				<td><a href="server-logs">Poništi sve filtere</a></td>
+				<td></td>
+			</tr>
+		</table>
+	</div>
+</div>
+<div>
+	<span *ngIf="error!=''" class="badge badge-danger">Nije pronađen
+		nijedan log</span>
+	<table class="table" *ngIf="error==''">
+		<thead>
+			<tr>
+				<th></th>
+				<th>Vreme</th>
+				<th>ID</th>
+				<th>Akcija</th>
+				<th>Protokol</th>
+				<th>src IP</th>
+				<th>dst IP</th>
+				<th>src port</th>
+				<th>dst port</th>
+				<th>Veličina</th>
+				<th>TCP flags</th>
+				<th>TCP sync</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr *ngFor="let log of logs">
+				<td>&#8227;</td>
+				<td>{{log.timeStamp | date :'dd.MM.yyyy. HH:mm'}} h</td>
+				<td>{{log.id}}</td>
+				<th>{{log.action}}</th>
+				<th>{{log.protocol}}</th>
+				<th>{{log.srcIp}}</th>
+				<th>{{log.dstIp}}</th>
+				<th>{{log.srcPort}}</th>
+				<th>{{log.dstPort}}</th>
+				<th>{{log.size}}</th>
+				<th>{{log.tcpflags}}</th>
+				<th>{{log.tcpsync}}</th>
+			</tr>
+		</tbody>
+	</table>
+</div>

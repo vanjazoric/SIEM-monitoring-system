@@ -1,0 +1,42 @@
+#timeJum{
+	width: 300px;
+	display: inline-block;
+	text-align: left;
+}
+
+#searchJum{
+	display: inline-block;
+	margin-left: 100px;
+	text-align: justify;
+}
+
+.jumbotron{
+	padding-top: 5px;
+	padding-bottom: 0px;
+	text-align: center;
+}
+
+.display-5{
+	text-align: center;
+}
+
+.btn.btn-primary.btn-xs{
+	margin-left: 10px;
+}
+
+.searchInput {
+	width: 350px;
+}
+
+#note{
+	font-size: 13px;
+	font-style: italic;
+}
+
+.badge.badge-danger {
+	background: red;
+	text-align: center;
+	width: 400px;
+	font-stretch: ultra-expanded;
+	margin-left: 35%;
+}

@@ -9,16 +9,16 @@
 	<div class="collapse navbar-collapse" id="navbarColor01">
 		<ul class="navbar-nav mr-auto">
 			<li class="nav-item active"><a class="nav-link" href="center">Svi
-					logovi <span class="sr-only">(current)</span>
+					logovi&emsp;<span class="sr-only">(current)</span>
 			</a></li>
 			<li class="nav-item"><a class="nav-link" href="app-logs">Logovi
-					aplikacija <span class="sr-only">(current)</span>
+					aplikacija&emsp;<span class="sr-only">(current)</span>
 			</a></li>
 			<li class="nav-item"><a class="nav-link" href="server-logs">Logovi
-					servera <span class="sr-only">(current)</span>
+					servera&emsp;<span class="sr-only">(current)</span>
 			</a></li>
 			<li class="nav-item"><a class="nav-link" href="OS-logs">Logovi
-					operativnog sistema <span class="sr-only">(current)</span>
+					operativnog sistema&emsp;<span class="sr-only">(current)</span>
 			</a></li>
 			<li class="nav-item"><a class="nav-link" href="firewall-logs">Logovi
 					firewall-a <span class="sr-only">(current)</span>
@@ -36,12 +36,12 @@
 	<form>
 		<legend style="font-size: 15px;">Prikaz logova u određenom vremenskom periodu</legend>
 		<div class="form-group">
-			<label for="exampleInputEmail1">Od:</label> <input
+			<label for="startTime">Od:</label> <input
 				type="datetime-local" class="form-control" id="startTime" [(ngModel)]="startDate"
 				name="startTime">
 		</div>
 		<div class="form-group">
-			<label for="exampleInputEmail1">Do:</label> <input
+			<label for="endTime">Do:</label> <input
 				type="datetime-local" class="form-control" id="endTime" [(ngModel)]="endDate"
 				name="endTime">
 		</div>
