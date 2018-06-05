@@ -1,0 +1,125 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <a class="navbar-brand" href="#">SIEM centar</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" 
+    data-target="#navbarColor01" aria-controls="navbarColor01"
+    aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  
+  <div class="collapse navbar-collapse" id="navbarColor01">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active"><a class="nav-link" href="center">Svi
+        logovi <span class="sr-only">(current)</span>
+      </a></li>
+      <li class="nav-item"><a class="nav-link" href="app-logs">Logovi
+        aplikacija <span class="sr-only">(current)</span>
+      </a></li>
+      <li class="nav-item"><a class="nav-link" href="server-logs">Logovi
+        servera <span class="sr-only">(current)</span>
+      </a></li>
+      <li class="nav-item"><a class="nav-link" href="OS-logs">Logovi
+        operativnog sistema <span class="sr-only">(current)</span>
+      </a></li>
+      <li class="nav-item"><a class="nav-link" href="firewall-logs">Logovi
+        firewall-a <span class="sr-only">(current)</span>
+      </a></li>
+      <li class="nav-item"><a class="nav-link" href="alarms">Alarmi
+        <span class="sr-only">(current)</span>
+      </a></li>
+    </ul>
+  </div>
+</nav>
+<div class="jumbotron">
+  <div class="row">
+    <div class="col-sm-11"></div>
+    <div class="col-sm-1">
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Kreiraj alarm</button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-11">
+      <p class="display-5"><b>Alarmi:</b></p>
+    </div>
+  </div>
+</div>
+<table class="table">
+  <thead>
+    <tr>
+      <th></th>
+      <th>OPIS</th>
+      <th>PERIOD</th>
+      <th>BROJ LOGOVA</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let alarm of alarms">
+      <td>&#8227;</td>
+      <td>{{alarm.description}}</td>
+      <td>{{alarm.duration}} miliseconds</td>
+      <td>{{alarm.numOfItems}}</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="exampleModalLabel"><i class="fa fa-bell" aria-hidden="true"></i> Alarm</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="rForm" (ngSubmit)="addPost(rForm.value)">
+          <div class="form-group">
+            <label>Opis:</label>
+            <input class="form-control" formControlName="description">
+            <div class="badge badge-secondary" *ngIf="!rForm.controls['description'].valid && rForm.controls['description'].touched">{{message}}</div>
+          </div>
+          <div class="form-group">
+            <label>Period:</label>
+            <input class="form-control" formControlName="duration">
+            <div class="badge badge-secondary" *ngIf="!rForm.controls['duration'].valid && rForm.controls['duration'].touched">{{message}}</div>
+          </div>
+          <div class="form-group">
+            <label>Broj logova:</label>
+            <input class="form-control" formControlName="numOfItems">
+            <div class="badge badge-secondary" *ngIf="!rForm.controls['numOfItems'].valid && rForm.controls['numOfItems'].touched">{{message}}</div>
+          </div>
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Parametri:</label>
+                <select class="form-control" size="1" formControlName="param">
+                  <option>IP ADDRESS</option>
+                  <option>HOST NAME</option>
+                  <option>LEVEL</option>
+                </select>
+                <div class="badge badge-secondary" *ngIf="!rForm.controls['param'].valid && rForm.controls['param'].touched">{{message}}</div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Vrijednost:</label>
+                <input class="form-control" formControlName="value">
+                <div class="badge badge-secondary" *ngIf="!rForm.controls['value'].valid && rForm.controls['value'].touched">{{message}}</div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-3">
+              <div class="form-group">
+                <input type="submit" value="DODAJ" class="btn btn-primary" [disabled]="!rForm.valid">
+              </div>
+            </div>
+            <div class="col-sm-9"></div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
