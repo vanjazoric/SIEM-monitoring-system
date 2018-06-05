@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { FormsModule }   from '@angular/forms';
+import { FormsModule, ReactiveFormsModule }   from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
@@ -10,10 +10,12 @@ import { AppLogsComponent } from './components/app-logs/app-logs.component';
 import { OSLogsComponent } from './components/os-logs/os-logs.component';
 import { ServerLogsComponent } from './components/server-logs/server-logs.component';
 import { FirewallLogsComponent } from './components/firewall-logs/firewall-logs.component';
+import { AlarmsComponent } from './components/alarms/alarms.component';
 
 const appRoutes: Routes = [
     { path: '', component: AppComponent},
-    { path: 'center', component: HomePageComponent }
+    { path: 'center', component: HomePageComponent },
+    { path: 'alarms', component: AlarmsComponent}
 ];
 
 @NgModule({
@@ -23,13 +25,15 @@ const appRoutes: Routes = [
        AppLogsComponent,
        OSLogsComponent,
        ServerLogsComponent,
-       FirewallLogsComponent
+       FirewallLogsComponent,
+       AlarmsComponent
     ],
     imports: [
         BrowserModule,
         HttpModule,
         HttpClientModule,
         FormsModule,
+        ReactiveFormsModule,
         RouterModule.forRoot(
             appRoutes,
             { enableTracing: true })
