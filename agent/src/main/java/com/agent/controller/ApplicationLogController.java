@@ -9,21 +9,16 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Set;
 
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.hamcrest.beans.SamePropertyValuesAs;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import com.agent.domain.Agent;
 import com.agent.domain.ApplicationLog;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 @RestController
 @RequestMapping(value = "/applicationLog")
@@ -44,7 +39,7 @@ public class ApplicationLogController {
 					e.printStackTrace();
 				}
 				String[] data = line.split(";");
-			    Long logId = Long.parseLong(data[0]);
+			    String logId = data[0];
 			    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			    Date timeStamp = sdf.parse(data[1]);
 			    int eventId = Integer.parseInt(data[2]);
@@ -67,20 +62,13 @@ public class ApplicationLogController {
 	}
 	
 	public void sendToCenter(ApplicationLog log, String sendTo) throws IOException {
-		HttpClient httpClient = HttpClientBuilder.create().build();
-		CloseableHttpResponse response = null;
-		try {
-			HttpPost request = new HttpPost(sendTo);
-			Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create();
-			StringEntity postingString = new StringEntity(gson.toJson(log));
-			request.setEntity(postingString);
-			request.setHeader("Content-type", "application/json");
-			response = (CloseableHttpResponse) httpClient.execute(request);
-		} catch (Exception ex) {
-			
-		} finally {
-			response.close();
-		}
+		RestTemplate restTemplate=new RestTemplate();
+		sendTo=sendTo+"/create";
+		
+		HttpEntity<ApplicationLog> request= new HttpEntity<>(log);
+		
+		ResponseEntity<ApplicationLog> result = restTemplate.postForEntity(sendTo, request, ApplicationLog.class);
+		System.out.println("Status code:" + result.getStatusCode());
 	}
 	
 	public boolean filterLog(ApplicationLog appLog, String confFile){

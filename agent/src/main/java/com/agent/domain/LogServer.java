@@ -22,7 +22,7 @@ public class LogServer extends Log {
 		super();
 	}
 
-	public LogServer(Long id, Date timeStamp, String clientIp, String logHost,
+	public LogServer(String id, Date timeStamp, String clientIp, String logHost,
 			String method, String messageId, String resourceRequest,
 			int httpStatus, int sizeOfReturnedObj, Agent agent) {
 		super(id, timeStamp, agent);

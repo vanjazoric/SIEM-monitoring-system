@@ -1,14 +1,14 @@
 {
   "fw" : {
     "listenFrom" : "firewallLogs.txt",
-    "sendTo" : "http://localhost:8888/logfirewall",
+    "sendTo" : "https://localhost:8888/logfirewall",
     "fw_filter" : {
       "timeStamp" : "2018-04-02 20:45:08"
     }
   },
   "os" : {
     "listenFrom" : null,
-    "sendTo" : "http://localhost:8888/OSlogs",
+    "sendTo" : "https://localhost:8888/OSlogs",
     "os_filter" : {
       "timeStamp" : "2018-05-15 18:17:36",
       "priority" : "Information"
@@ -16,7 +16,7 @@
   },
   "ap" : {
     "listenFrom" : "logs.txt",
-    "sendTo" : "http://localhost:8888/applicationLogs",
+    "sendTo" : "https://localhost:8888/applicationLogs",
     "ap_filter" : {
       "timeStamp" : "2018-04-03 11:21:08",
       "application" : "Image processing application",
@@ -25,7 +25,7 @@
   },
   "ls" : {
     "listenFrom" : "logserver.txt",
-    "sendTo" : "http://localhost:8888/logserver",
+    "sendTo" : "https://localhost:8888/logserver",
     "ls_filter" : {
       "timeStamp" : "2018-04-02 22:02:46"
     } 

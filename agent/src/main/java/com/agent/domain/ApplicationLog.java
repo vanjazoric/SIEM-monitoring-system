@@ -18,7 +18,7 @@ public class ApplicationLog extends Log{
 		super();
 	}
 
-	public ApplicationLog(Long id, Date timeStamp, Agent agent, int eventId, 
+	public ApplicationLog(String id, Date timeStamp, Agent agent, int eventId, 
 			String priority, String application, Long messageId, String message) {
 		super(id, timeStamp, agent);
 		this.eventId = eventId;

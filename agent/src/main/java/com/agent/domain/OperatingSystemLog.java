@@ -20,7 +20,7 @@ public class OperatingSystemLog extends Log {
 		super();
 	}
 
-	public OperatingSystemLog(Long id, Level level, Date timeStamp,
+	public OperatingSystemLog(String id, Level level, Date timeStamp,
 			String source, int eventId, Agent agent) {
 		super(id, timeStamp, agent);
 		this.eventId = eventId;
@@ -28,7 +28,7 @@ public class OperatingSystemLog extends Log {
 		this.source = source;
 	}
 	
-	public OperatingSystemLog(Long id, Level level, Date timeStamp,
+	public OperatingSystemLog(String id, Level level, Date timeStamp,
 			String source, int eventId, String taskCategory, Agent agent) {
 		super(id, timeStamp, agent);
 		this.eventId = eventId;
