@@ -6,33 +6,30 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.Set;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.agent.domain.Agent;
 import com.agent.domain.LogServer;
-import com.agent.service.LogServerService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 @RestController
 @RequestMapping(value = "/logService")
 public class LogServerController {
-
-	@Autowired
-	LogServerService logServerService;
-
-	public ArrayList<LogServer> readLogs(String listenFrom) {
-		ArrayList<LogServer> logs = new ArrayList<>();
+	public int sleepTime = 30000; 
+	
+	public void readLogs(String listenFrom, String confFile, String sendTo) {
 		File relativeFile = new File(".." + File.separator + "scripts"
 				+ File.separator + listenFrom);
 		try {
@@ -40,6 +37,12 @@ public class LogServerController {
 					relativeFile.getCanonicalPath()));
 			String line;
 			while ((line = in.readLine()) != null) {
+				try {
+					Thread.sleep(sleepTime);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				String[] tokens = line.split(" ");
 				SimpleDateFormat sdf = new SimpleDateFormat(
 						"yyyy-MM-dd HH:mm:ss");
@@ -53,34 +56,74 @@ public class LogServerController {
 						tokens[3], tokens[5], tokens[4], tokens[6],
 						Integer.valueOf(tokens[7]), Integer.valueOf(tokens[8]),
 						new Agent());
-				logs.add(l);
+				if(filterLog(l, confFile)){
+					sendToCenter(l, sendTo);
+				}
 			}
 			in.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return logs;
-
 	}
 
-	public void sendToCenter(ArrayList<LogServer> logs, String sendTo) throws IOException {
+	public void sendToCenter(LogServer log, String sendTo) throws IOException {
 		HttpClient httpClient = HttpClientBuilder.create().build();
 		CloseableHttpResponse response = null;
 		try {
-			HttpPost request = new HttpPost(sendTo);
+			HttpPost request = new HttpPost(sendTo + "/create");
 			Gson gson = new GsonBuilder().setDateFormat(
 					"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create();
-			StringEntity postingString = new StringEntity(gson.toJson(logs));
+			StringEntity postingString = new StringEntity(gson.toJson(log));
 			request.setEntity(postingString);
 			request.setHeader("Content-type", "application/json");
 			response = (CloseableHttpResponse) httpClient.execute(request);
-			// String json = EntityUtils.toString(response.getEntity());
-			// System.out.println(json);
 		} catch (Exception ex) {
 		} finally {
 			response.close();
 		}
 	}
-
+	
+	public boolean filterLog(LogServer ls_log, String confFile){
+		JSONParser parser = new JSONParser();
+		String path = ".." + File.separator + "scripts" + File.separator + confFile;
+		try {
+			JSONObject jsonObject = (JSONObject) parser.parse(new FileReader(path));
+			JSONObject lsObject = (JSONObject) jsonObject.get("ls");
+			JSONObject lsFilterObject = (JSONObject) lsObject.get("ls_filter");
+			Set<String> lsFilterParams = lsFilterObject.keySet();
+			int numOfKey = 0;
+			for (String param : lsFilterParams) {
+				if(param.equals("timeStamp")){
+					SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					try {
+						Date date = simpleDateFormat.parse((String)lsFilterObject.get(param));
+						Date currentDate = new Date();
+						if(ls_log.getTimeStamp().after(date) && ls_log.getTimeStamp().before(currentDate)){
+							numOfKey++;
+						}
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}else if(param.equals("priority")){
+					String[] priorityValues = lsFilterObject.get(param).toString().toLowerCase().split("\\|");
+					for (String pv : priorityValues) {
+						if(ls_log.toString().toLowerCase().contains(pv)){
+							numOfKey++;
+						}
+					}
+				}else if(ls_log.toString().toLowerCase().contains(lsFilterObject.get(param).toString().toLowerCase())){
+					numOfKey++;
+				}
+			}
+			if(numOfKey == lsFilterParams.size()){
+				return true;
+			}
+		} catch (IOException | org.json.simple.parser.ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
 }

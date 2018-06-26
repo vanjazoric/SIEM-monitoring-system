@@ -27,15 +27,29 @@ public class LogServerController {
 	@Autowired
 	LogServerRepository logserverRepository;
 
+	
 	@CrossOrigin
-	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ArrayList<LogServer>> createLogServer(
-			@RequestBody ArrayList<LogServer> logs) throws Exception {
-		for (LogServer log : logs) {
-			logserverRepository.insert(log);
-		}
-		return new ResponseEntity<ArrayList<LogServer>>(HttpStatus.OK);
-	}
+	@RequestMapping(
+		value = "/create", 
+		method = RequestMethod.POST,
+		consumes = MediaType.APPLICATION_JSON_VALUE,
+		produces = MediaType.APPLICATION_JSON_VALUE
+	)
+    public ResponseEntity<LogServer> createLogServer(@RequestBody LogServer logserver)
+    {
+		LogServer saved = new LogServer();
+		saved.setTimeStamp(logserver.getTimeStamp());
+		saved.setAgent(logserver.getAgent());
+		saved.setClientIp(logserver.getClientIp());
+		saved.setLogHost(logserver.getLogHost());
+		saved.setMessageId(logserver.getMessageId());
+		saved.setMethod(logserver.getMethod());
+		saved.setResourceRequest(logserver.getResourceRequest());
+		saved.setHttpStatus(logserver.getHttpStatus());
+		saved.setSizeOfReturnedObj(logserver.getSizeOfReturnedObj());
+		saved = logserverRepository.insert(saved);
+        return new ResponseEntity<LogServer>(saved, HttpStatus.CREATED);
+    }
 
 	@CrossOrigin
 	@RequestMapping(value = "/update", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

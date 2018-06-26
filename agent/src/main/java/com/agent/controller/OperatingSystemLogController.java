@@ -3,10 +3,21 @@
  */
 package com.agent.controller;
 
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Set;
+
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,11 +28,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sun.jna.platform.win32.Advapi32Util.EventLogIterator;
 import com.sun.jna.platform.win32.Advapi32Util.EventLogRecord;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClientBuilder;
 
 /**
  * @author Vanja
@@ -31,6 +37,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 @RestController
 @RequestMapping("/OSlogs")
 public class OperatingSystemLogController {
+	public int sleepTime = 30000;
 
 	// @Autowired
 	// private OperatingSystemLogService osLogService;
@@ -53,14 +60,18 @@ public class OperatingSystemLogController {
 	 * ResponseEntity<OperatingSystemLog>(saved, HttpStatus.CONFLICT); }
 	 */
 
-	public ArrayList<OperatingSystemLog> getOSlogs() throws ParseException, IOException {
-		ArrayList<OperatingSystemLog> logs = new ArrayList<OperatingSystemLog>();
+	public void getOSlogs(String confFile, String sendTo)
+			throws ParseException, IOException {
+
 		EventLogIterator iter = new EventLogIterator("System");
-		int counter = 0;
-		while (counter < 15) {
-			counter++;
+		while (true) {
+			try {
+				Thread.sleep(sleepTime);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			EventLogRecord record = iter.next();
-			Long id = (long) record.getRecordNumber();
 			String type = record.getRecord().EventType.toString();
 			Level level = null;
 			if (type.equals("1")) {
@@ -77,29 +88,81 @@ public class OperatingSystemLogController {
 
 			OperatingSystemLog log = new OperatingSystemLog(null, level, date,
 					source, eventId, new Agent());
-			logs.add(log);
+			if (filterLog(log, confFile)) {
+				sendToCenter(log, sendTo);
+			}
 		}
-		return logs;
 	}
 
-	public void sendToCenter(ArrayList<OperatingSystemLog> logs, String sendTo)
+	public void sendToCenter(OperatingSystemLog log, String sendTo)
 			throws IOException {
 		HttpClient httpClient = HttpClientBuilder.create().build();
 		CloseableHttpResponse response = null;
 		try {
-			HttpPost request = new HttpPost(sendTo);
-			//HttpPost request = new HttpPost("http://localhost:8888/OSlogs");
+			HttpPost request = new HttpPost(sendTo + "/create");
 			Gson gson = new GsonBuilder().setDateFormat(
 					"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create();
-			StringEntity postingString = new StringEntity(gson.toJson(logs));
+			StringEntity postingString = new StringEntity(gson.toJson(log));
 			request.setEntity(postingString);
 			request.setHeader("Content-type", "application/json");
 			response = (CloseableHttpResponse) httpClient.execute(request);
-		//	String json = EntityUtils.toString(response.getEntity());
-		//	System.out.println(json);
 		} catch (Exception ex) {
 		} finally {
 			response.close();
 		}
+	}
+
+	public boolean filterLog(OperatingSystemLog osLog, String confFile) {
+		JSONParser parser = new JSONParser();
+		String path = ".." + File.separator + "scripts" + File.separator
+				+ confFile;
+		try {
+			JSONObject jsonObject = (JSONObject) parser.parse(new FileReader(
+					path));
+			JSONObject osObject = (JSONObject) jsonObject.get("os");
+			JSONObject osFilterObject = (JSONObject) osObject.get("os_filter");
+			Set<String> osFilterParams = osFilterObject.keySet();
+			int numOfKey = 0;
+			for (String param : osFilterParams) {
+				if (param.equals("timeStamp")) {
+					SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
+							"yyyy-MM-dd HH:mm:ss");
+					try {
+						Date date = simpleDateFormat
+								.parse((String) osFilterObject.get(param));
+						Date currentDate = new Date();
+						if (osLog.getTimeStamp().after(date)
+								&& osLog.getTimeStamp().before(currentDate)) {
+							numOfKey++;
+						}
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} else if (param.equals("priority")) {
+					String[] priorityValues = osFilterObject.get(param)
+							.toString().toLowerCase().split("\\|");
+					for (String pv : priorityValues) {
+						if (osLog.toString().toLowerCase().contains(pv)) {
+							numOfKey++;
+						}
+					}
+				} else if (osLog
+						.toString()
+						.toLowerCase()
+						.contains(
+								osFilterObject.get(param).toString()
+										.toLowerCase())) {
+					numOfKey++;
+				}
+			}
+			if (numOfKey == osFilterParams.size()) {
+				return true;
+			}
+		} catch (IOException | org.json.simple.parser.ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
 	}
 }

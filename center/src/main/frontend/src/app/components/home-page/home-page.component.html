@@ -15,13 +15,16 @@
 					aplikacija&emsp;<span class="sr-only">(current)</span>
 			</a></li>
 			<li class="nav-item"><a class="nav-link" href="server-logs">Logovi
-					servera&emsp;<span class="sr-only">(current)</span>
+					servera <span class="sr-only">(current)</span>
 			</a></li>
 			<li class="nav-item"><a class="nav-link" href="OS-logs">Logovi
 					operativnog sistema&emsp;<span class="sr-only">(current)</span>
 			</a></li>
 			<li class="nav-item"><a class="nav-link" href="firewall-logs">Logovi
 					firewall-a <span class="sr-only">(current)</span>
+			</a></li>
+			<li class="nav-item"><a class="nav-link" href="alarms">Alarmi<span
+					class="sr-only">(current)</span>
 			</a></li>
 		</ul>
 	</div>
@@ -34,19 +37,19 @@
 	</p>
 
 	<form>
-		<legend style="font-size: 15px;">Prikaz logova u određenom vremenskom periodu</legend>
+		<legend style="font-size: 15px;">Prikaz logova u određenom
+			vremenskom periodu</legend>
 		<div class="form-group">
-			<label for="startTime">Od:</label> <input
-				type="datetime-local" class="form-control" id="startTime" [(ngModel)]="startDate"
+			<label for="startTime">Od:</label> <input type="datetime-local"
+				class="form-control" id="startTime" [(ngModel)]="startDate"
 				name="startTime">
 		</div>
 		<div class="form-group">
-			<label for="endTime">Do:</label> <input
-				type="datetime-local" class="form-control" id="endTime" [(ngModel)]="endDate"
+			<label for="endTime">Do:</label> <input type="datetime-local"
+				class="form-control" id="endTime" [(ngModel)]="endDate"
 				name="endTime">
 		</div>
-		<button type="submit" (click)="searchLogs()"
-			class="btn btn-primary">Filtriraj</button>
+		<button type="submit" (click)="searchLogs()" class="btn btn-primary">Filtriraj</button>
 	</form>
 </div>
 <div>

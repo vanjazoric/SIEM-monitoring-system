@@ -35,7 +35,6 @@ public class ApplicationLogController {
 	public ResponseEntity<ApplicationLog> createApplicationLog(
 			@RequestParam ApplicationLog applicationlog) throws Exception {
 		ApplicationLog saved = new ApplicationLog();
-		saved.setId(applicationlog.getId());
 		saved.setTimeStamp(applicationlog.getTimeStamp());
 		saved.setAgent(applicationlog.getAgent());
 		saved.setEventId(applicationlog.getEventId());
@@ -43,7 +42,7 @@ public class ApplicationLogController {
 		saved.setApplication(applicationlog.getApplication());
 		saved.setMessageId(applicationlog.getMessageId());
 		saved.setMessage(applicationlog.getMessage());
-		saved = applicationlogRepository.save(saved);
+		saved = applicationlogRepository.insert(saved);
 		return new ResponseEntity<ApplicationLog>(saved, HttpStatus.CREATED);
 	}
 
