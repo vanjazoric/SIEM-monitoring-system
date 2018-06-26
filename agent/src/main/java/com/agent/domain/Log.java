@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class Log {
 
-	private Long id;
+	private String id;
 
 	//private String priority;
 
@@ -26,18 +26,18 @@ public class Log {
 		super();
 	}
 
-	public Log(Long id, Date timeStamp, Agent agent) {
+	public Log(String id, Date timeStamp, Agent agent) {
 		super();
 		this.id = id;
         this.timeStamp=timeStamp;
 		this.agent = agent;
 	}
 
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
