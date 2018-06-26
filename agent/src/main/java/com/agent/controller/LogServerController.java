@@ -16,20 +16,91 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.agent.domain.Agent;
+import com.agent.domain.LogFirewall;
+import com.agent.domain.LogPackage;
 import com.agent.domain.LogServer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 @RestController
 @RequestMapping(value = "/logService")
-public class LogServerController {
-	public int sleepTime = 30000; 
-	
-	public void readLogs(String listenFrom, String confFile, String sendTo) {
+public class LogServerController implements Runnable{
+	public int sleepTime = 1;
+	public String sendTo;
+	public String listenFrom;
+	public String confFile;
+
+	public LogServerController() {
+		super();
+	}
+
+	public LogServerController(String sendTo, String listenFrom,
+			String confFile) {
+		super();
+		this.sendTo = sendTo;
+		this.listenFrom = listenFrom;
+		this.confFile = confFile;
+	}
+
+	@CrossOrigin
+	@RequestMapping(value = "/create/mediatorFinal/app", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<LogFirewall> mediatorSendToCenter(
+			@RequestBody LogPackage logPackage) throws IOException {
+		HttpClient httpClient = HttpClientBuilder.create().build();
+		CloseableHttpResponse response = null;
+		try {
+			HttpPost request = new HttpPost(this.sendTo);
+			Gson gson = new GsonBuilder().setDateFormat(
+					"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create();
+			StringEntity postingString = new StringEntity(
+					gson.toJson(logPackage));
+			request.setEntity(postingString);
+			request.setHeader("Content-type", "application/json");
+			response = (CloseableHttpResponse) httpClient.execute(request);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			response.close();
+		}
+		return new ResponseEntity<LogFirewall>(HttpStatus.CREATED);
+
+	}
+
+	@CrossOrigin
+	@RequestMapping(value = "/create/mediator/fw", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<LogFirewall> mediatorAccept(
+			@RequestBody LogPackage logPackage) throws IOException {
+		HttpClient httpClient = HttpClientBuilder.create().build();
+		CloseableHttpResponse response = null;
+		try {
+			HttpPost request = new HttpPost(this.sendTo);
+			Gson gson = new GsonBuilder().setDateFormat(
+					"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create();
+			StringEntity postingString = new StringEntity(
+					gson.toJson(logPackage));
+			request.setEntity(postingString);
+			request.setHeader("Content-type", "application/json");
+			response = (CloseableHttpResponse) httpClient.execute(request);
+		} catch (Exception ex) {
+
+		} finally {
+			response.close();
+		}
+		return new ResponseEntity<LogFirewall>(HttpStatus.CREATED);
+
+	}
+
+	public void readLogs() {
 		File relativeFile = new File(".." + File.separator + "scripts"
 				+ File.separator + listenFrom);
 		try {
@@ -56,7 +127,7 @@ public class LogServerController {
 						tokens[3], tokens[5], tokens[4], tokens[6],
 						Integer.valueOf(tokens[7]), Integer.valueOf(tokens[8]),
 						new Agent());
-				if(filterLog(l, confFile)){
+				if (filterLog(l, confFile)) {
 					sendToCenter(l, sendTo);
 				}
 			}
@@ -71,53 +142,75 @@ public class LogServerController {
 		HttpClient httpClient = HttpClientBuilder.create().build();
 		CloseableHttpResponse response = null;
 		try {
-			HttpPost request = new HttpPost(sendTo + "/create");
+			HttpPost request = new HttpPost(sendTo);
 			Gson gson = new GsonBuilder().setDateFormat(
 					"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create();
-			StringEntity postingString = new StringEntity(gson.toJson(log));
-			request.setEntity(postingString);
-			request.setHeader("Content-type", "application/json");
-			response = (CloseableHttpResponse) httpClient.execute(request);
+//			if (sendTo.contains("mediator")) {
+//				LogPackage logPackage = new LogPackage();
+//				logPackage.getLogsServer().add(log);
+//				StringEntity postingString = new StringEntity(
+//						gson.toJson(logPackage));
+//				request.setEntity(postingString);
+//				request.setHeader("Content-type", "application/json");
+//				response = (CloseableHttpResponse) httpClient.execute(request);
+//			} else {
+				StringEntity postingString = new StringEntity(gson.toJson(log));
+				request.setEntity(postingString);
+				request.setHeader("Content-type", "application/json");
+
+				response = (CloseableHttpResponse) httpClient.execute(request);
+//			}
 		} catch (Exception ex) {
 		} finally {
 			response.close();
 		}
 	}
-	
-	public boolean filterLog(LogServer ls_log, String confFile){
+
+	public boolean filterLog(LogServer ls_log, String confFile) {
 		JSONParser parser = new JSONParser();
-		String path = ".." + File.separator + "scripts" + File.separator + confFile;
+		String path = ".." + File.separator + "scripts" + File.separator
+				+ confFile;
 		try {
-			JSONObject jsonObject = (JSONObject) parser.parse(new FileReader(path));
+			JSONObject jsonObject = (JSONObject) parser.parse(new FileReader(
+					path));
 			JSONObject lsObject = (JSONObject) jsonObject.get("ls");
 			JSONObject lsFilterObject = (JSONObject) lsObject.get("ls_filter");
 			Set<String> lsFilterParams = lsFilterObject.keySet();
 			int numOfKey = 0;
 			for (String param : lsFilterParams) {
-				if(param.equals("timeStamp")){
-					SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				if (param.equals("timeStamp")) {
+					SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
+							"yyyy-MM-dd HH:mm:ss");
 					try {
-						Date date = simpleDateFormat.parse((String)lsFilterObject.get(param));
+						Date date = simpleDateFormat
+								.parse((String) lsFilterObject.get(param));
 						Date currentDate = new Date();
-						if(ls_log.getTimeStamp().after(date) && ls_log.getTimeStamp().before(currentDate)){
+						if (ls_log.getTimeStamp().after(date)
+								&& ls_log.getTimeStamp().before(currentDate)) {
 							numOfKey++;
 						}
 					} catch (ParseException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-				}else if(param.equals("priority")){
-					String[] priorityValues = lsFilterObject.get(param).toString().toLowerCase().split("\\|");
+				} else if (param.equals("priority")) {
+					String[] priorityValues = lsFilterObject.get(param)
+							.toString().toLowerCase().split("\\|");
 					for (String pv : priorityValues) {
-						if(ls_log.toString().toLowerCase().contains(pv)){
+						if (ls_log.toString().toLowerCase().contains(pv)) {
 							numOfKey++;
 						}
 					}
-				}else if(ls_log.toString().toLowerCase().contains(lsFilterObject.get(param).toString().toLowerCase())){
+				} else if (ls_log
+						.toString()
+						.toLowerCase()
+						.contains(
+								lsFilterObject.get(param).toString()
+										.toLowerCase())) {
 					numOfKey++;
 				}
 			}
-			if(numOfKey == lsFilterParams.size()){
+			if (numOfKey == lsFilterParams.size()) {
 				return true;
 			}
 		} catch (IOException | org.json.simple.parser.ParseException e) {
@@ -125,5 +218,16 @@ public class LogServerController {
 			e.printStackTrace();
 		}
 		return false;
+	}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		try{
+			this.readLogs();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
 	}
 }

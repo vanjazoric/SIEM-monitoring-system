@@ -11,16 +11,25 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Set;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.agent.domain.Agent;
 import com.agent.domain.Level;
+import com.agent.domain.LogFirewall;
+import com.agent.domain.LogPackage;
 import com.agent.domain.OperatingSystemLog;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sun.jna.platform.win32.Advapi32Util.EventLogIterator;
 import com.sun.jna.platform.win32.Advapi32Util.EventLogRecord;
+
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -36,8 +45,69 @@ import org.json.simple.parser.JSONParser;
 
 @RestController
 @RequestMapping("/OSlogs")
-public class OperatingSystemLogController {
-	public int sleepTime = 30000;
+public class OperatingSystemLogController implements Runnable{
+	public int sleepTime = 1;
+	public String sendTo;
+	public String confFile;
+
+	public OperatingSystemLogController() {
+		super();
+	}
+
+	public OperatingSystemLogController(String sendTo, String confFile) {
+		super();
+		this.sendTo = sendTo;
+		this.confFile = confFile;
+	}
+
+	@CrossOrigin
+	@RequestMapping(value = "/create/mediatorFinal/app", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<LogFirewall> mediatorSendToCenter(
+			@RequestBody LogPackage logPackage) throws IOException {
+		HttpClient httpClient = HttpClientBuilder.create().build();
+		CloseableHttpResponse response = null;
+		try {
+			HttpPost request = new HttpPost(this.sendTo);
+			Gson gson = new GsonBuilder().setDateFormat(
+					"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create();
+			StringEntity postingString = new StringEntity(
+					gson.toJson(logPackage));
+			request.setEntity(postingString);
+			request.setHeader("Content-type", "application/json");
+			response = (CloseableHttpResponse) httpClient.execute(request);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			response.close();
+		}
+		return new ResponseEntity<LogFirewall>(HttpStatus.CREATED);
+
+	}
+
+	@CrossOrigin
+	@RequestMapping(value = "/create/mediator/fw", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<LogFirewall> mediatorAccept(
+			@RequestBody LogPackage logPackage) throws IOException {
+		HttpClient httpClient = HttpClientBuilder.create().build();
+		CloseableHttpResponse response = null;
+		try {
+			HttpPost request = new HttpPost(this.sendTo);
+			Gson gson = new GsonBuilder().setDateFormat(
+					"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create();
+			StringEntity postingString = new StringEntity(
+					gson.toJson(logPackage));
+			request.setEntity(postingString);
+			request.setHeader("Content-type", "application/json");
+			response = (CloseableHttpResponse) httpClient.execute(request);
+		} catch (Exception ex) {
+
+		} finally {
+			response.close();
+		}
+		return new ResponseEntity<LogFirewall>(HttpStatus.CREATED);
+
+	}
+
 	// @Autowired
 	// private OperatingSystemLogService osLogService;
 
@@ -59,8 +129,9 @@ public class OperatingSystemLogController {
 	 * ResponseEntity<OperatingSystemLog>(saved, HttpStatus.CONFLICT); }
 	 */
 
-	public void getOSlogs(String confFile, String sendTo) throws ParseException, IOException {
-		
+	public void getOSlogs()
+			throws ParseException, IOException {
+
 		EventLogIterator iter = new EventLogIterator("System");
 		while (true) {
 			try {
@@ -87,7 +158,7 @@ public class OperatingSystemLogController {
 
 			OperatingSystemLog log = new OperatingSystemLog(null, level, date,
 					source, eventId, new Agent());
-			if(filterLog(log, confFile)){
+			if (filterLog(log, confFile)) {
 				sendToCenter(log, sendTo);
 			}
 		}
@@ -98,7 +169,7 @@ public class OperatingSystemLogController {
 		HttpClient httpClient = HttpClientBuilder.create().build();
 		CloseableHttpResponse response = null;
 		try {
-			HttpPost request = new HttpPost(sendTo + "/create");
+			HttpPost request = new HttpPost(sendTo);
 			Gson gson = new GsonBuilder().setDateFormat(
 					"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create();
 			StringEntity postingString = new StringEntity(gson.toJson(log));
@@ -110,41 +181,52 @@ public class OperatingSystemLogController {
 			response.close();
 		}
 	}
-	
-	public boolean filterLog(OperatingSystemLog osLog, String confFile){
+
+	public boolean filterLog(OperatingSystemLog osLog, String confFile) {
 		JSONParser parser = new JSONParser();
-		String path = ".." + File.separator + "scripts" + File.separator + confFile;
+		String path = ".." + File.separator + "scripts" + File.separator
+				+ confFile;
 		try {
-			JSONObject jsonObject = (JSONObject) parser.parse(new FileReader(path));
+			JSONObject jsonObject = (JSONObject) parser.parse(new FileReader(
+					path));
 			JSONObject osObject = (JSONObject) jsonObject.get("os");
 			JSONObject osFilterObject = (JSONObject) osObject.get("os_filter");
 			Set<String> osFilterParams = osFilterObject.keySet();
 			int numOfKey = 0;
 			for (String param : osFilterParams) {
-				if(param.equals("timeStamp")){
-					SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				if (param.equals("timeStamp")) {
+					SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
+							"yyyy-MM-dd HH:mm:ss");
 					try {
-						Date date = simpleDateFormat.parse((String)osFilterObject.get(param));
+						Date date = simpleDateFormat
+								.parse((String) osFilterObject.get(param));
 						Date currentDate = new Date();
-						if(osLog.getTimeStamp().after(date) && osLog.getTimeStamp().before(currentDate)){
+						if (osLog.getTimeStamp().after(date)
+								&& osLog.getTimeStamp().before(currentDate)) {
 							numOfKey++;
 						}
 					} catch (ParseException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-				}else if(param.equals("priority")){
-					String[] priorityValues = osFilterObject.get(param).toString().toLowerCase().split("\\|");
+				} else if (param.equals("priority")) {
+					String[] priorityValues = osFilterObject.get(param)
+							.toString().toLowerCase().split("\\|");
 					for (String pv : priorityValues) {
-						if(osLog.toString().toLowerCase().contains(pv)){
+						if (osLog.toString().toLowerCase().contains(pv)) {
 							numOfKey++;
 						}
 					}
-				}else if(osLog.toString().toLowerCase().contains(osFilterObject.get(param).toString().toLowerCase())){
+				} else if (osLog
+						.toString()
+						.toLowerCase()
+						.contains(
+								osFilterObject.get(param).toString()
+										.toLowerCase())) {
 					numOfKey++;
 				}
 			}
-			if(numOfKey == osFilterParams.size()){
+			if (numOfKey == osFilterParams.size()) {
 				return true;
 			}
 		} catch (IOException | org.json.simple.parser.ParseException e) {
@@ -152,5 +234,16 @@ public class OperatingSystemLogController {
 			e.printStackTrace();
 		}
 		return false;
+	}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		try{
+			this.getOSlogs();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
 	}
 }

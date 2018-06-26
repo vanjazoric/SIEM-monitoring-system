@@ -17,7 +17,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.center.domain.ApplicationLog;
 import com.center.domain.LogFirewall;
+import com.center.domain.LogPackage;
+import com.center.repository.ApplicationLogRepository;
 import com.center.repository.LogFirewallRepository;
 
 @RestController
@@ -26,6 +29,9 @@ public class LogFirewallController {
 
 	@Autowired
 	LogFirewallRepository logFirewallRepository;
+	
+	@Autowired
+	ApplicationLogRepository applicationlogRepository;
 	
 	@CrossOrigin
 	@RequestMapping(value = "/createall", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -36,6 +42,44 @@ public class LogFirewallController {
 		}
 		return new ResponseEntity<ArrayList<LogFirewall>>(HttpStatus.OK);
 	}
+	
+	@CrossOrigin
+	@RequestMapping(
+			value = "/mediator/center/create",
+		method = RequestMethod.POST,
+		consumes = MediaType.APPLICATION_JSON_VALUE,
+		produces = MediaType.APPLICATION_JSON_VALUE
+	)
+    public ResponseEntity<ApplicationLog> createFromMediator(@RequestBody LogPackage logPackage) throws Exception
+    {
+		for(LogFirewall logfirewall : logPackage.getLogsFirewall()){
+			LogFirewall saved = new LogFirewall();
+			saved.setTimeStamp(logfirewall.getTimeStamp());
+			saved.setAgent(logfirewall.getAgent());
+			saved.setAction(logfirewall.getAction());
+			saved.setProtocol(logfirewall.getProtocol());
+			saved.setSrcIp(logfirewall.getSrcIp());
+			saved.setDstIp(logfirewall.getDstIp());
+			saved.setSrcPort(logfirewall.getSrcPort());
+			saved.setDstPort(logfirewall.getDstPort());
+			saved.setSize(logfirewall.getSize());
+			saved.setTcpflags(logfirewall.getTcpflags());
+			saved.setTcpsync(logfirewall.getTcpsync());
+			saved = logFirewallRepository.insert(saved);
+		}
+		for(ApplicationLog applicationlog : logPackage.getApplicationLogs()){
+			ApplicationLog saved = new ApplicationLog();
+			saved.setTimeStamp(applicationlog.getTimeStamp());
+			saved.setAgent(applicationlog.getAgent());
+			saved.setEventId(applicationlog.getEventId());
+			saved.setPriority(applicationlog.getPriority());
+			saved.setApplication(applicationlog.getApplication());
+			saved.setMessageId(applicationlog.getMessageId());
+			saved.setMessage(applicationlog.getMessage());
+			saved = applicationlogRepository.insert(saved);
+		}
+		return new ResponseEntity<ApplicationLog>(HttpStatus.CREATED);
+    }
 	
 	@CrossOrigin
 	@RequestMapping(
