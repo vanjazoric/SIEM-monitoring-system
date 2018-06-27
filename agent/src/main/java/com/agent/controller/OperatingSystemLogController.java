@@ -4,6 +4,7 @@
 package com.agent.controller;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
@@ -48,10 +49,37 @@ import org.json.simple.parser.JSONParser;
 public class OperatingSystemLogController implements Runnable{
 	public int sleepTime = 1;
 	public String sendTo;
-	public String confFile;
+	public String confFile = "conf8080.json";
 
 	public OperatingSystemLogController() {
 		super();
+		JSONParser parser = new JSONParser();
+		String path = ".." + File.separator + "scripts" + File.separator
+				+ confFile;
+		JSONObject jsonObject;
+		JSONObject osObject;
+		try {
+			jsonObject = (JSONObject) parser.parse(new FileReader(path));
+			Set<String> logTypes = jsonObject.keySet();
+			for (String logType : logTypes) {
+				if (logType.equals("os")){
+					osObject = (JSONObject) jsonObject.get("os");
+					this.sendTo = (String) osObject.get("sendTo");
+					this.confFile = confFile;
+					Thread oslcThread = new Thread(this);
+					oslcThread.start();
+				}
+			}
+		} catch (org.json.simple.parser.ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public OperatingSystemLogController(String sendTo, String confFile) {
@@ -61,7 +89,7 @@ public class OperatingSystemLogController implements Runnable{
 	}
 
 	@CrossOrigin
-	@RequestMapping(value = "/create/mediatorFinal/app", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/mediator/final", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<LogFirewall> mediatorSendToCenter(
 			@RequestBody LogPackage logPackage) throws IOException {
 		HttpClient httpClient = HttpClientBuilder.create().build();
@@ -85,7 +113,7 @@ public class OperatingSystemLogController implements Runnable{
 	}
 
 	@CrossOrigin
-	@RequestMapping(value = "/create/mediator/fw", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/mediator/forward", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<LogFirewall> mediatorAccept(
 			@RequestBody LogPackage logPackage) throws IOException {
 		HttpClient httpClient = HttpClientBuilder.create().build();

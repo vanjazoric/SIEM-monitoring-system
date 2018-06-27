@@ -17,7 +17,5 @@ public class AgentApplication {
 
 	public static void main(String[] args) throws ParseException, IOException, NumberFormatException, InterruptedException{
 		SpringApplication.run(AgentApplication.class, args);
-		AgentController ac = new AgentController();
-		ac.run("conf.json");
 	}
 }

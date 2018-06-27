@@ -38,10 +38,38 @@ public class LogFirewallController implements Runnable {
 	public int sleepTime = 1;
 	public String sendTo;
 	public String listenFrom;
-	public String confFile;
+	public String confFile = "conf8080.json";
 
 	public LogFirewallController() {
 		super();
+		JSONParser parser = new JSONParser();
+		String path = ".." + File.separator + "scripts" + File.separator
+				+ confFile;
+		JSONObject jsonObject;
+		JSONObject fwObject;
+		try {
+			jsonObject = (JSONObject) parser.parse(new FileReader(path));
+			Set<String> logTypes = jsonObject.keySet();
+			for (String logType : logTypes) {
+				if (logType.equals("fw")) {
+					fwObject = (JSONObject) jsonObject.get(logType);
+					this.sendTo= (String) fwObject.get("sendTo");
+					this.confFile = confFile;
+					this.listenFrom = (String) fwObject.get("listenFrom");
+					Thread lfcThread = new Thread(this);
+					lfcThread.start();
+				}
+			}
+		} catch (org.json.simple.parser.ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public LogFirewallController(String sendTo, String listenFrom,
@@ -53,7 +81,7 @@ public class LogFirewallController implements Runnable {
 	}
 
 	@CrossOrigin
-	@RequestMapping(value = "/create/mediatorFinal/app", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/mediator/final", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<LogFirewall> mediatorSendToCenter(
 			@RequestBody LogPackage logPackage) throws IOException {
 		HttpClient httpClient = HttpClientBuilder.create().build();
@@ -77,7 +105,7 @@ public class LogFirewallController implements Runnable {
 	}
 
 	@CrossOrigin
-	@RequestMapping(value = "/create/mediator/fw", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/mediator/forward", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<LogFirewall> mediatorAccept(
 			@RequestBody LogPackage logPackage) throws IOException {
 		HttpClient httpClient = HttpClientBuilder.create().build();

@@ -2,6 +2,7 @@ package com.agent.controller;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
@@ -39,10 +40,39 @@ public class ApplicationLogController implements Runnable{
 	public int sleepTime = 1;
 	public String sendTo;
 	public String listenFrom;
-	public String confFile;
+	public String confFile = "conf8080.json";
 
 	public ApplicationLogController() {
 		super();
+		JSONParser parser = new JSONParser();
+		String path = ".." + File.separator + "scripts" + File.separator
+				+ confFile;
+		JSONObject jsonObject;
+		JSONObject appObject;
+		
+		try {
+			jsonObject = (JSONObject) parser.parse(new FileReader(path));
+			Set<String> logTypes = jsonObject.keySet();
+			for (String logType : logTypes) {
+				if (logType.equals("ap")) {
+					appObject = (JSONObject) jsonObject.get(logType);
+					this.sendTo = (String)appObject.get("sendTo");
+					this.confFile = confFile;
+					this.listenFrom = (String) appObject.get("listenFrom");
+					Thread alcThread = new Thread(this);
+					alcThread.start();
+				}
+			}
+		} catch (org.json.simple.parser.ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public ApplicationLogController(String sendTo, String listenFrom,
@@ -54,13 +84,16 @@ public class ApplicationLogController implements Runnable{
 	}
 
 	@CrossOrigin
-	@RequestMapping(value = "/create/mediatorFinal/app", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/mediator/final", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<LogFirewall> mediatorSendToCenter(
 			@RequestBody LogPackage logPackage) throws IOException {
+		System.out.println("USLOOOOOOOOOOOOOOO");
 		HttpClient httpClient = HttpClientBuilder.create().build();
 		CloseableHttpResponse response = null;
 		try {
-			HttpPost request = new HttpPost(this.sendTo);
+			System.out.println("KRITICNI DIO: ");
+			System.out.println(sendTo);
+			HttpPost request = new HttpPost(sendTo);
 			Gson gson = new GsonBuilder().setDateFormat(
 					"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create();
 			StringEntity postingString = new StringEntity(
@@ -78,7 +111,7 @@ public class ApplicationLogController implements Runnable{
 	}
 
 	@CrossOrigin
-	@RequestMapping(value = "/create/mediator/fw", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/mediator/forward", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<LogFirewall> mediatorAccept(
 			@RequestBody LogPackage logPackage) throws IOException {
 		HttpClient httpClient = HttpClientBuilder.create().build();
