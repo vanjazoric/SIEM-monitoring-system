@@ -25,7 +25,7 @@ export class LoginComponent implements OnInit {
   login() {
     this.logInService.logIn(this.password, this.username).subscribe(
         data => {
-            let token = data.text();
+            let token = data.toString();
             localStorage.setItem('jwt', token);
             console.log("Uspesno logovanje");
             this.router.navigate(['/center']);

@@ -12,6 +12,7 @@ import { ServerLogsComponent } from './components/server-logs/server-logs.compon
 import { FirewallLogsComponent } from './components/firewall-logs/firewall-logs.component';
 import { AlarmsComponent } from './components/alarms/alarms.component';
 import { LoginComponent } from './components/login/login.component';
+import { ChangePassComponent } from './components/change-pass/change-pass.component';
 
 const appRoutes: Routes = [
     { path: 'alarms', component: AlarmsComponent},
@@ -32,7 +33,8 @@ const appRoutes: Routes = [
        ServerLogsComponent,
        FirewallLogsComponent,
        AlarmsComponent,
-       LoginComponent
+       LoginComponent,
+       ChangePassComponent
     ],
     imports: [
         BrowserModule,

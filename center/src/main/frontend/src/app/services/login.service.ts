@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {Http,Headers} from '@angular/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import {LoginDTO} from '../model/loginDTO';
 
 @Injectable({
@@ -9,12 +9,12 @@ export class LoginService {
 
   public currentUser:LoginDTO;
 
-  constructor(private http:Http) {}
+  constructor(private http:HttpClient) {}
 
   logIn(password: string, username:string){
     this.currentUser = new LoginDTO(username, password);
     var param = JSON.stringify(this.currentUser);
-    var headers = new Headers();
+    var headers = new HttpHeaders();
     headers.append('Content-Type','application/json');
     console.log(param);
     return this.http.post("https://localhost:8888/login", param, {headers:headers});
