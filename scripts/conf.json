@@ -1,11 +1,4 @@
 {
-  "fw" : {
-    "listenFrom" : "firewallLogs.txt",
-    "sendTo" : "http://localhost:8888/logfirewall/mediator/center/create",
-    "fw_filter" : {
-      "timeStamp" : "2018-04-02 20:45:08"
-    }
-  },
   "ap" : {
     "listenFrom" : "logs.txt",
     "sendTo" : "http://localhost:8888/applicationLogs/mediator/center/create",

@@ -29,7 +29,7 @@ class LogFirewall extends Log {
         size: number,
         tcpflags: string,
         tcpsync: string) {
-        super(id, timeStamp, agent);
+        super(id,null,null, timeStamp,null,null,null,null, agent);
         this.action = action;
         this.protocol = protocol;
         this.srcIp = srcIp;

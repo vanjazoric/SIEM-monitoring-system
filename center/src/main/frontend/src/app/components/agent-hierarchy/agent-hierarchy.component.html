@@ -1,0 +1,16 @@
+<div class="jumbotron">
+  <div class="card text-white bg-primary mb-3" style="max-width: 20rem;">
+    <div class="card-header">Center</div>
+    <div class="card-body">
+      <h4 class="card-title">Center</h4>
+    </div>
+  </div>
+
+  <div *ngFor="let agent of agents" class="card text-white bg-secondary mb-3" style="max-width: 20rem;">
+    <div class="card-header">{{agent.name}}</div>
+    <div class="card-body">
+      <h4 class="card-title">{{agent.name}}</h4>
+      <p class="card-text">{{agent.sendTo}}</p>
+    </div>
+  </div>
+</div>

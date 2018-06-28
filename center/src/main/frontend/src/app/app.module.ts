@@ -10,10 +10,12 @@ import { AppLogsComponent } from './components/app-logs/app-logs.component';
 import { OSLogsComponent } from './components/os-logs/os-logs.component';
 import { ServerLogsComponent } from './components/server-logs/server-logs.component';
 import { FirewallLogsComponent } from './components/firewall-logs/firewall-logs.component';
+import { AgentHierarchyComponent } from './components/agent-hierarchy/agent-hierarchy.component';
 
 const appRoutes: Routes = [
     { path: '', component: AppComponent},
-    { path: 'center', component: HomePageComponent }
+    { path: 'center', component: HomePageComponent },
+    { path: 'agent-hierarchy', component: AgentHierarchyComponent }
 ];
 
 @NgModule({
@@ -23,7 +25,8 @@ const appRoutes: Routes = [
        AppLogsComponent,
        OSLogsComponent,
        ServerLogsComponent,
-       FirewallLogsComponent
+       FirewallLogsComponent,
+       AgentHierarchyComponent
     ],
     imports: [
         BrowserModule,

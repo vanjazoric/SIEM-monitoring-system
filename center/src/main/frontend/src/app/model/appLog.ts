@@ -20,7 +20,7 @@ class ApplicationLog extends Log {
         application: string,
         messageId: number,
         message: string) {
-        super(id, timeStamp, messageId, agent);
+        super(id,null,null, timeStamp,null,null,null,null, agent);
         this.eventId = eventId;
         this.application = application;
         this.message = message;

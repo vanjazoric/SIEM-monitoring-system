@@ -11,46 +11,53 @@ public class Agent {
 	
 	@Id
 	private String id;
+	private String source;
 	private String name;
-	
-	//@DBRef
-	private Set<Log> logs;
-
+	private String sendTo;
+	private String confFile;
 	public Agent() {
 		super();
 	}
-	
-	public Agent(String id, String name, Set<Log> logs) {
+	public Agent(String id, String source, String name, String sendTo,
+			String confFile) {
 		super();
 		this.id = id;
+		this.source = source;
 		this.name = name;
-		this.logs = logs;
+		this.sendTo = sendTo;
+		this.confFile = confFile;
 	}
-
 	public String getId() {
 		return id;
 	}
-
 	public void setId(String id) {
 		this.id = id;
 	}
-
+	public String getSource() {
+		return source;
+	}
+	public void setSource(String source) {
+		this.source = source;
+	}
 	public String getName() {
 		return name;
 	}
-
 	public void setName(String name) {
 		this.name = name;
 	}
-
-	public Set<Log> getLogs() {
-		return logs;
+	public String getSendTo() {
+		return sendTo;
+	}
+	public void setSendTo(String sendTo) {
+		this.sendTo = sendTo;
+	}
+	public String getConfFile() {
+		return confFile;
+	}
+	public void setConfFile(String confFile) {
+		this.confFile = confFile;
 	}
 
-	public void setLogs(Set<Log> logs) {
-		this.logs = logs;
-	}
-	
 	
 	
 }

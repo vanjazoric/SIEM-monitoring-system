@@ -18,7 +18,7 @@ class OperatingSystemLog extends Log {
 	    taskCategory : string,
 	    source : string,
         agent: Agent ) {
-        super(id, timeStamp, agent);
+        super(id,null,null, timeStamp,null,null,null,null, agent,);
         this.eventId = eventId;
 		this.level = level;
 		this.source = source;

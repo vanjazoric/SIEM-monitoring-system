@@ -24,7 +24,7 @@ class LogServer extends Log {
         httpStatus: number,
         sizeOfReturnedObj: number,
         messageId: number) {
-        super(id, timeStamp, messageId, agent);
+            super(id,null,null, timeStamp,null,null,null,null, agent);
         this.clientIp = clientiIp;
         this.logHost = logHostL
         this.method = method;
