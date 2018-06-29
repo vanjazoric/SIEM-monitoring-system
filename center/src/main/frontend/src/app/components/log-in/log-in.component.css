@@ -1,0 +1,13 @@
+
+a{
+  color: red;
+  text-decoration: none;
+  width: 100%;
+  margin:auto;
+}
+
+.error {
+	font-family: Snell Roundhand, cursive;
+	font-size: 17px;
+	text-align: center;
+}

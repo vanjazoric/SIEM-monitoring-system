@@ -1,0 +1,17 @@
+<form>
+	<div class="form">
+		<input type="text" name="email" id="email" [(ngModel)]="username" placeholder="E-mail adresa" />
+		<br> 
+		<input type="password" name="password" id="password" [(ngModel)]="password" placeholder="Lozinka" />
+		<br> 
+		<br> 
+		<a (click)="login()" type="button" id="button" class="button">Ulaz</a> 
+		<br>
+		<div *ngIf="error" class="error">{{error}}</div>
+		<br>
+	</div>
+	<br>
+
+</form>
+
+
