@@ -32,9 +32,20 @@ public class InitApplication implements ApplicationRunner{
 	    roleService.deleteAll();
 	    Role adminRole = new Role();
 	    adminRole.setName("ADMIN");
+	    
 	    List<String> adminPermissions = new ArrayList<>();
         adminPermissions.add("CHANGE_PASSWORD");
+        adminPermissions.add("READ_LOGS");
         adminRole.setPermissions(adminPermissions);
         roleService.save(adminRole);
+        
+        Role operatorRole = new Role();
+        operatorRole.setName("OPERATOR");
+        List<String> operatorPermissions = new ArrayList<>();
+        operatorPermissions.add("CHANGE_PASSWORD");
+        operatorPermissions.add("READ_LOGS");
+        operatorRole.setPermissions(operatorPermissions);
+        roleService.save(operatorRole);
+
 	}
 }

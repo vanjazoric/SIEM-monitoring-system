@@ -7,16 +7,20 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.center.DTO.ChangePasswordDTO;
 import com.center.DTO.CurrentUserDTO;
 import com.center.DTO.LoginDTO;
 import com.center.domain.User;
@@ -41,6 +45,9 @@ public class UserController {
 	
     @Autowired
     HttpServletRequest request;
+    
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
 	
     @PostMapping(value="/api/login", consumes="application/json")
@@ -68,6 +75,26 @@ public class UserController {
                 return new ResponseEntity<>(HttpStatus.LOCKED);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+    }
+    
+    @PreAuthorize("hasAuthority('CHANGE_PASSWORD')")
+    @PostMapping(value="/change-password", produces="application/json")
+    public ResponseEntity<String> changePassword(@RequestBody ChangePasswordDTO passwordChange, @AuthenticationPrincipal User currentUser) {
+        logger.debug("Accessing POST /change-password");
+
+        User user = userService.findByUsername(currentUser.getUsername());
+
+        if (!passwordEncoder.matches(passwordChange.getOldPassword(), user.getPassword())) {
+            return new ResponseEntity<>("{ \"message\": \"Password change failed.\"}", HttpStatus.BAD_REQUEST);
+        }
+        if (!userService.validatePassword(passwordChange.getNewPassword())) {
+            return new ResponseEntity<>("{ \"message\": \"Password change failed.\"}", HttpStatus.BAD_REQUEST);
+        }
+
+        user.setPassword(passwordEncoder.encode(passwordChange.getNewPassword()));
+        userService.create(user);
+
+        return new ResponseEntity<>("{ \"message\": \"Password change successful.\"}", HttpStatus.OK);
     }
 	
 }

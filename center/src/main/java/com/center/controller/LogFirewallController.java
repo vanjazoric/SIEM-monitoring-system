@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -83,6 +84,7 @@ public class LogFirewallController {
 
 	@CrossOrigin
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('READ_LOGS')")
 	public ResponseEntity<LogFirewall> getLogFirewall(@PathVariable String id) {
 		LogFirewall logfirewall = logFirewallRepository.findOne(id);
 
@@ -95,6 +97,7 @@ public class LogFirewallController {
 
 	@CrossOrigin
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('READ_LOGS')")
 	public ResponseEntity<ArrayList<LogFirewall>> getLogFirewalls() {
 		ArrayList<LogFirewall> logfirewalls = (ArrayList<LogFirewall>) logFirewallRepository
 				.findAllByClass("log_firewall");
@@ -141,6 +144,7 @@ public class LogFirewallController {
 
 	@CrossOrigin
 	@RequestMapping(value = "/{startDate}/{endDate}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('READ_LOGS')")
 	public ResponseEntity<ArrayList<LogFirewall>> searchlogs(
 			@PathVariable String startDate, @PathVariable String endDate)
 			throws ParseException {
@@ -165,6 +169,7 @@ public class LogFirewallController {
 
 	@CrossOrigin
 	@RequestMapping(params = "srcIp", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('READ_LOGS')")
 	public ResponseEntity<ArrayList<LogFirewall>> getLogFirewallBySrcIp(
 			@RequestParam(value = "srcIp") String ip) {
 		ArrayList<LogFirewall> logs = logFirewallRepository
@@ -178,6 +183,7 @@ public class LogFirewallController {
 
 	@CrossOrigin
 	@RequestMapping(params = "dstIp", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('READ_LOGS')")
 	public ResponseEntity<ArrayList<LogFirewall>> getLogFirewallByDstIp(
 			@RequestParam(value = "dstIp") String dstIp) {
 		ArrayList<LogFirewall> logs = logFirewallRepository
@@ -191,6 +197,7 @@ public class LogFirewallController {
 
 	@CrossOrigin
 	@RequestMapping(params = "protocol", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('READ_LOGS')")
 	public ResponseEntity<ArrayList<LogFirewall>> getLogFirewallsByProtocol(
 			@RequestParam String protocol) {
 		ArrayList<LogFirewall> logs = new ArrayList<LogFirewall>();
@@ -219,6 +226,7 @@ public class LogFirewallController {
 
 	@CrossOrigin
 	@RequestMapping(params = "action", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('READ_LOGS')")
 	public ResponseEntity<ArrayList<LogFirewall>> getLogFirewallsByAction(
 			@RequestParam(value = "action") String action) {
 		ArrayList<LogFirewall> logs = new ArrayList<LogFirewall>();

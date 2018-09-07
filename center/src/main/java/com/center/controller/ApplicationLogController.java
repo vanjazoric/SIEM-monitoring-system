@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -78,6 +79,7 @@ public class ApplicationLogController {
 
 	@CrossOrigin
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('READ_LOGS')")
 	public ResponseEntity<ApplicationLog> getApplicationLog(
 			@PathVariable String id) {
 		ApplicationLog applicationLog = applicationlogRepository.findOne(id);
@@ -89,6 +91,7 @@ public class ApplicationLogController {
 
 	@CrossOrigin
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('READ_LOGS')")
 	public ResponseEntity<List<ApplicationLog>> getApplicationLogs() {
 		List<ApplicationLog> applicationLogs = applicationlogRepository
 				.findAllByClass("log_app");
@@ -110,6 +113,7 @@ public class ApplicationLogController {
 
 	@CrossOrigin
 	@RequestMapping(params = "app", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('READ_LOGS')")
 	public ResponseEntity<ArrayList<ApplicationLog>> getApplicationLogsByApplicationName(
 			@RequestParam(value = "app") String applicationName) {
 		ArrayList<ApplicationLog> logs = applicationlogRepository
@@ -124,6 +128,7 @@ public class ApplicationLogController {
 
 	@CrossOrigin
 	@RequestMapping(params = "message", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('READ_LOGS')")
 	public ResponseEntity<ArrayList<ApplicationLog>> getApplicationLogsByMessage(
 			@RequestParam(value = "priority") String message) {
 		ArrayList<ApplicationLog> logs = applicationlogRepository
@@ -138,6 +143,7 @@ public class ApplicationLogController {
 
 	@CrossOrigin
 	@RequestMapping(params = "priority", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('READ_LOGS')")
 	public ResponseEntity<ArrayList<ApplicationLog>> getApplicationLogsByPriority(
 			@RequestParam(value = "priority") String priority) {
 
@@ -169,6 +175,7 @@ public class ApplicationLogController {
 
 	@CrossOrigin
 	@RequestMapping(value = "/{startDate}/{endDate}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('READ_LOGS')")
 	public ResponseEntity<ArrayList<ApplicationLog>> searchlogs(
 			@PathVariable String startDate, @PathVariable String endDate)
 			throws ParseException {

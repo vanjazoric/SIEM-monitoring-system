@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -65,6 +66,7 @@ public class LogServerController {
 
 	@CrossOrigin
 	@RequestMapping(value = "/{id}/get", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('READ_LOGS')")
 	public ResponseEntity<LogServer> getLogServer(@PathVariable String id) {
 		LogServer logserver = logserverRepository.findOne(id);
 
@@ -77,6 +79,7 @@ public class LogServerController {
 
 	@CrossOrigin
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('READ_LOGS')")
 	public ResponseEntity<ArrayList<LogServer>> getLogServers() {
 		ArrayList<LogServer> logservers = (ArrayList<LogServer>) logserverRepository
 				.findAllByClass("log_server");
@@ -123,6 +126,7 @@ public class LogServerController {
 
 	@CrossOrigin
 	@RequestMapping(value = "/{startDate}/{endDate}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('READ_LOGS')")
 	public ResponseEntity<ArrayList<LogServer>> searchlogs(
 			@PathVariable String startDate, @PathVariable String endDate)
 			throws ParseException {
@@ -147,6 +151,7 @@ public class LogServerController {
 
 	@CrossOrigin
 	@RequestMapping(params = "ip", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('READ_LOGS')")
 	public ResponseEntity<ArrayList<LogServer>> getLogServerByIP(
 			@RequestParam(value = "ip") String ip) {
 		ArrayList<LogServer> logs = logserverRepository
@@ -160,6 +165,7 @@ public class LogServerController {
 
 	@CrossOrigin
 	@RequestMapping(params = "method", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('READ_LOGS')")
 	public ResponseEntity<ArrayList<LogServer>> getLogServerByMethod(
 			@RequestParam(value = "method") String method) {
 		ArrayList<LogServer> logs = new ArrayList<LogServer>();
@@ -189,6 +195,7 @@ public class LogServerController {
 
 	@CrossOrigin
 	@RequestMapping(params = "http", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('READ_LOGS')")
 	public ResponseEntity<ArrayList<LogServer>> getLogServerByHTTP(
 			@RequestParam(value = "http") String http) {
 		ArrayList<LogServer> logs = new ArrayList<LogServer>();

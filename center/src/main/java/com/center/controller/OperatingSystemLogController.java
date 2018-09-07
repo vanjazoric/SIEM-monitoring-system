@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -80,6 +81,7 @@ public class OperatingSystemLogController {
 
 	@CrossOrigin
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('READ_LOGS')")
 	public ResponseEntity<OperatingSystemLog> getOperatingSystemLog(
 			@PathVariable String id) {
 		OperatingSystemLog operatingsystemlog = OSlogRepository.findOne(id);
@@ -95,6 +97,7 @@ public class OperatingSystemLogController {
 
 	@CrossOrigin
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('READ_LOGS')")
 	public ResponseEntity<ArrayList<OperatingSystemLog>> getOperatingSystemLogs() {
 		ArrayList<OperatingSystemLog> operatingsystemlogs = (ArrayList<OperatingSystemLog>) OSlogRepository
 				.findAllByClass("log_OS");
@@ -141,6 +144,7 @@ public class OperatingSystemLogController {
 
 	@CrossOrigin
 	@RequestMapping(params = "level", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('READ_LOGS')")
 	public ResponseEntity<ArrayList<OperatingSystemLog>> getOperatingSystemLogByLevel(
 			@RequestParam(value = "level") String level) {
 		ArrayList<OperatingSystemLog> logs = new ArrayList<OperatingSystemLog>();
@@ -170,6 +174,7 @@ public class OperatingSystemLogController {
 
 	@CrossOrigin
 	@RequestMapping(params = "source", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('READ_LOGS')")
 	public ResponseEntity<ArrayList<OperatingSystemLog>> getOperatingSystemLogBySource(
 			@RequestParam(value = "source") String method) {
 		System.out.println(method);
@@ -185,6 +190,7 @@ public class OperatingSystemLogController {
 
 	@CrossOrigin
 	@RequestMapping(params = "eventId", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('READ_LOGS')")
 	public ResponseEntity<ArrayList<OperatingSystemLog>> getOperatingSystemLogByEventId(
 			@RequestParam(value = "eventId") int eventId) {
 		ArrayList<OperatingSystemLog> logs = OSlogRepository
@@ -199,6 +205,7 @@ public class OperatingSystemLogController {
 
 	@CrossOrigin
 	@RequestMapping(value = "/{startDate}/{endDate}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('READ_LOGS')")
 	public ResponseEntity<ArrayList<OperatingSystemLog>> searchlogs(
 			@PathVariable String startDate, @PathVariable String endDate)
 			throws ParseException {
