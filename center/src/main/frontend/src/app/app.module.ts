@@ -12,6 +12,7 @@ import { ServerLogsComponent } from './components/server-logs/server-logs.compon
 import { FirewallLogsComponent } from './components/firewall-logs/firewall-logs.component';
 import { AlarmsComponent } from './components/alarms/alarms.component';
 import { LoginComponent } from './components/login/login.component';
+import {routing} from './app-route';
 
 const appRoutes: Routes = [
     { path: 'alarms', component: AlarmsComponent},
@@ -40,6 +41,7 @@ const appRoutes: Routes = [
         HttpClientModule,
         FormsModule,
         ReactiveFormsModule,
+        routing,
         RouterModule.forRoot(
             appRoutes,
             { enableTracing: true })

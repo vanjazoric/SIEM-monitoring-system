@@ -26,7 +26,7 @@ import com.center.repository.LogServerRepository;
 import com.center.repository.OperatingSystemLogRepository;
 
 @RestController
-@RequestMapping(value = "/logs")
+@RequestMapping(value = "/api/logs")
 public class LogController {
 
 	@Autowired

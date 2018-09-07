@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import {Http,Headers} from '@angular/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {LoginDTO} from '../model/loginDTO';
+import { CurrentUser } from '../model/current-user';
 
 @Injectable({
   providedIn: 'root'
@@ -8,16 +9,15 @@ import {LoginDTO} from '../model/loginDTO';
 export class LoginService {
 
   public currentUser:LoginDTO;
+  public headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-  constructor(private http:Http) {}
+  constructor(private http: HttpClient) {}
 
-  logIn(password: string, username:string){
+  logIn(password: string, username:string):Promise<CurrentUser>{
     this.currentUser = new LoginDTO(username, password);
-    var param = JSON.stringify(this.currentUser);
-    var headers = new Headers();
-    headers.append('Content-Type','application/json');
-    console.log(param);
-    return this.http.post("https://localhost:8888/login", param, {headers:headers});
+    
+    return this.http.post('/api/login', this.currentUser, {headers:this.headers}).toPromise()
+      .then(res => res as CurrentUser);
   }
 
   logout(){

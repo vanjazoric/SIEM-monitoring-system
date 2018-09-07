@@ -23,10 +23,13 @@ export class LoginComponent implements OnInit {
   }
 
   login() {
-    this.logInService.logIn(this.password, this.username).subscribe(
+    this.logInService.logIn(this.password, this.username).then(
         data => {
-            let token = data.text();
-            localStorage.setItem('jwt', token);
+            localStorage.setItem('currentUser', JSON.stringify({
+            username: data.username,
+            role: data.role,
+            token: data.token
+          }));
             console.log("Uspesno logovanje");
             this.router.navigate(['/center']);
         },

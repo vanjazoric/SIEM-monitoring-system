@@ -14,7 +14,7 @@ export class CenterService {
     constructor(private http: HttpClient) { }
 
     getLogs() {
-        return this.http.get<Log[]>('http://localhost:8888/logs');
+        return this.http.get<Log[]>('/api/logs');
     }
 
     searchLogs(startDate: string, endDate: string) {
