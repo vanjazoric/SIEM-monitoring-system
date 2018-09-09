@@ -24,6 +24,7 @@ export class LogInComponent {
   login() {
     this.logInService.logIn(this.password, this.username).then(
         data => {
+        	console.log("AAAAAA"+data);
             localStorage.setItem('currentUser', JSON.stringify({
             username: data.username,
             role: data.role,

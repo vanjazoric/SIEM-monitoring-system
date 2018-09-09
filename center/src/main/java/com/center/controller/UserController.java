@@ -20,9 +20,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.center.DTO.ChangePasswordDTO;
 import com.center.DTO.CurrentUserDTO;
 import com.center.DTO.LoginDTO;
+import com.center.domain.PasswordChange;
 import com.center.domain.User;
 import com.center.security.TokenUtils;
 import com.center.service.UserService;
@@ -77,24 +77,18 @@ public class UserController {
         }
     }
     
-    @PreAuthorize("hasAuthority('CHANGE_PASSWORD')")
     @PostMapping(value="/change-password", produces="application/json")
-    public ResponseEntity<String> changePassword(@RequestBody ChangePasswordDTO passwordChange, @AuthenticationPrincipal User currentUser) {
+    public ResponseEntity<String> changePassword(@RequestBody PasswordChange passwordChange) {
         logger.debug("Accessing POST /change-password");
-
-        User user = userService.findByUsername(currentUser.getUsername());
-
+        User user = userService.findByUsername(passwordChange.getUsername());
         if (!passwordEncoder.matches(passwordChange.getOldPassword(), user.getPassword())) {
             return new ResponseEntity<>("{ \"message\": \"Password change failed.\"}", HttpStatus.BAD_REQUEST);
         }
-        if (!userService.validatePassword(passwordChange.getNewPassword())) {
-            return new ResponseEntity<>("{ \"message\": \"Password change failed.\"}", HttpStatus.BAD_REQUEST);
-        }
-
         user.setPassword(passwordEncoder.encode(passwordChange.getNewPassword()));
         userService.create(user);
 
         return new ResponseEntity<>("{ \"message\": \"Password change successful.\"}", HttpStatus.OK);
     }
+    
 	
 }

@@ -19,6 +19,7 @@ import { WebsocketService } from './services/websocket.service';
 
 import { CreateReportComponent } from './components/create-report/create-report.component';
 import { ReportsComponent } from './components/reports/reports.component';
+import { ChangePasswordComponent } from './components/change-password/change-password.component';
 
 
 const appRoutes: Routes = [
@@ -30,7 +31,9 @@ const appRoutes: Routes = [
     { path: 'firewall-logs', component: FirewallLogsComponent },
     { path: 'login', component: LogInComponent },
     { path: 'createReport', component: CreateReportComponent },
-    { path: 'reports', component: ReportsComponent }
+    { path: 'reports', component: ReportsComponent },
+    { path: 'changePassword', component: ChangePasswordComponent }
+
 ];
 
 @NgModule({
@@ -44,7 +47,9 @@ const appRoutes: Routes = [
        AlarmsComponent,
        LogInComponent,
        CreateReportComponent,
-       ReportsComponent
+       ReportsComponent,
+       ChangePasswordComponent,
+   
     ],
     imports: [
         BrowserModule,

@@ -12,12 +12,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.center.domain.ApplicationLog;
@@ -36,7 +35,6 @@ public class ApplicationLogController {
     private SimpMessagingTemplate template;
 	
 	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("hasAuthority('WRITE_LOGS')")
 	public ResponseEntity<ApplicationLog> createApplicationLog(
 			@RequestBody ApplicationLog applicationlog) throws Exception {
 		System.out.println("USAO U CENTAR APP LOG KONTROLER");
@@ -53,9 +51,7 @@ public class ApplicationLogController {
 		return new ResponseEntity<ApplicationLog>(saved, HttpStatus.CREATED);
 	}
 
-	@CrossOrigin
 	@RequestMapping(value = "/saveAll", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("hasAuthority('WRITE_LOGS')")
 	public ResponseEntity<ArrayList<ApplicationLog>> createOperatingSystemLog(
 			@RequestParam ArrayList<ApplicationLog> logs) throws Exception {
 		for (ApplicationLog log : logs) {
@@ -64,7 +60,6 @@ public class ApplicationLogController {
 		return new ResponseEntity<ArrayList<ApplicationLog>>(HttpStatus.OK);
 	}
 
-	@CrossOrigin
 	@RequestMapping(method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApplicationLog> updateApplicationLog(
 			@RequestParam ApplicationLog applicationlog) throws Exception {
@@ -84,9 +79,8 @@ public class ApplicationLogController {
 		return new ResponseEntity<ApplicationLog>(saved, HttpStatus.OK);
 	}
 
-	@CrossOrigin
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("hasAuthority('READ_LOGS')")
+	@PreAuthorize("hasAuthority('READ_LOGS')")
 	public ResponseEntity<ApplicationLog> getApplicationLog(
 			@PathVariable String id) {
 		ApplicationLog applicationLog = applicationlogRepository.findOne(id);
@@ -96,9 +90,8 @@ public class ApplicationLogController {
 		return new ResponseEntity<ApplicationLog>(applicationLog, HttpStatus.OK);
 	}
 
-	@CrossOrigin
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("hasAuthority('READ_LOGS')")
+	@PreAuthorize("hasAuthority('READ_LOGS')")
 	public ResponseEntity<List<ApplicationLog>> getApplicationLogs() {
 		List<ApplicationLog> applicationLogs = applicationlogRepository
 				.findAllByClass("log_app");
@@ -106,7 +99,6 @@ public class ApplicationLogController {
 				HttpStatus.OK);
 	}
 
-	@CrossOrigin
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApplicationLog> deleteApplicationLogById(
 			@PathVariable String id) throws Exception {
@@ -118,9 +110,8 @@ public class ApplicationLogController {
 		return new ResponseEntity<ApplicationLog>(HttpStatus.NOT_FOUND);
 	}
 
-	@CrossOrigin
 	@RequestMapping(params = "app", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("hasAuthority('READ_LOGS')")
+	@PreAuthorize("hasAuthority('READ_LOGS')")
 	public ResponseEntity<ArrayList<ApplicationLog>> getApplicationLogsByApplicationName(
 			@RequestParam(value = "app") String applicationName) {
 		ArrayList<ApplicationLog> logs = applicationlogRepository
@@ -133,9 +124,8 @@ public class ApplicationLogController {
 				HttpStatus.OK);
 	}
 
-	@CrossOrigin
 	@RequestMapping(params = "message", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("hasAuthority('READ_LOGS')")
+	@PreAuthorize("hasAuthority('READ_LOGS')")
 	public ResponseEntity<ArrayList<ApplicationLog>> getApplicationLogsByMessage(
 			@RequestParam(value = "message") String message) {
 		ArrayList<ApplicationLog> logs = applicationlogRepository
@@ -148,9 +138,8 @@ public class ApplicationLogController {
 				HttpStatus.OK);
 	}
 
-	@CrossOrigin
 	@RequestMapping(params = "priority", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("hasAuthority('READ_LOGS')")
+	@PreAuthorize("hasAuthority('READ_LOGS')")
 	public ResponseEntity<ArrayList<ApplicationLog>> getApplicationLogsByPriority(
 			@RequestParam(value = "priority") String priority) {
 
@@ -180,9 +169,8 @@ public class ApplicationLogController {
 				HttpStatus.OK);
 	}
 
-	@CrossOrigin
 	@RequestMapping(value = "/{startDate}/{endDate}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("hasAuthority('READ_LOGS')")
+	@PreAuthorize("hasAuthority('READ_LOGS')")
 	public ResponseEntity<ArrayList<ApplicationLog>> searchlogs(
 			@PathVariable String startDate, @PathVariable String endDate)
 			throws ParseException {

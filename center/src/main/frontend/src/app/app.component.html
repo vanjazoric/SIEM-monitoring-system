@@ -1,42 +1,48 @@
-<button *ngIf="currentLocation!='/login'" type="button" class="btn btn-primary" (click)="triggeredAlarms()">
-    <i class="fa fa-bell" aria-hidden="true" ></i>        
+<button *ngIf="currentLocation!='/login' && role=='ADMIN'"type="button"
+	class="btn btn-primary" (click)="triggeredAlarms()">
+	<i class="fa fa-bell" aria-hidden="true"></i>
 </button>
+&emsp;
+<button *ngIf="currentLocation!='/login' && currentLocation!='/changePassword'" id="logoutButton" class="btn btn-primary" value="Izloguj se" (click)="logout()">Izloguj
+	se</button>
 
 <div class="modal fade" aria-hidden="true" id="showAlarms">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3 class="modal-title" id="exampleModalLabel">Aktivirani alarmi:</h3>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>OPIS</th>
-                        <th>TRAJANJE</th>
-                        <th>BROJ LOGOVA</th>
-                        <th>VREME</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let alarm of alarms">
-                        <td>{{alarm.description}}</td>
-                        <td>{{alarm.duration}} miliseconds</td>
-                        <td>{{alarm.numOfItems}}</td>
-                        <td>{{alarm.date | date :'dd.MM.yyyy. HH:mm'}}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h3 class="modal-title" id="exampleModalLabel">Aktivirani
+					alarmi:</h3>
+				<button type="button" class="close" data-dismiss="modal"
+					aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<table class="table">
+					<thead>
+						<tr>
+							<th>OPIS</th>
+							<th>TRAJANJE</th>
+							<th>BROJ LOGOVA</th>
+							<th>VREME</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr *ngFor="let alarm of alarms">
+							<td>{{alarm.description}}</td>
+							<td>{{alarm.duration}} miliseconds</td>
+							<td>{{alarm.numOfItems}}</td>
+							<td>{{alarm.date | date :'dd.MM.yyyy. HH:mm'}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
 <router-outlet></router-outlet>
 
 

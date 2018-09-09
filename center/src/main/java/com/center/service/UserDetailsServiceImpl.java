@@ -32,7 +32,6 @@ public class UserDetailsServiceImpl implements UserDetailsService{
     private HttpServletRequest request;
 	
     public UserDetails loadUserByUsername(String username) {
-        System.out.println("user details"+username);
     	String ip = getClientIP();
         if (loginAttemptService.isBlocked(ip)) {
             request.setAttribute("blocked", true);
@@ -45,6 +44,9 @@ public class UserDetailsServiceImpl implements UserDetailsService{
         }
         Role role = roleRepository.findRoleByName(user.getRole());
         List<String> permissions = role.getPermissions();
+        for (String string : permissions) {
+			System.out.println(string);
+		}
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < permissions.size(); i++) {
             stringBuilder.append(permissions.get(i));
