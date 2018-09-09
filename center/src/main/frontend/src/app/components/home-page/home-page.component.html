@@ -8,9 +8,6 @@
 
 	<div class="collapse navbar-collapse" id="navbarColor01">
 		<ul class="navbar-nav mr-auto">
-			<li class="nav-item active"><a class="nav-link" href="center">Svi
-					logovi&emsp;<span class="sr-only">(current)</span>
-			</a></li>
 			<li class="nav-item"><a class="nav-link" href="app-logs">Logovi
 					aplikacija&emsp;<span class="sr-only">(current)</span>
 			</a></li>
@@ -26,48 +23,13 @@
 			<li class="nav-item"><a class="nav-link" href="alarms">Alarmi<span
 					class="sr-only">(current)</span>
 			</a></li>
+			<li class="nav-item"><a class="nav-link" href="createReport">Kreiranje izvestaja<span
+				class="sr-only">(current)</span>
+			</a></li>
+			<li class="nav-item"><a class="nav-link" href="reports">Izvestaji<span
+				class="sr-only">(current)</span>
+			</a></li>
 		</ul>
 	</div>
 </nav>
 
-<div class="jumbotron">
-
-	<p class="display-5">
-		Ukupno logova:&nbsp; <b>{{numOfLogs}}</b>.
-	</p>
-
-	<form>
-		<legend style="font-size: 15px;">Prikaz logova u određenom
-			vremenskom periodu</legend>
-		<div class="form-group">
-			<label for="startTime">Od:</label> <input type="datetime-local"
-				class="form-control" id="startTime" [(ngModel)]="startDate"
-				name="startTime">
-		</div>
-		<div class="form-group">
-			<label for="endTime">Do:</label> <input type="datetime-local"
-				class="form-control" id="endTime" [(ngModel)]="endDate"
-				name="endTime">
-		</div>
-		<button type="submit" (click)="searchLogs()" class="btn btn-primary">Filtriraj</button>
-	</form>
-</div>
-<div>
-	<br>
-	<table class="table">
-		<thead>
-			<tr>
-				<th></th>
-				<th>Vreme</th>
-				<th>ID</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr *ngFor="let log of logs">
-				<td>&#8227;</td>
-				<td>{{log.timeStamp | date :'dd.MM.yyyy. HH:mm'}} h</td>
-				<td>{{log.id}}</td>
-			</tr>
-		</tbody>
-	</table>
-</div>

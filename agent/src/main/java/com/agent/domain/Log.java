@@ -20,17 +20,17 @@ public class Log {
 
 	//private Long MessageId;
     
-	private Agent agent;
+	private String agentName;
 
 	public Log() {
 		super();
 	}
 
-	public Log(String id, Date timeStamp, Agent agent) {
+	public Log(String id, Date timeStamp, String agentName) {
 		super();
 		this.id = id;
         this.timeStamp=timeStamp;
-		this.agent = agent;
+		this.agentName = agentName;
 	}
 
 	public String getId() {
@@ -49,12 +49,12 @@ public class Log {
 		this.timeStamp = timeStamp;
 	}
 
-	public Agent getAgent() {
-		return agent;
+	public String getAgentName() {
+		return agentName;
 	}
 
-	public void setAgent(Agent agent) {
-		this.agent = agent;
+	public void setAgentName(String agentName) {
+		this.agentName = agentName;
 	}
 
 	public String getVersion() {
@@ -83,7 +83,7 @@ public class Log {
 
 	@Override
 	public String toString() {
-		return "Log [id=" + id + ", timeStamp=" + timeStamp + ", agent=" + agent + "]";
+		return "Log [id=" + id + ", timeStamp=" + timeStamp + ", agentName=" + agentName + "]";
 	}
 
 

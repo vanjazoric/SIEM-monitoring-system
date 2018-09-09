@@ -37,10 +37,10 @@ public class LogFirewall extends Log {
 		this.tcpsync = tcpsync;
 	}
 
-	public LogFirewall(String id, Date timeStamp, Agent agent, String action,
+	public LogFirewall(String id, Date timeStamp, String agentName, String action,
 			String protocol, String srcIp, String dstIp, String srcPort,
 			String dstPort, int size, String tcpflags, String tcpsync) {
-		super(id, timeStamp, agent);
+		super(id, timeStamp, agentName);
 		this.action = action;
 		this.protocol = protocol;
 		this.srcIp = srcIp;

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import {CenterService} from "../../services/center.service";
+import { WebsocketService } from "../../services/websocket.service";
 
 @Component({
     selector: 'app-server-logs',
@@ -11,6 +12,7 @@ import {CenterService} from "../../services/center.service";
 export class ServerLogsComponent implements OnInit {
     private oneLog: any;
     logs: any[];
+    _log:any;
     numOfLogs: number;
     ip: string;
     httpStatus: string;
@@ -19,17 +21,14 @@ export class ServerLogsComponent implements OnInit {
     startDate: string;
     endDate: string;
 
-    constructor(private router: Router,
-        private centerService: CenterService) {
-        setTimeout(function() {
-               centerService.getServerLogs()
-            .subscribe(
-            data => {
-                this.logs = data;
-                this.numOfLogs = this.logs.length;
-                console.log(this.numOfLogs);
-
-            });}, 50000); //svakih 30 sekundi se dobavljaju novi logovi
+    constructor(private router: Router, private centerService: CenterService, private webSocketService : WebsocketService) {
+        let stompClient = this.webSocketService.connect();
+        stompClient.connect({}, frame => {
+            stompClient.subscribe("/logs/serverLogs", saved => {
+                this._log = JSON.parse(saved.body);
+                this.logs.push(this._log);
+            });
+        });
     }
 
 

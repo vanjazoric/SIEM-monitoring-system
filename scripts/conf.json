@@ -1,33 +1,39 @@
 {
-  "fw" : {
-    "listenFrom" : "firewallLogs.txt",
-    "sendTo" : "https://localhost:8888/logfirewall",
-    "fw_filter" : {
-      "timeStamp" : "2018-04-02 20:45:08"
-    }
-  },
-  "os" : {
-    "listenFrom" : null,
-    "sendTo" : "https://localhost:8888/OSlogs",
-    "os_filter" : {
-      "timeStamp" : "2018-05-15 18:17:36",
-      "priority" : "Information"
-    }
+  "agentName" : "agent1",
+  "parent" : {
+    "name" : "center",
+    "ip" : "localhost",
+    "port" : "8443/api"
   },
   "ap" : {
     "listenFrom" : "logs.txt",
-    "sendTo" : "https://localhost:8888/applicationLogs",
+    "sendTo" : "http://localhost:8888/applicationLogs",
     "ap_filter" : {
       "timeStamp" : "2018-04-03 11:21:08",
       "application" : "Image processing application",
       "priority" : "Error|Information"
     }
   },
-  "ls" : {
+    "ls" : {
     "listenFrom" : "logserver.txt",
-    "sendTo" : "https://localhost:8888/logserver",
+    "sendTo" : "http://localhost:8888/logserver",
     "ls_filter" : {
       "timeStamp" : "2018-04-02 22:02:46"
     } 
+  },
+  "fw" : {
+    "listenFrom" : "firewallLogs.txt",
+    "sendTo" : "http://localhost:8888/logfirewall",
+    "fw_filter" : {
+      "timeStamp" : "2018-04-02 20:45:08"
+    }
+  },
+  "os" : {
+    "listenFrom" : null,
+    "sendTo" : "http://localhost:8888/OSlogs",
+    "os_filter" : {
+      "timeStamp" : "2018-05-15 18:17:36",
+      "priority" : "Information"
+    }
   }
 }

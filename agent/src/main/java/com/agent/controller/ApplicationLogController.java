@@ -6,13 +6,22 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Set;
 
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -23,7 +32,15 @@ import com.agent.domain.ApplicationLog;
 @RestController
 @RequestMapping(value = "/applicationLog")
 public class ApplicationLogController {
+	
+	@Autowired
+	Agent agent;
+	
 	public int sleepTime = 30000;
+	
+	public ApplicationLogController(Agent agent){
+		this.agent=agent;
+	}
 	
 	public void loadApplicationLogs(String listenFrom, String confFile, String sendTo) throws IOException, ParseException {
 		// TODO Auto-generated method stub
@@ -47,8 +64,7 @@ public class ApplicationLogController {
 			    String application = data[4];
 			    Long messageId = Long.parseLong(data[5]);
 			    String message = data[6];
-			    Agent agent = new Agent();
-			    ApplicationLog al = new ApplicationLog(logId, timeStamp, agent, eventId, priority, application, messageId, message);
+			    ApplicationLog al = new ApplicationLog(logId, timeStamp, this.agent.getName(), eventId, priority, application, messageId, message);
 			    System.out.println(al);
 			    if(filterLog(al, confFile)){
 			    	sendToCenter(al, sendTo);
@@ -62,13 +78,18 @@ public class ApplicationLogController {
 	}
 	
 	public void sendToCenter(ApplicationLog log, String sendTo) throws IOException {
-		RestTemplate restTemplate=new RestTemplate();
-		sendTo=sendTo+"/create";
+		RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+        headers.set("agentName", this.agent.getName());
+        headers.setContentType(MediaType.APPLICATION_JSON);
+		//sendTo=sendTo+"/create";
 		
-		HttpEntity<ApplicationLog> request= new HttpEntity<>(log);
+		HttpEntity<ApplicationLog> request= new HttpEntity<>(log,headers);
 		
-		ResponseEntity<ApplicationLog> result = restTemplate.postForEntity(sendTo, request, ApplicationLog.class);
-		System.out.println("Status code:" + result.getStatusCode());
+		/*ResponseEntity<ApplicationLog>*/Object response = restTemplate.exchange(sendTo,HttpMethod.POST, request,Object.class);
+		System.out.println("Status code:"/* + result.getStatusCode()*/);
 	}
 	
 	public boolean filterLog(ApplicationLog appLog, String confFile){

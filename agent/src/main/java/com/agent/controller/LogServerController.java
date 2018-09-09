@@ -6,24 +6,39 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Set;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import com.agent.domain.Agent;
+import com.agent.domain.LogFirewall;
 import com.agent.domain.LogServer;
 
 @RestController
 @RequestMapping(value = "/logService")
 public class LogServerController {
 	public int sleepTime = 30000; 
+	
+	@Autowired
+	Agent agent;
+	
+	public LogServerController(Agent agent){
+		this.agent=agent;
+	}
+	
+	
 	
 	public void readLogs(String listenFrom, String confFile, String sendTo) {
 		File relativeFile = new File(".." + File.separator + "scripts"
@@ -51,7 +66,7 @@ public class LogServerController {
 				LogServer l = new LogServer(null, timeStamp, tokens[2],
 						tokens[3], tokens[5], tokens[4], tokens[6],
 						Integer.valueOf(tokens[7]), Integer.valueOf(tokens[8]),
-						new Agent());
+						this.agent.getName());
 				if(filterLog(l, confFile)){
 					sendToCenter(l, sendTo);
 				}
@@ -64,13 +79,18 @@ public class LogServerController {
 	}
 
 	public void sendToCenter(LogServer log, String sendTo) throws IOException {
-		RestTemplate restTemplate=new RestTemplate();
+		RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+        headers.set("agentName", this.agent.getName());
+        headers.setContentType(MediaType.APPLICATION_JSON);
 		sendTo=sendTo+"/create";
 		
-		HttpEntity<LogServer> request= new HttpEntity<>(log);
+		HttpEntity<LogServer> request= new HttpEntity<>(log,headers);
 		
-		ResponseEntity<LogServer> result = restTemplate.postForEntity(sendTo, request, LogServer.class);
-		System.out.println("Status code:" + result.getStatusCode());
+		/*ResponseEntity<ApplicationLog>*/Object response = restTemplate.exchange(sendTo,HttpMethod.POST, request,Object.class);
+		System.out.println("Status code:"/* + result.getStatusCode()*/);
 	}
 	
 	public boolean filterLog(LogServer ls_log, String confFile){

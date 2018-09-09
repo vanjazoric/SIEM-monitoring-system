@@ -32,3 +32,11 @@
 	font-size: 13px;
 	font-style: italic;
 }
+
+.badge.badge-danger {
+	background: red;
+	text-align: center;
+	width: 400px;
+	font-stretch: ultra-expanded;
+	margin-left: 35%;
+}

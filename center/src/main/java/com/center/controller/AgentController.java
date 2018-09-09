@@ -2,26 +2,36 @@ package com.center.controller;
 
 import java.util.ArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.center.DTO.AgentDTO;
 import com.center.domain.Agent;
 import com.center.repository.AgentRepository;
+import com.center.service.AgentService;
 
 @RestController
 @RequestMapping(value = "/agent")
 public class AgentController {
 
 	@Autowired
+	AgentService agentService;
+	
+	@Autowired
 	AgentRepository agentRepository;
+	
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	@CrossOrigin
 	@RequestMapping(value = "/create", 
@@ -134,6 +144,13 @@ public class AgentController {
 			e.printStackTrace();
 		}
         return new ResponseEntity<Agent>(HttpStatus.OK);
+    }
+	
+    @PostMapping(value = "/save", consumes = "application/json")
+    public ResponseEntity<String> saveAgent(@RequestBody AgentDTO agentInfoDTO){
+        logger.debug("Accessing POST /agent/save");
+        agentService.saveAgentInfo(new Agent(agentInfoDTO));
+        return new ResponseEntity<>("Agent accepted by center.", HttpStatus.OK);
     }
 	
 }

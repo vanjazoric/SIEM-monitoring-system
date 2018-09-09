@@ -7,10 +7,15 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +23,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.agent.domain.Agent;
 import com.agent.domain.Level;
+import com.agent.domain.LogServer;
 import com.agent.domain.OperatingSystemLog;
 import com.sun.jna.platform.win32.Advapi32Util.EventLogIterator;
 import com.sun.jna.platform.win32.Advapi32Util.EventLogRecord;
@@ -54,6 +60,13 @@ public class OperatingSystemLogController {
 	 * ResponseEntity<OperatingSystemLog>(saved, HttpStatus.CONFLICT); }
 	 */
 
+	@Autowired
+	Agent agent;
+	
+	public OperatingSystemLogController(Agent agent){
+		this.agent=agent;
+	}
+		
 	public void getOSlogs(String confFile, String sendTo) throws ParseException, IOException {
 		
 		EventLogIterator iter = new EventLogIterator("System");
@@ -81,7 +94,7 @@ public class OperatingSystemLogController {
 			int eventId = record.getStatusCode();
 
 			OperatingSystemLog log = new OperatingSystemLog(null, level, date,
-					source, eventId, new Agent());
+					source, eventId, this.agent.getName());
 			if(filterLog(log, confFile)){
 				sendToCenter(log, sendTo);
 			}
@@ -89,13 +102,18 @@ public class OperatingSystemLogController {
 	}
 
 	public void sendToCenter(OperatingSystemLog log, String sendTo) throws IOException {
-		RestTemplate restTemplate=new RestTemplate();
+		RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+        headers.set("agentName", this.agent.getName());
+        headers.setContentType(MediaType.APPLICATION_JSON);
 		sendTo=sendTo+"/create";
 		
-		HttpEntity<OperatingSystemLog> request= new HttpEntity<>(log);
+		HttpEntity<OperatingSystemLog> request= new HttpEntity<>(log,headers);
 		
-		ResponseEntity<OperatingSystemLog> result = restTemplate.postForEntity(sendTo, request, OperatingSystemLog.class);
-		System.out.println("Status code:" + result.getStatusCode());
+		/*ResponseEntity<ApplicationLog>*/Object response = restTemplate.exchange(sendTo,HttpMethod.POST, request,Object.class);
+		System.out.println("Status code:"/* + result.getStatusCode()*/);
 	}
 	
 	public boolean filterLog(OperatingSystemLog osLog, String confFile){

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import {CenterService} from "../../services/center.service";
+import { CenterService } from "../../services/center.service";
+import { WebsocketService } from "../../services/websocket.service"; 
 
 @Component({
     selector: 'app-os-logs',
@@ -11,6 +12,7 @@ import {CenterService} from "../../services/center.service";
 export class OSLogsComponent implements OnInit {
     private oneLog: any;
     logs: any[];
+    _log : any;
     numOfLogs: number;
     source: string;
     eventId: number;
@@ -19,11 +21,14 @@ export class OSLogsComponent implements OnInit {
     startDate: string;
     endDate: string;
 
-    constructor(private router: Router,
-        private centerService: CenterService) {
-        setTimeout(function() {
-            location.reload();
-        }, 50000); //svakih 30 sekundi se dobavljaju novi logovi 
+    constructor(private router: Router, private centerService: CenterService, private webSocketService : WebsocketService) {
+        let stompClient = this.webSocketService.connect();
+        stompClient.connect({}, frame => {
+            stompClient.subscribe("/logs/osLogs", saved => {
+                this._log = JSON.parse(saved.body);
+                this.logs.push(this._log);
+            });
+        });
     }
 
 
@@ -88,7 +93,9 @@ export class OSLogsComponent implements OnInit {
             data => {
                 this.logs = data;
                 this.numOfLogs = this.logs.length;
-                console.log(this.numOfLogs);
+                for (var i=0; i<this.numOfLogs; i++){
+                	console.log(this.logs[i]);
+                }
             });
     }
 }

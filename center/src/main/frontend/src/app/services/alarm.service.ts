@@ -6,7 +6,7 @@ import { Alarm } from '../model/alarm';
   providedIn: 'root'
 })
 export class AlarmService {
-  public sendTo : string = 'http://localhost:8888/alarms'; 
+  public sendTo : string = '/api/alarms'; 
 
   constructor(private httpClient : HttpClient) { 
 
@@ -18,6 +18,18 @@ export class AlarmService {
 
   createAlarm(alarm : Alarm){
     return this.httpClient.post<Alarm>(this.sendTo, alarm);
+  }
+
+  updateAlarm(alarm: Alarm){
+    return this.httpClient.put<Alarm>(this.sendTo, alarm);
+  }
+
+  deleteAlarm(alarmId: string){
+    return this.httpClient.delete(this.sendTo + "/" + alarmId, {responseType : "text"});
+  }
+
+  getTriggeredAlarms(){
+    return this.httpClient.get<Alarm[]>(this.sendTo + "/triggeredAlarms");
   }
 
 }

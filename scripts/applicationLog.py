@@ -21,9 +21,9 @@ def generate():
     eventId_5_Warn = 514
     priorityList = ["Information", "Error", "Warning"]
     application = "Image processing application"
-    message_id = {1 : "The image is saved", 2 : "The picture is loaded",
+    message_id = {1 : "User entered a wrong password from the same machine.", 2 : "The picture is loaded",
                   3 : "The picture is enlarged", 4 : "The image is rotated",
-                  5 : "The image is cropped"}
+                  5 : "Someone entered a wrong password for same username."}
     file = open("logs.txt", "w")
     while True:
         timeStamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')

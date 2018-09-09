@@ -7,18 +7,24 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Set;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import com.agent.domain.Agent;
+import com.agent.domain.ApplicationLog;
 import com.agent.domain.LogFirewall;
 
 @RestController
@@ -26,6 +32,13 @@ import com.agent.domain.LogFirewall;
 public class LogFirewallController {
 	public int sleepTime = 30000;
 
+	@Autowired
+	Agent agent;
+	
+	public LogFirewallController(Agent agent){
+		this.agent=agent;
+	}
+	
 	public void parse(String listenFrom, String confFile, String sendTo) {
 		File relativeFile = new File(".." + File.separator + "scripts"
 				+ File.separator + listenFrom);
@@ -43,7 +56,6 @@ public class LogFirewallController {
 				}
 				String tokens[] = line.trim().split(" ");
 				String id = null;
-				Agent agent = new Agent();
 				Date timeStamp = sdf.parse(tokens[0] + " " + tokens[1]);
 				String action = tokens[2];
 				String protocol = tokens[3];
@@ -54,7 +66,7 @@ public class LogFirewallController {
 				int size = Integer.parseInt(tokens[8]);
 				String tcpflags = tokens[9];
 				String tcpsync = tokens[10];
-				LogFirewall lf = new LogFirewall(id, timeStamp, agent, action,
+				LogFirewall lf = new LogFirewall(id, timeStamp, this.agent.getName(), action,
 						protocol, srcIp, dstIp, srcPort, dstPort, size,
 						tcpflags, tcpsync);
 				if(filterLog(lf, confFile)){
@@ -72,13 +84,18 @@ public class LogFirewallController {
 	}
 	
 	public void sendToCenter(LogFirewall log, String sendTo) throws IOException {
-		RestTemplate restTemplate=new RestTemplate();
+		RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+        headers.set("agentName", this.agent.getName());
+        headers.setContentType(MediaType.APPLICATION_JSON);
 		sendTo=sendTo+"/create";
 		
-		HttpEntity<LogFirewall> request= new HttpEntity<>(log);
+		HttpEntity<LogFirewall> request= new HttpEntity<>(log,headers);
 		
-		ResponseEntity<LogFirewall> result = restTemplate.postForEntity(sendTo, request, LogFirewall.class);
-		System.out.println("Status code:" + result.getStatusCode());
+		/*ResponseEntity<ApplicationLog>*/Object response = restTemplate.exchange(sendTo,HttpMethod.POST, request,Object.class);
+		System.out.println("Status code:"/* + result.getStatusCode()*/);
 
 	}
 	

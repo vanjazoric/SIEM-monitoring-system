@@ -1,0 +1,62 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <a class="navbar-brand" href="#">SIEM centar</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse"
+    data-target="#navbarColor01" aria-controls="navbarColor01"
+    aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  
+  <div class="collapse navbar-collapse" id="navbarColor01">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item"><a class="nav-link" href="app-logs">Logovi
+        aplikacija&emsp;<span class="sr-only">(current)</span>
+      </a></li>
+      <li class="nav-item"><a class="nav-link" href="server-logs">Logovi
+        servera&emsp;<span class="sr-only">(current)</span>
+      </a></li>
+      <li class="nav-item"><a class="nav-link" href="OS-logs">Logovi
+        operativnog sistema&emsp;<span class="sr-only">(current)</span>
+      </a></li>
+      <li class="nav-item"><a class="nav-link" href="firewall-logs">Logovi
+        firewall-a <span class="sr-only">(current)</span>
+      </a></li>
+      <li class="nav-item"><a class="nav-link" href="alarms">Alarmi<span
+        class="sr-only">(current)</span>
+      </a></li>
+      <li class="nav-item"><a class="nav-link" href="createReport">Kreiranje izvestaja<span
+        class="sr-only">(current)</span>
+      </a></li>
+      <li class="nav-item active"><a class="nav-link" href="reports">Izvestaji<span
+        class="sr-only">(current)</span>
+      </a></li>
+    </ul>
+  </div>
+</nav>
+
+<br/>
+<div class="row">
+  <div class="col-1"></div>
+  <div class="col-8">
+    <table class="table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Naziv</th>
+          <th>Od</th>
+          <th>Do</th>
+          <th>Broj logova</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let report of reports">
+          <td>&#8227;</td>
+          <td>{{report.title}}</td>
+          <td>{{report.startDate | date :'dd.MM.yyyy. HH:mm'}}</td>
+          <td>{{report.endDate | date :'dd.MM.yyyy. HH:mm'}}</td>
+          <td>{{report.amount}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="col-2"></div>
+</div>

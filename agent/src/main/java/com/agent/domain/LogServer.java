@@ -24,8 +24,8 @@ public class LogServer extends Log {
 
 	public LogServer(String id, Date timeStamp, String clientIp, String logHost,
 			String method, String messageId, String resourceRequest,
-			int httpStatus, int sizeOfReturnedObj, Agent agent) {
-		super(id, timeStamp, agent);
+			int httpStatus, int sizeOfReturnedObj, String agentName) {
+		super(id, timeStamp, agentName);
 		this.clientIp = clientIp;
 		this.logHost = logHost;
 		this.messageId = messageId;
