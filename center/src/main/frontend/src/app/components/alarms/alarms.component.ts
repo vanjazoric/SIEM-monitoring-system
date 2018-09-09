@@ -128,6 +128,9 @@ export class AlarmsComponent implements OnInit {
       .subscribe(data =>{
         this.alarm = data;
         this.alarm.conditionsForShow = data.conditions.split(";")[0] + ": " + data.conditions.split(";")[1];
+        if(this.alarm.conditionsForShow == "null: null"){
+          this.alarm.conditionsForShow = "------------------";
+        }
         this.alarms.push(this.alarm);
         $('#createAlarm').modal('hide');
       }
