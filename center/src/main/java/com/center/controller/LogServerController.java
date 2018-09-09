@@ -31,7 +31,7 @@ public class LogServerController {
     private SimpMessagingTemplate template;
 
 	@RequestMapping(value = "/create", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasAuthority('WRITE_LOGS')")
+	//@PreAuthorize("hasAuthority('WRITE_LOGS')")
 	public ResponseEntity<LogServer> createLogServer(
 			@RequestBody LogServer logserver) {
 		LogServer saved = new LogServer();

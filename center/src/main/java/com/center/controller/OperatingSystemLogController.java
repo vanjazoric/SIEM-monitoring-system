@@ -33,7 +33,7 @@ public class OperatingSystemLogController {
 	private SimpMessagingTemplate template;
 
 	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasAuthority('WRITE_LOGS')")
+	//@PreAuthorize("hasAuthority('WRITE_LOGS')")
 	public ResponseEntity<ArrayList<OperatingSystemLog>> createOperatingSystemLog(
 			@RequestBody ArrayList<OperatingSystemLog> logs) throws Exception {
 		for (OperatingSystemLog log : logs) {
@@ -44,7 +44,7 @@ public class OperatingSystemLogController {
 	}
 
 	@RequestMapping(value = "/create", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasAuthority('WRITE_LOGS')")
+	//@PreAuthorize("hasAuthority('WRITE_LOGS')")
 	public ResponseEntity<OperatingSystemLog> createOperatingSystemLog(
 			@RequestBody OperatingSystemLog operatingSystemLog) {
 		OperatingSystemLog saved = new OperatingSystemLog();

@@ -32,7 +32,7 @@ public class LogFirewallController {
 	private SimpMessagingTemplate template;
 
 	@RequestMapping(value = "/createall", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasAuthority('WRITE_LOGS')")
+	//@PreAuthorize("hasAuthority('WRITE_LOGS')")
 	public ResponseEntity<ArrayList<LogFirewall>> createFirewallLogs(@RequestBody ArrayList<LogFirewall> logs)
 			throws Exception {
 		for (LogFirewall log : logs) {
@@ -43,7 +43,7 @@ public class LogFirewallController {
 
 	@CrossOrigin
 	@RequestMapping(value = "/create", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasAuthority('WRITE_LOGS')")
+	//@PreAuthorize("hasAuthority('WRITE_LOGS')")
 	public ResponseEntity<LogFirewall> createLogFirewall(@RequestBody LogFirewall logfirewall) {
 		LogFirewall saved = new LogFirewall();
 		saved.setTimeStamp(logfirewall.getTimeStamp());
