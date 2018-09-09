@@ -1,0 +1,62 @@
+.form {
+  margin: 0 auto;
+  position: fixed;
+  top: 15%;
+  left: 50%;
+  -moz-transform: translate3d(-50%, 0, 0);
+  -ms-transform: translate3d(-50%, 0, 0);
+  -webkit-transform: translate3d(-50%, 0, 0);
+  transform: translate3d(-50%, 0, 0);
+  width: 400px;
+  padding: 20px;
+  overflow: hidden;
+  background-color: black;
+  border: 3px solid rgba(255, 255, 255, 0.4);
+  background: inherit;
+  -moz-border-radius: 12px;
+  -webkit-border-radius: 12px;
+  border-radius: 12px;
+  background: rgba(13, 27, 148, 0.1);
+}
+
+
+input[type=text], input[type=password]{
+  display: block;
+  position: relative;
+  border-radius: 6px;
+  font-size: 150%;
+  font-style: italic;
+  background: transparent;
+  border: 2px solid rgba(128, 123, 177, 0.4);
+  margin-top: 5px;
+  color:#2020ff254253229;
+  padding: 15px 20px;
+  width: 89%;
+  outline: white; 
+  align: center;
+}
+
+.form .button {
+  text-align: center;
+  padding: 10px 20px;
+  width: 100%;
+  font-size: 200%;
+  font-family: monospace;
+  font-weight: 200;
+  display: block;
+  color:rgb(71, 41, 180);
+  position: relative;
+  border: 2px solid rgb(71, 41, 180);
+  background: rgba(255, 255, 255, 0.3);
+  -moz-border-radius: 6px;
+  -webkit-border-radius: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  width: 89%;
+}
+
+
+.form .button:hover, .form .small_button:hover {
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid white;
+}

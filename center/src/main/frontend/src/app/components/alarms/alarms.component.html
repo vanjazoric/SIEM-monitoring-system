@@ -8,9 +8,6 @@
   
   <div class="collapse navbar-collapse" id="navbarColor01">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item active"><a class="nav-link" href="center">Svi
-        logovi <span class="sr-only">(current)</span>
-      </a></li>
       <li class="nav-item"><a class="nav-link" href="app-logs">Logovi
         aplikacija <span class="sr-only">(current)</span>
       </a></li>
@@ -23,9 +20,15 @@
       <li class="nav-item"><a class="nav-link" href="firewall-logs">Logovi
         firewall-a <span class="sr-only">(current)</span>
       </a></li>
-      <li class="nav-item"><a class="nav-link" href="alarms">Alarmi
+      <li class="nav-item active"><a class="nav-link" href="alarms">Alarmi
         <span class="sr-only">(current)</span>
       </a></li>
+      <li class="nav-item"><a class="nav-link" href="createReport">Kreiranje izvestaja<span
+				class="sr-only">(current)</span>
+			</a></li>
+			<li class="nav-item"><a class="nav-link" href="reports">Izvestaji<span
+				class="sr-only">(current)</span>
+			</a></li>
     </ul>
   </div>
 </nav>
@@ -33,7 +36,7 @@
   <div class="row">
     <div class="col-sm-11"></div>
     <div class="col-sm-1">
-      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Kreiraj alarm</button>
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createAlarm">Kreiraj alarm</button>
     </div>
   </div>
   <div class="row">
@@ -49,6 +52,8 @@
       <th>OPIS</th>
       <th>PERIOD</th>
       <th>BROJ LOGOVA</th>
+      <th>USLOV</th>
+      <th>OPERACIJE</th>
     </tr>
   </thead>
   <tbody>
@@ -57,11 +62,17 @@
       <td>{{alarm.description}}</td>
       <td>{{alarm.duration}} miliseconds</td>
       <td>{{alarm.numOfItems}}</td>
+      <td>{{alarm.conditionsForShow}}</td>
+      <td>
+        <button class="btn btn-primary" data-toggle="modal" data-target="#updateAlarm" (click)="updateAlarmValue(alarm)">Izmijeni</button>
+        &nbsp;
+        <button class="btn btn-primary" (click)="deleteAlarm(alarm)">Obrisi</button>
+      </td>
     </tr>
   </tbody>
 </table>
 
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="createAlarm" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -72,6 +83,14 @@
       </div>
       <div class="modal-body">
         <form [formGroup]="rForm" (ngSubmit)="addPost(rForm.value)">
+          <div class="form-group">
+            <select class="form-control" formControlName="type" (change)="selectedValue()">
+              <option value="loginUsername" title="User did not manage to login">Neuspesno logovanje [isto korisnicko ime]</option>
+              <option value="loginMachine" title="User did not manage to login">Neuspesno logovanje [ista masina]</option>
+              <option value="ipaddress" title="For detecting unwanted ip addresses">Detekcija IP adrese</option>
+              <option value="custom" title="Create custom alarm using regular expressions!">Nivo opasnosti</option>
+            </select>
+          </div>
           <div class="form-group">
             <label>Opis:</label>
             <input class="form-control" formControlName="description">
@@ -87,7 +106,7 @@
             <input class="form-control" formControlName="numOfItems">
             <div class="badge badge-secondary" *ngIf="!rForm.controls['numOfItems'].valid && rForm.controls['numOfItems'].touched">{{message}}</div>
           </div>
-          <div class="row">
+          <div class="row" *ngIf="(selectedType != 'loginUsername') && (selectedType != 'loginMachine')">
             <div class="col-sm-6">
               <div class="form-group">
                 <label>Parametri:</label>
@@ -110,7 +129,79 @@
           <div class="row">
             <div class="col-sm-3">
               <div class="form-group">
-                <input type="submit" value="DODAJ" class="btn btn-primary" [disabled]="!rForm.valid">
+                <input type="submit" value="DODAJ" class="btn btn-primary">
+              </div>
+            </div>
+            <div class="col-sm-9"></div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="updateAlarm" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="exampleModalLabel"><i class="fa fa-bell" aria-hidden="true"></i> Alarm</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="updateForm" (ngSubmit)="updateAlarm(updateForm.value)">
+          <div class="form-group">
+            <select class="form-control" formControlName="type" (change)="selectedValueUpdate()">
+              <option value="loginUsername" title="User did not manage to login">Neuspesno logovanje [isto korisnicko ime]</option>
+              <option value="loginMachine" title="User did not manage to login">Neuspesno logovanje [ista masina]</option>
+              <option value="ipaddress" title="For detecting unwanted ip addresses">Detekcija IP adrese</option>
+              <option value="custom" title="Create custom alarm using regular expressions!">Nivo opasnosti</option>
+            </select>
+            <div class="badge badge-secondary" *ngIf="!updateForm.controls['type'].valid && updateForm.controls['type'].touched">{{message}}</div>
+          </div>
+          <div class="form-group">
+            <label>Opis:</label>
+            <input class="form-control" formControlName="description">
+            <div class="badge badge-secondary" *ngIf="!updateForm.controls['description'].valid && updateForm.controls['description'].touched">{{message}}</div>
+          </div>
+          <div class="form-group">
+            <label>Period:</label>
+            <input class="form-control" formControlName="duration">
+            <div class="badge badge-secondary" *ngIf="!updateForm.controls['duration'].valid && updateForm.controls['duration'].touched">{{message}}</div>
+          </div>
+          <div class="form-group">
+            <label>Broj logova:</label>
+            <input class="form-control" formControlName="numOfItems">
+            <div class="badge badge-secondary" *ngIf="!updateForm.controls['numOfItems'].valid && updateForm.controls['numOfItems'].touched">{{message}}</div>
+          </div>
+          <div class="row" *ngIf="(selectedTypeUpdate != 'loginUsername') && (selectedTypeUpdate != 'loginMachine')">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Parametri:</label>
+                <select class="form-control" size="1" formControlName="param">
+                  <option>IP ADDRESS</option>
+                  <option>HOST NAME</option>
+                  <option>LEVEL</option>
+                </select>
+                <div class="badge badge-secondary" *ngIf="!updateForm.controls['param'].valid && updateForm.controls['param'].touched">{{message}}</div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Vrijednost:</label>
+                <input class="form-control" formControlName="value">
+                <div class="badge badge-secondary" *ngIf="!updateForm.controls['value'].valid && updateForm.controls['value'].touched">{{message}}</div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-3">
+              <div class="form-group">
+                <input type="submit" value="IZMIJENI" class="btn btn-primary">
               </div>
             </div>
             <div class="col-sm-9"></div>

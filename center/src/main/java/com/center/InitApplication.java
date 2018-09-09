@@ -47,5 +47,16 @@ public class InitApplication implements ApplicationRunner{
         operatorRole.setPermissions(operatorPermissions);
         roleService.save(operatorRole);
 
+        Role agentRole = new Role();
+        agentRole.setName("AGENT");
+        List<String> agentPermissions = new ArrayList<>();
+        agentPermissions.add("CHANGE_PASSWORD");
+        agentPermissions.add("WRITE_LOGS");
+        agentPermissions.add("WRITE_AGENTS");
+        agentRole.setPermissions(agentPermissions);
+        roleService.save(agentRole);
+        
+        User agent1 = new User("agent1", "", "AGENT");
+        userService.create(agent1);
 	}
 }

@@ -50,7 +50,7 @@ public class UserController {
     PasswordEncoder passwordEncoder;
 
 	
-    @PostMapping(value="/api/login", consumes="application/json")
+    @PostMapping(value="/login", consumes="application/json")
     public ResponseEntity<CurrentUserDTO> signIn(@RequestBody LoginDTO credentials) {
         logger.debug("Accessing POST /login");
         System.out.println("usaooooooooooo");

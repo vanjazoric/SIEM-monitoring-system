@@ -11,17 +11,26 @@ import { OSLogsComponent } from './components/os-logs/os-logs.component';
 import { ServerLogsComponent } from './components/server-logs/server-logs.component';
 import { FirewallLogsComponent } from './components/firewall-logs/firewall-logs.component';
 import { AlarmsComponent } from './components/alarms/alarms.component';
-import { LoginComponent } from './components/login/login.component';
-import {routing} from './app-route';
+import { LogInComponent } from './components/log-in/log-in.component';
+
+import { AlarmService } from './services/alarm.service';
+import { CenterService } from './services/center.service';
+import { WebsocketService } from './services/websocket.service';
+
+import { CreateReportComponent } from './components/create-report/create-report.component';
+import { ReportsComponent } from './components/reports/reports.component';
+
 
 const appRoutes: Routes = [
     { path: 'alarms', component: AlarmsComponent},
-    { path: '', component: LoginComponent },
-    { path: 'center', component: HomePageComponent },
+    { path: '', component: HomePageComponent },
     { path: 'app-logs', component: AppLogsComponent },
     { path: 'server-logs', component: ServerLogsComponent },
     { path: 'OS-logs', component: OSLogsComponent },
-    { path: 'firewall-logs', component: FirewallLogsComponent }
+    { path: 'firewall-logs', component: FirewallLogsComponent },
+    { path: 'login', component: LogInComponent },
+    { path: 'createReport', component: CreateReportComponent },
+    { path: 'reports', component: ReportsComponent }
 ];
 
 @NgModule({
@@ -33,7 +42,9 @@ const appRoutes: Routes = [
        ServerLogsComponent,
        FirewallLogsComponent,
        AlarmsComponent,
-       LoginComponent
+       LogInComponent,
+       CreateReportComponent,
+       ReportsComponent
     ],
     imports: [
         BrowserModule,
@@ -41,12 +52,15 @@ const appRoutes: Routes = [
         HttpClientModule,
         FormsModule,
         ReactiveFormsModule,
-        routing,
         RouterModule.forRoot(
             appRoutes,
             { enableTracing: true })
     ],
-    providers: [],
+    providers: [
+        AlarmService,
+        CenterService,
+        WebsocketService
+    ],
     bootstrap: [AppComponent]
 })
 export class AppModule { }

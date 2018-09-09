@@ -33,6 +33,8 @@ public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFil
 		String authToken = httpRequest.getHeader("X-Auth-Token");
 		String username = tokenUtils.getUsernameFromToken(authToken);
 
+		System.out.println(username+" u securityu");
+		
 		if (username != null
 				&& SecurityContextHolder.getContext().getAuthentication() == null) {
 			UserDetails userDetails = this.userDetailsService

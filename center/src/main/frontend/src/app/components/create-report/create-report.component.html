@@ -1,0 +1,76 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <a class="navbar-brand" href="#">SIEM centar</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse"
+    data-target="#navbarColor01" aria-controls="navbarColor01"
+    aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  
+  <div class="collapse navbar-collapse" id="navbarColor01">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item"><a class="nav-link" href="app-logs">Logovi
+        aplikacija&emsp;<span class="sr-only">(current)</span>
+      </a></li>
+      <li class="nav-item"><a class="nav-link" href="server-logs">Logovi
+        servera&emsp;<span class="sr-only">(current)</span>
+      </a></li>
+      <li class="nav-item"><a class="nav-link" href="OS-logs">Logovi
+        operativnog sistema&emsp;<span class="sr-only">(current)</span>
+      </a></li>
+      <li class="nav-item"><a class="nav-link" href="firewall-logs">Logovi
+        firewall-a <span class="sr-only">(current)</span>
+      </a></li>
+      <li class="nav-item"><a class="nav-link" href="alarms">Alarmi<span
+        class="sr-only">(current)</span>
+      </a></li>
+      <li class="nav-item active"><a class="nav-link" href="createReport">Kreiranje izvestaja<span
+        class="sr-only">(current)</span>
+      </a></li>
+      <li class="nav-item"><a class="nav-link" href="reports">Izvestaji<span
+        class="sr-only">(current)</span>
+      </a></li>
+    </ul>
+  </div>
+</nav>
+<br/>
+<div class="row">
+  <div class="col-1"></div>
+  <div class="col-8">
+    <form>
+      <div class="form-group">
+        <label for="field1c">Naziv:</label>
+        <input type="text" class="form-control" name="title" [(ngModel)]="reportTitle" placeholder="Naziv">
+      </div>
+      <div class="form-group">
+        <label for="field2c">Od:</label>
+        <input type="datetime-local" class="form-control" name="start" [(ngModel)]="startDate">
+      </div>
+      <div class="form-group">
+        <label for="field3c">Do:</label>
+        <input type="datetime-local" class="form-control" name="end" [(ngModel)]="endDate">
+      </div>
+      <div class="form-group">
+        <label for="fieldoption">Opcije:</label>    
+        <select class="form-control" name="selectedTerm" [(ngModel)]="reportType">
+          <option selected="selected" value="Log">Logovi</option>
+          <option value="Alarm">Alarmi</option>
+        </select>
+      </div>
+      <label>Izvještaj po:</label>
+      <div id="condition">
+        <input type="radio" name="customRadio" [(ngModel)]="radioSelectedTerm" value="System"> Sistemu<br/>
+        <input type="radio" name="customRadio" [(ngModel)]="radioSelectedTerm" value="Machine"> Mašini
+      </div>
+      <div class="form-group" *ngIf="radioSelectedTerm=='Machine'">
+        <label for="customAppname">Naziv mašine:</label>
+        <input type="text" placeholder="Naziv masine" class="form-control" [(ngModel)]="mashineName" name="mashine">
+      </div>
+      <div class="form-group">
+          <button id="saveButton2" class="btn btn-success" (click)="create()">KREIRAJ</button>
+      </div>
+    </form>
+  </div>
+  <div class="col-2"></div>
+</div>
+
+

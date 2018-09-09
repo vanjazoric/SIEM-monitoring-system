@@ -32,7 +32,8 @@ public class UserDetailsServiceImpl implements UserDetailsService{
     private HttpServletRequest request;
 	
     public UserDetails loadUserByUsername(String username) {
-        String ip = getClientIP();
+        System.out.println("user details"+username);
+    	String ip = getClientIP();
         if (loginAttemptService.isBlocked(ip)) {
             request.setAttribute("blocked", true);
             throw new RuntimeException("blocked");
