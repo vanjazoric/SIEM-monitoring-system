@@ -36,7 +36,7 @@
   <div class="row">
     <div class="col-sm-11"></div>
     <div class="col-sm-1">
-      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createAlarm">Kreiraj alarm</button>
+      <button *ngIf="role=='ADMIN'" type="button" class="btn btn-primary" data-toggle="modal" data-target="#createAlarm">Kreiraj alarm</button>
     </div>
   </div>
   <div class="row">

@@ -39,7 +39,6 @@ public class AgentController {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	@CrossOrigin
 	@RequestMapping(value = "/create", 
 	method = RequestMethod.POST,
 	consumes = MediaType.APPLICATION_JSON_VALUE,

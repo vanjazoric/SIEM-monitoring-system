@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlarmService } from '../../services/alarm.service';
+import { LoginService } from '../../services/login.service';
 import { Alarm } from '../../model/alarm';
 declare var $ :any;
 
@@ -21,12 +22,14 @@ export class AlarmsComponent implements OnInit {
   numOfItems : string = '';
   param : string = '';
   value : string = '';
+  role: string = '';
   message : string = 'Polje je obavezno!';
   alarms : Alarm[];
   alarm : Alarm;
   alarmForUpdate: Alarm;
 
-  constructor(private fb:FormBuilder, private alarmService : AlarmService) { 
+  constructor(private fb:FormBuilder, private alarmService : AlarmService, private loginService : LoginService) { 
+	this.role = this.loginService.getCurrentUser();
     this.rForm = fb.group({
       'description' : [null, Validators.required],
       'duration' : [null, Validators.required],
@@ -125,10 +128,12 @@ export class AlarmsComponent implements OnInit {
       .subscribe(data =>{
         this.alarm = data;
         this.alarm.conditionsForShow = data.conditions.split(";")[0] + ": " + data.conditions.split(";")[1];
+        if(this.alarm.conditionsForShow == "null: null"){
+          this.alarm.conditionsForShow = "------------------";
+        }
         this.alarms.push(this.alarm);
         $('#createAlarm').modal('hide');
       }
     );
   }
-
 }

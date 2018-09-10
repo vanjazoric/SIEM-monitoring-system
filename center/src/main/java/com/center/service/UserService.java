@@ -7,5 +7,4 @@ public interface UserService {
 	User create(User user);
 	void deleteAll();
 	User findByUsername(String username);
-	boolean validatePassword(String password);
 }

@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,7 +35,7 @@ public class AlarmController {
 	@Autowired
 	private SimpMessagingTemplate template;
 
-	@CrossOrigin
+	@PreAuthorize("hasAuthority('WRITE_ALARMS')")
 	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Alarm> createAlarm(@RequestBody Alarm alarm) {
 		Alarm saved = new Alarm();
@@ -48,7 +48,7 @@ public class AlarmController {
 		return new ResponseEntity<Alarm>(saved, HttpStatus.CREATED);
 	}
 
-	@CrossOrigin
+	@PreAuthorize("hasAuthority('WRITE_ALARMS')")
 	@RequestMapping(method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Alarm> updateAlarm(@RequestBody Alarm alarm) {
 		Alarm saved = alarmService.findOne(alarm.getId());
@@ -64,14 +64,14 @@ public class AlarmController {
 		return new ResponseEntity<Alarm>(saved, HttpStatus.OK);
 	}
 
-	@CrossOrigin
+	@PreAuthorize("hasAuthority('READ_ALARMS')")
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ArrayList<Alarm>> getAlarms() {
 		ArrayList<Alarm> alarms = (ArrayList<Alarm>) alarmService.findAll();
 		return new ResponseEntity<ArrayList<Alarm>>(alarms, HttpStatus.OK);
 	}
 
-	@CrossOrigin
+	@PreAuthorize("hasAuthority('DELETE_ALARMS')")
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<String> deleteAlarm(@PathVariable String id) {
 		Alarm alarm = alarmService.findOne(id);
@@ -83,7 +83,7 @@ public class AlarmController {
 		return new ResponseEntity<String>("Alarm is deleted!", HttpStatus.OK);
 	}
 
-	@CrossOrigin
+	@PreAuthorize("hasAuthority('READ_FIRED_ALARMS')")
 	@RequestMapping(value = "/triggeredAlarms", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ArrayList<Alarm>> getTriggeredAlarms() {
 		MongoClient mongoClient = new MongoClient("localhost", 27017);

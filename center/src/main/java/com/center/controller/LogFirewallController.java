@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.center.domain.LogFirewall;
 import com.center.repository.LogFirewallRepository;
 
@@ -28,13 +29,12 @@ public class LogFirewallController {
 	@Autowired
 	LogFirewallRepository logFirewallRepository;
 	@Autowired
-    private SimpMessagingTemplate template;
+	private SimpMessagingTemplate template;
 
-	@CrossOrigin
 	@RequestMapping(value = "/createall", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	//@PreAuthorize("hasAuthority('WRITE_LOGS')")
-	public ResponseEntity<ArrayList<LogFirewall>> createFirewallLogs(
-			@RequestBody ArrayList<LogFirewall> logs) throws Exception {
+	public ResponseEntity<ArrayList<LogFirewall>> createFirewallLogs(@RequestBody ArrayList<LogFirewall> logs)
+			throws Exception {
 		for (LogFirewall log : logs) {
 			logFirewallRepository.insert(log);
 		}
@@ -42,15 +42,9 @@ public class LogFirewallController {
 	}
 
 	@CrossOrigin
-	@RequestMapping(
-		value = "/create", 
-		method = RequestMethod.POST,
-		consumes = MediaType.APPLICATION_JSON_VALUE,
-		produces = MediaType.APPLICATION_JSON_VALUE
-	)
+	@RequestMapping(value = "/create", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	//@PreAuthorize("hasAuthority('WRITE_LOGS')")
-    public ResponseEntity<LogFirewall> createLogFirewall(@RequestBody LogFirewall logfirewall)
-    {
+	public ResponseEntity<LogFirewall> createLogFirewall(@RequestBody LogFirewall logfirewall) {
 		LogFirewall saved = new LogFirewall();
 		saved.setTimeStamp(logfirewall.getTimeStamp());
 		saved.setAgentName(logfirewall.getAgentName());
@@ -66,13 +60,11 @@ public class LogFirewallController {
 		saved = logFirewallRepository.insert(saved);
 		template.convertAndSend("/logs/firewallLogs", saved);
 		return new ResponseEntity<LogFirewall>(saved, HttpStatus.CREATED);
-		
-    }
 
-	@CrossOrigin
+	}
+
 	@RequestMapping(value = "/update", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<LogFirewall> updateLogFirewall(
-			@RequestBody LogFirewall logfirewall) {
+	public ResponseEntity<LogFirewall> updateLogFirewall(@RequestBody LogFirewall logfirewall) {
 		LogFirewall exists = logFirewallRepository.findOne(logfirewall.getId());
 
 		if (exists == null) {
@@ -90,7 +82,7 @@ public class LogFirewallController {
 
 	@CrossOrigin
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("hasAuthority('READ_LOGS')")
+	@PreAuthorize("hasAuthority('READ_LOGS')")
 	public ResponseEntity<LogFirewall> getLogFirewall(@PathVariable String id) {
 		LogFirewall logfirewall = logFirewallRepository.findOne(id);
 
@@ -101,20 +93,16 @@ public class LogFirewallController {
 		return new ResponseEntity<LogFirewall>(logfirewall, HttpStatus.OK);
 	}
 
-	@CrossOrigin
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("hasAuthority('READ_LOGS')")
+	@PreAuthorize("hasAuthority('READ_LOGS')")
 	public ResponseEntity<ArrayList<LogFirewall>> getLogFirewalls() {
 		ArrayList<LogFirewall> logfirewalls = (ArrayList<LogFirewall>) logFirewallRepository
 				.findAllByClass("log_firewall");
-		return new ResponseEntity<ArrayList<LogFirewall>>(logfirewalls,
-				HttpStatus.OK);
+		return new ResponseEntity<ArrayList<LogFirewall>>(logfirewalls, HttpStatus.OK);
 	}
 
-	@CrossOrigin
 	@RequestMapping(value = "/{id}/delete", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<LogFirewall> deleteLogFirewallById(
-			@PathVariable String id) {
+	public ResponseEntity<LogFirewall> deleteLogFirewallById(@PathVariable String id) {
 		LogFirewall logfirewall = logFirewallRepository.findOne(id);
 
 		if (logfirewall == null) {
@@ -129,10 +117,8 @@ public class LogFirewallController {
 		return new ResponseEntity<LogFirewall>(HttpStatus.OK);
 	}
 
-	@CrossOrigin
 	@RequestMapping(value = "/delete", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<LogFirewall> deleteLogFirewall(
-			@RequestBody LogFirewall logfirewall) {
+	public ResponseEntity<LogFirewall> deleteLogFirewall(@RequestBody LogFirewall logfirewall) {
 		LogFirewall exists = logFirewallRepository.findOne(logfirewall.getId());
 
 		if (exists == null) {
@@ -148,24 +134,19 @@ public class LogFirewallController {
 		return new ResponseEntity<LogFirewall>(HttpStatus.OK);
 	}
 
-	@CrossOrigin
 	@RequestMapping(value = "/{startDate}/{endDate}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("hasAuthority('READ_LOGS')")
-	public ResponseEntity<ArrayList<LogFirewall>> searchlogs(
-			@PathVariable String startDate, @PathVariable String endDate)
-			throws ParseException {
+	@PreAuthorize("hasAuthority('READ_LOGS')")
+	public ResponseEntity<ArrayList<LogFirewall>> searchlogs(@PathVariable String startDate,
+			@PathVariable String endDate) throws ParseException {
 		System.out.println(startDate);
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
-				"yyyy-MM-dd'T'HH:mm");
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
 		Date start = (Date) simpleDateFormat.parse(startDate);
 		Date end = (Date) simpleDateFormat.parse(endDate);
-		ArrayList<LogFirewall> logs = logFirewallRepository
-				.findAllByClass("log_firewall");
+		ArrayList<LogFirewall> logs = logFirewallRepository.findAllByClass("log_firewall");
 		System.out.println(start);
 		ArrayList<LogFirewall> finded = new ArrayList<LogFirewall>();
 		for (LogFirewall log : logs) {
-			if (log.getTimeStamp().after(start)
-					&& log.getTimeStamp().before(end)) {
+			if (log.getTimeStamp().after(start) && log.getTimeStamp().before(end)) {
 				finded.add(log);
 			}
 		}
@@ -173,39 +154,29 @@ public class LogFirewallController {
 		return new ResponseEntity<ArrayList<LogFirewall>>(finded, HttpStatus.OK);
 	}
 
-	@CrossOrigin
 	@RequestMapping(params = "srcIp", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("hasAuthority('READ_LOGS')")
-	public ResponseEntity<ArrayList<LogFirewall>> getLogFirewallBySrcIp(
-			@RequestParam(value = "srcIp") String ip) {
-		ArrayList<LogFirewall> logs = logFirewallRepository
-				.findLogFirewallBySrcIp(ip);
+	@PreAuthorize("hasAuthority('READ_LOGS')")
+	public ResponseEntity<ArrayList<LogFirewall>> getLogFirewallBySrcIp(@RequestParam(value = "srcIp") String ip) {
+		ArrayList<LogFirewall> logs = logFirewallRepository.findLogFirewallBySrcIp(ip);
 		if (logs.isEmpty()) {
-			return new ResponseEntity<ArrayList<LogFirewall>>(
-					HttpStatus.NOT_FOUND);
+			return new ResponseEntity<ArrayList<LogFirewall>>(HttpStatus.NOT_FOUND);
 		}
 		return new ResponseEntity<ArrayList<LogFirewall>>(logs, HttpStatus.OK);
 	}
 
-	@CrossOrigin
 	@RequestMapping(params = "dstIp", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("hasAuthority('READ_LOGS')")
-	public ResponseEntity<ArrayList<LogFirewall>> getLogFirewallByDstIp(
-			@RequestParam(value = "dstIp") String dstIp) {
-		ArrayList<LogFirewall> logs = logFirewallRepository
-				.findLogFirewallByDstIp(dstIp);
+	@PreAuthorize("hasAuthority('READ_LOGS')")
+	public ResponseEntity<ArrayList<LogFirewall>> getLogFirewallByDstIp(@RequestParam(value = "dstIp") String dstIp) {
+		ArrayList<LogFirewall> logs = logFirewallRepository.findLogFirewallByDstIp(dstIp);
 		if (logs.isEmpty()) {
-			return new ResponseEntity<ArrayList<LogFirewall>>(
-					HttpStatus.NOT_FOUND);
+			return new ResponseEntity<ArrayList<LogFirewall>>(HttpStatus.NOT_FOUND);
 		}
 		return new ResponseEntity<ArrayList<LogFirewall>>(logs, HttpStatus.OK);
 	}
 
-	@CrossOrigin
 	@RequestMapping(params = "protocol", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("hasAuthority('READ_LOGS')")
-	public ResponseEntity<ArrayList<LogFirewall>> getLogFirewallsByProtocol(
-			@RequestParam String protocol) {
+	@PreAuthorize("hasAuthority('READ_LOGS')")
+	public ResponseEntity<ArrayList<LogFirewall>> getLogFirewallsByProtocol(@RequestParam String protocol) {
 		ArrayList<LogFirewall> logs = new ArrayList<LogFirewall>();
 		String p1 = protocol.toUpperCase();
 		String p2 = "";
@@ -222,17 +193,16 @@ public class LogFirewallController {
 				}
 			}
 		}
-			logs = logFirewallRepository.findLogFirewallByProtocol(p1, p2, p3);
-			if (logs.isEmpty()) {
-				return new ResponseEntity<ArrayList<LogFirewall>>(
-						HttpStatus.NOT_FOUND);
-			}
+		logs = logFirewallRepository.findLogFirewallByProtocol(p1, p2, p3);
+		if (logs.isEmpty()) {
+			return new ResponseEntity<ArrayList<LogFirewall>>(HttpStatus.NOT_FOUND);
+		}
 		return new ResponseEntity<ArrayList<LogFirewall>>(logs, HttpStatus.OK);
 	}
 
 	@CrossOrigin
 	@RequestMapping(params = "action", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("hasAuthority('READ_LOGS')")
+	@PreAuthorize("hasAuthority('READ_LOGS')")
 	public ResponseEntity<ArrayList<LogFirewall>> getLogFirewallsByAction(
 			@RequestParam(value = "action") String action) {
 		ArrayList<LogFirewall> logs = new ArrayList<LogFirewall>();
@@ -251,11 +221,10 @@ public class LogFirewallController {
 				}
 			}
 		}
-			logs = logFirewallRepository.findFirewallLogsByAction(p1, p2, p3);
-			if (logs.isEmpty()) {
-				return new ResponseEntity<ArrayList<LogFirewall>>(
-						HttpStatus.NOT_FOUND);
-			}
+		logs = logFirewallRepository.findFirewallLogsByAction(p1, p2, p3);
+		if (logs.isEmpty()) {
+			return new ResponseEntity<ArrayList<LogFirewall>>(HttpStatus.NOT_FOUND);
+		}
 		return new ResponseEntity<ArrayList<LogFirewall>>(logs, HttpStatus.OK);
 
 	}

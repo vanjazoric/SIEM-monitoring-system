@@ -21,6 +21,8 @@ import { CreateReportComponent } from './components/create-report/create-report.
 import { ReportsComponent } from './components/reports/reports.component';
 import { AgentsComponent } from './components/agents/agents.component';
 
+import { ChangePasswordComponent } from './components/change-password/change-password.component';
+
 
 const appRoutes: Routes = [
     { path: 'alarms', component: AlarmsComponent},
@@ -32,7 +34,9 @@ const appRoutes: Routes = [
     { path: 'login', component: LogInComponent },
     { path: 'createReport', component: CreateReportComponent },
     { path: 'reports', component: ReportsComponent },
+    { path: 'changePassword', component: ChangePasswordComponent },
     { path: 'agents', component: AgentsComponent }
+
 ];
 
 @NgModule({
@@ -47,6 +51,7 @@ const appRoutes: Routes = [
        LogInComponent,
        CreateReportComponent,
        ReportsComponent,
+       ChangePasswordComponent,
        AgentsComponent
     ],
     imports: [

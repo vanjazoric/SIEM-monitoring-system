@@ -12,128 +12,131 @@ import { Agent } from '../model/agent';
 })
 export class CenterService {
 
-    public headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-
-
     constructor(private http: HttpClient) { }
 
     getLogs() {
-        return this.http.get<Log[]>('/api/logs');
+        return this.http.get<Log[]>('/api/logs', { headers: this.jwt()});
     }
 
     searchLogs(startDate: string, endDate: string) {
-        return this.http.get<Log[]>("/api/logs/" + startDate + "/" + endDate);
+        return this.http.get<Log[]>("/api/logs/" + startDate + "/" + endDate, { headers: this.jwt()});
     }
 
     getAppLogs() {
-        return this.http.get<ApplicationLog[]>('/api/applicationLogs');
+        return this.http.get<ApplicationLog[]>('/api/applicationLogs', { headers: this.jwt()});
     }
 
     searchAppLogsById(id: string) {
         console.log(id);
-        return this.http.get<ApplicationLog[]>("/api/applicationLogs/" + id);
+        return this.http.get<ApplicationLog[]>("/api/applicationLogs/" + id, { headers: this.jwt()});
     }
 
     searchAppLogsByApp(app: string) {
         console.log(app);
-        const params = new HttpParams().set('app', app);
-        return this.http.get<ApplicationLog[]>("/api/applicationLogs", { params });
+        const param = new HttpParams().set('app', app);
+        return this.http.get<ApplicationLog[]>("/api/applicationLogs", { params : param, headers: this.jwt() });
     }
 
     searchAppLogsByMessage(message: string) {
         console.log(message);
-        const params = new HttpParams().set('message', message);
-        return this.http.get<ApplicationLog[]>("/api/applicationLogs", { params });
+        const param = new HttpParams().set('message', message);
+        return this.http.get<ApplicationLog[]>("/api/applicationLogs", { params : param, headers: this.jwt()});
     }
 
     searchAppLogsByPriority(priority: string) {
         var uri = "/api/applicationLogs";
         var encoded = encodeURI(uri);
-        const params = new HttpParams().set('priority', priority);
-        return this.http.get<ApplicationLog[]>(encoded, { params });
+        const param = new HttpParams().set('priority', priority);
+        return this.http.get<ApplicationLog[]>(encoded, { params : param, headers: this.jwt()});
     }
 
     searchAppLogs(startDate: string, endDate: string) {
-        return this.http.get<ApplicationLog[]>("/api/applicationLogs/" + startDate + "/" + endDate);
+        return this.http.get<ApplicationLog[]>("/api/applicationLogs/" + startDate + "/" + endDate, { headers: this.jwt()});
     }
 
     searchAppLogsByDate(startDate: string, endDate: string) {
-        return this.http.get<Log[]>("/api/applicationLogs/" + startDate + "/" + endDate);
+        return this.http.get<Log[]>("/api/applicationLogs/" + startDate + "/" + endDate, { headers: this.jwt()});
     }
 
     getServerLogs() {
-        return this.http.get<LogServer[]>('/api/logserver');
+        return this.http.get<LogServer[]>('/api/logserver', { headers: this.jwt()});
     }
 
     searchServerLogsByIP(ip: string) {
         console.log(ip);
-        return this.http.get<LogServer[]>("/api/logserver?ip=" + ip);
+        return this.http.get<LogServer[]>("/api/logserver?ip=" + ip, { headers: this.jwt()});
     }
 
     searchServerLogsByHTTP(http: string) {
         var uri = "/api/logserver?http=" + http;
         var encoded = encodeURI(uri);
-        return this.http.get<LogServer[]>(encoded);
+        return this.http.get<LogServer[]>(encoded, { headers: this.jwt()});
     }
 
     searchServerLogsByMethod(method: string) {
         var uri = "/api/logserver?method=" + method;
         var encoded = encodeURI(uri);
-        return this.http.get<LogServer[]>(encoded);
+        return this.http.get<LogServer[]>(encoded, { headers: this.jwt()});
     }
 
     searchServerLogsByDate(startDate: string, endDate: string) {
-        return this.http.get<LogServer[]>("/api/logserver/" + startDate + "/" + endDate);
+        return this.http.get<LogServer[]>("/api/logserver/" + startDate + "/" + endDate, { headers: this.jwt()});
     }
 
     getOSLogs() {
-        return this.http.get<OperatingSystemLog[]>('/api/OSlogs');
+        return this.http.get<OperatingSystemLog[]>('/api/OSlogs', { headers: this.jwt()});
     }
 
     searchOSLogsBySource(source: string) {
-        return this.http.get<OperatingSystemLog[]>("/api/OSlogs?source=" + source);
+        return this.http.get<OperatingSystemLog[]>("/api/OSlogs?source=" + source, { headers: this.jwt()});
     }
 
     searchOSLogsByEventId(eventId: number) {
-        return this.http.get<OperatingSystemLog[]>("/api/OSlogs?eventId=" + eventId);
+        return this.http.get<OperatingSystemLog[]>("/api/OSlogs?eventId=" + eventId, { headers: this.jwt()});
     }
 
     searchOSLogsByLevel(level: string) {
         var uri = "/api/OSlogs?level=" + level;
         var encoded = encodeURI(uri);
-        return this.http.get<OperatingSystemLog[]>(encoded);
+        return this.http.get<OperatingSystemLog[]>(encoded, { headers: this.jwt()});
     }
 
     searchOSLogsByDate(startDate: string, endDate: string) {
-        return this.http.get<OperatingSystemLog[]>("/api/OSlogs/" + startDate + "/" + endDate);
+        return this.http.get<OperatingSystemLog[]>("/api/OSlogs/" + startDate + "/" + endDate, { headers: this.jwt()});
     }
 
     getFirewallLogs() {
-        return this.http.get<LogFirewall[]>('/api/logfirewall');
+        return this.http.get<LogFirewall[]>('/api/logfirewall', { headers: this.jwt()});
     }
 
     searchFirewallLogsByProtocol(protocol: string) {
         var uri = "/api/logfirewall?protocol=" + protocol;
         var encoded = encodeURI(uri);
-        return this.http.get<LogFirewall[]>(encoded);
+        return this.http.get<LogFirewall[]>(encoded, { headers: this.jwt()});
     }
 
     searchFirewallLogsByAction(action: string) {
         var uri = "/api/logfirewall?action=" + action;
         var encoded = encodeURI(uri);
-        return this.http.get<LogFirewall[]>(encoded);
+        return this.http.get<LogFirewall[]>(encoded, { headers: this.jwt()});
     }
 
     searchFirewallLogsByDstIp(dstIp: string) {
-        return this.http.get<LogFirewall[]>("/api/logfirewall?dstIp=" + dstIp);
+        return this.http.get<LogFirewall[]>("/api/logfirewall?dstIp=" + dstIp, { headers: this.jwt()});
     }
 
     searchFirewallLogsBySrcIp(srcIp: string) {
-        return this.http.get<LogFirewall[]>("/api/logfirewall?srcIp=" + srcIp);
+        return this.http.get<LogFirewall[]>("/api/logfirewall?srcIp=" + srcIp, { headers: this.jwt()});
     }
 
     searchFirewallLogsByDate(startDate: string, endDate: string) {
-        return this.http.get<LogFirewall[]>("/api/logfirewall/" + startDate + "/" + endDate);
+        return this.http.get<LogFirewall[]>("/api/logfirewall/" + startDate + "/" + endDate, { headers: this.jwt()});
+    }
+    
+     private jwt() {
+        let token = localStorage.getItem("currentUser");
+        var user = JSON.parse(token);
+        return new HttpHeaders({ 'X-Auth-Token': user.token });
     }
 
     getAgents(){
@@ -141,27 +144,27 @@ export class CenterService {
     }
 
     changeAgentParent(agent : Agent, name : string){
-        return this.http.put('/api/change-parent/' + agent.name, agent, {headers:this.headers})
+        return this.http.put('/api/change-parent/' + agent.name, agent, {headers:this.jwt()})
     }
 
     changeParent(childName : string, parentName : string){
-        return this.http.post('/api/agent/change-parent/' + childName + "/" + parentName, null, {headers:this.headers})
+        return this.http.post('/api/agent/change-parent/' + childName + "/" + parentName, null, {headers:this.jwt()})
     }
 
     changeFwLogs(agentName : string, newValue : string){
-        return this.http.post('/api/agent/change-fw-source/' + agentName + "/" + newValue, null, {headers:this.headers})
+        return this.http.post('/api/agent/change-fw-source/' + agentName + "/" + newValue, null, {headers:this.jwt()})
     }
 
     changeAppLogs(agentName : string, newValue : string){
-        return this.http.post('/api/agent/change-app-source/' + agentName + "/" + newValue, null, {headers:this.headers})
+        return this.http.post('/api/agent/change-app-source/' + agentName + "/" + newValue, null, {headers:this.jwt()})
     }
 
     changeServerLogs(agentName : string, newValue : string){
-        return this.http.post('/api/agent/change-server-source/' + agentName + "/" + newValue, null, {headers:this.headers})
+        return this.http.post('/api/agent/change-server-source/' + agentName + "/" + newValue, null, {headers:this.jwt()})
     }
 
     toCenter(agentName : string){
-        return this.http.post('/api/agent/connect-to-center/' + agentName, null, {headers:this.headers})
+        return this.http.post('/api/agent/connect-to-center/' + agentName, null, {headers:this.jwt()})
     }
-
+    
 }

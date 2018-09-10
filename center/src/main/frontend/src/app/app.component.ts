@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { AlarmService } from './services/alarm.service';
+import { LoginService } from './services/login.service';
 import { WebsocketService } from './services/websocket.service';
 import { Alarm } from './model/alarm';
 import { Router, Event, NavigationEnd } from '@angular/router';
@@ -14,9 +15,11 @@ export class AppComponent {
 
   alarms: Alarm[];
   alarm: Alarm; 
+  role: string = '';
   currentLocation: string;
 
-  constructor(private alarmService: AlarmService, private webSocketService: WebsocketService, private router: Router){
+  constructor(private alarmService: AlarmService, private loginService: LoginService, private webSocketService: WebsocketService, private router: Router){
+    this.role = this.loginService.getCurrentUser();
     this.router.events.subscribe(
       (event: Event) =>{ 
         this.currentLocation = (event as NavigationEnd).url;
@@ -37,5 +40,9 @@ export class AppComponent {
       res => this.alarms = res
     );
   }
+
+logout(){
+	this.loginService.logout();
+}
 
 }
