@@ -1,6 +1,6 @@
 {
   "ip": "localhost",
-  "port": "9444/api",
+  "port": "8080/api",
   "agentName" : "agent1",
   "parent" : {
     "name" : "center",

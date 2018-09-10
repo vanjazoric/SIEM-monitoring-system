@@ -1,0 +1,19 @@
+{
+  "ip": "localhost",
+  "port": "8888/api",
+  "agentName" : "agent2",
+  "parent" : {
+    "name" : "center",
+    "ip" : "localhost",
+    "port" : "8443/api"
+  },
+  "ap" : {
+    "listenFrom" : "logs.txt",
+    "sendTo" : "http://localhost:8888/applicationLogs",
+    "ap_filter" : {
+      "timeStamp" : "2018-04-03 11:21:08",
+      "application" : "Image processing application",
+      "priority" : "Error|Information"
+    }
+  }
+}

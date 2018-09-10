@@ -1,6 +1,4 @@
 {
-  "ip": "localhost",
-  "port": "9444/api",
   "agentName" : "agent1",
   "parent" : {
     "name" : "center",
@@ -16,7 +14,7 @@
       "priority" : "Error|Information"
     }
   },
-  "ls" : {
+    "ls" : {
     "listenFrom" : "logserver.txt",
     "sendTo" : "http://localhost:8888/logserver",
     "ls_filter" : {
