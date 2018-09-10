@@ -19,6 +19,9 @@ public class Agent {
 	private String parentPort;
 	private String centerIp;
 	private ArrayList<String> childrenAgents;
+	private String fwLogsDest;
+	private String apLogsDest;
+	private String serverLogsDest;
 
 	private Set<Log> logs;
 
@@ -46,6 +49,29 @@ public class Agent {
 		this.parentPort = parentPort;
 		this.centerIp = centerIp;
 		this.childrenAgents = childrenAgents;
+		this.logs = logs;
+	}
+	
+	
+
+	public Agent(String id, String name, String ip, String port,
+			String parentName, String parentIp, String parentPort,
+			String centerIp, ArrayList<String> childrenAgents,
+			String fwLogsDest, String apLogsDest, String serverLogsDest,
+			Set<Log> logs) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.ip = ip;
+		this.port = port;
+		this.parentName = parentName;
+		this.parentIp = parentIp;
+		this.parentPort = parentPort;
+		this.centerIp = centerIp;
+		this.childrenAgents = childrenAgents;
+		this.fwLogsDest = fwLogsDest;
+		this.apLogsDest = apLogsDest;
+		this.serverLogsDest = serverLogsDest;
 		this.logs = logs;
 	}
 
@@ -127,6 +153,30 @@ public class Agent {
 
 	public void setChildrenAgents(ArrayList<String> childrenAgents) {
 		this.childrenAgents = childrenAgents;
+	}
+
+	public String getFwLogsDest() {
+		return fwLogsDest;
+	}
+
+	public void setFwLogsDest(String fwLogsDest) {
+		this.fwLogsDest = fwLogsDest;
+	}
+
+	public String getApLogsDest() {
+		return apLogsDest;
+	}
+
+	public void setApLogsDest(String apLogsDest) {
+		this.apLogsDest = apLogsDest;
+	}
+
+	public String getServerLogsDest() {
+		return serverLogsDest;
+	}
+
+	public void setServerLogsDest(String serverLogsDest) {
+		this.serverLogsDest = serverLogsDest;
 	}
 	
 	

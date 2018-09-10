@@ -2,6 +2,7 @@ package com.agent.controller;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Set;
@@ -29,9 +30,12 @@ import com.agent.domain.ApplicationLog;
 import com.agent.domain.LogFirewall;
 import com.agent.domain.LogServer;
 import com.agent.domain.OperatingSystemLog;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 public class AgentController {
+	
+	final String CONF_FILE_NAME = "conf.json";
 
 	@Autowired
 	Agent agent;
@@ -60,7 +64,7 @@ public class AgentController {
 		this.osLogController = osLogController;
 		System.out.println("Agent started!");
 		try {
-			run("conf.json");
+			run(CONF_FILE_NAME);
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -86,20 +90,40 @@ public class AgentController {
 			jsonObject = (JSONObject) parser.parse(new FileReader(path));
 
 			JSONObject parentObject = (JSONObject) jsonObject.get("parent");
+			String ip = (String) jsonObject.get("ip");
+			this.agent.setIp(ip);
+			String port = (String) jsonObject.get("port");
+			this.agent.setPort(port);
 			String sendTo = "https://" + (String) parentObject.get("ip") + ":"
 					+ (String) parentObject.get("port");
 			String agentName = (String) jsonObject.get("agentName");
 			this.agent.setName(agentName);
 			this.agent.setParentIp((String) parentObject.get("ip"));
-			this.agent.setName("agent1");
+			String parentName = (String) parentObject.get("name");
+			this.agent.setParentName(parentName);
 			System.out.println("\n\n\nOVO JE AGENTOV PARENT IP "
 					+ agent.getParentIp() + "\n\n\n");
 			this.agent.setParentPort((String) parentObject.get("port"));
-			
+			if(jsonObject.containsKey("ap")){
+				JSONObject appObject = (JSONObject) jsonObject.get("ap");
+				String appFileName = (String) appObject.get("listenFrom");
+				this.agent.setApLogsDest(appFileName);
+			}
+			if(jsonObject.containsKey("fw")){
+				JSONObject fwObject = (JSONObject) jsonObject.get("fw");
+				String fwFileName = (String) fwObject.get("listenFrom");
+				this.agent.setFwLogsDest(fwFileName);
+			}
+			if(jsonObject.containsKey("ls")){
+				JSONObject lsObject = (JSONObject) jsonObject.get("ls");
+				String lsFileName = (String) lsObject.get("listenFrom");
+				this.agent.setServerLogsDest(lsFileName);
+			}
 			informCenter();
 			try {
 				JSONObject appObject = (JSONObject) jsonObject.get("ap");
 				String appFileName = (String) appObject.get("listenFrom");
+				this.agent.setApLogsDest(appFileName);
 				System.out.println("appdilename" + appFileName);
 				// String appSendTo = (String) appObject.get("sendTo");
 				String appSendTo = sendTo + "/applicationLogs";
@@ -134,6 +158,7 @@ public class AgentController {
 			try {
 				JSONObject fwObject = (JSONObject) jsonObject.get("fw");
 				String fwFileName = (String) fwObject.get("listenFrom");
+				this.agent.setFwLogsDest(fwFileName);
 				// String fwSendTo = (String) fwObject.get("sendTo");
 				String fwSendTo = sendTo + "/logfirewall";
 				//Thread fwThread = 
@@ -158,6 +183,7 @@ public class AgentController {
 			try {
 				JSONObject lsObject = (JSONObject) jsonObject.get("ls");
 				String lsFileName = (String) lsObject.get("listenFrom");
+				this.agent.setServerLogsDest(lsFileName);
 				// String lsSendTo = (String) lsObject.get("sendTo");
 				String lsSendTo = sendTo + "/logserver";
 				//Thread lsThread = 
@@ -219,7 +245,7 @@ public class AgentController {
 	public ResponseEntity<ApplicationLog> createApplicationLog(
 			@RequestBody ApplicationLog applicationlog) throws Exception {
 		System.out.println("USLO DA SALJE APP LOGOVE");
-		String sendTo = "http://" + this.agent.getParentIp() + ":"
+		String sendTo = "https://" + this.agent.getParentIp() + ":"
 				+ this.agent.getParentPort() + "/applicationLogs";
 		System.out.println("\n\n\nPARENT SALJE NA " + sendTo + " \n\n\n");
 		applicationLogController.sendToCenter(applicationlog, sendTo);
@@ -231,7 +257,7 @@ public class AgentController {
 	public ResponseEntity<LogFirewall> createFirewallLogs(
 			@RequestBody LogFirewall logFirewall) throws Exception {
 		System.out.println("USLO DA SALJE FW LOGOVE");
-		String sendTo = "http://" + this.agent.getParentIp() + ":"
+		String sendTo = "https://" + this.agent.getParentIp() + ":"
 				+ this.agent.getParentPort() + "/logfirewall";
 		System.out.println("\n\n\nPARENT SALJE NA " + sendTo + " \n\n\n");
 		logFirewallController.sendToCenter(logFirewall, sendTo);
@@ -243,7 +269,7 @@ public class AgentController {
 	public ResponseEntity<LogServer> createServerLogs(
 			@RequestBody LogServer logServer) throws Exception {
 		System.out.println("USLO DA SALJE LS LOGOVE");
-		String sendTo = "http://" + this.agent.getParentIp() + ":"
+		String sendTo = "https://" + this.agent.getParentIp() + ":"
 				+ this.agent.getParentPort() + "/logserver";
 		System.out.println("\n\n\nPARENT SALJE NA " + sendTo + " \n\n\n");
 		logServerController.sendToCenter(logServer, sendTo);
@@ -255,7 +281,7 @@ public class AgentController {
 	public ResponseEntity<OperatingSystemLog> createOsLogs(
 			@RequestBody OperatingSystemLog osLog) throws Exception {
 		System.out.println("USLO DA SALJE OS LOGOVE");
-		String sendTo = "http://" + this.agent.getParentIp() + ":"
+		String sendTo = "https://" + this.agent.getParentIp() + ":"
 				+ this.agent.getParentPort() + "/OSlogs";
 		System.out.println("\n\n\nPARENT SALJE NA " + sendTo + " \n\n\n");
 		osLogController.sendToCenter(osLog, sendTo);
@@ -297,5 +323,54 @@ public class AgentController {
         }
 
     }
+	
+	@RequestMapping(value = "/change-parent/{newIp}/{newPort}/{newName}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<OperatingSystemLog> changeParent(
+			@PathVariable String newIp, @PathVariable String newPort,
+			@PathVariable String newName) throws Exception {
+		JSONParser parser = new JSONParser();
+		String path = ".." + File.separator + "scripts" + File.separator
+				+ CONF_FILE_NAME;
+		JSONObject jsonObject;
+		jsonObject = (JSONObject) parser.parse(new FileReader(path));
+		JSONObject parentObject = (JSONObject) jsonObject.get("parent");
+		parentObject.put("name", newName);
+		parentObject.put("ip", newIp);
+		parentObject.put("port", newPort);
+		jsonObject.put("parent", parentObject);
+		ObjectMapper mapper = new ObjectMapper();
+		String pretty = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonObject);
+        try {
+            FileWriter writer = new FileWriter(path);
+            writer.write(pretty);
+            writer.close();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+		return new ResponseEntity<OperatingSystemLog>(HttpStatus.CREATED);
+	}
+	
+	@RequestMapping(value = "/change-listen-from/{logType}/{newVal}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<OperatingSystemLog> changeListenFrom(
+			@PathVariable String logType, @PathVariable String newVal) throws Exception {
+		JSONParser parser = new JSONParser();
+		String path = ".." + File.separator + "scripts" + File.separator
+				+ CONF_FILE_NAME;
+		JSONObject jsonObject;
+		jsonObject = (JSONObject) parser.parse(new FileReader(path));
+		JSONObject logDataObject = (JSONObject) jsonObject.get(logType);
+		logDataObject.put("listenFrom", newVal);
+		jsonObject.put(logType, logDataObject);
+		ObjectMapper mapper = new ObjectMapper();
+		String pretty = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonObject);
+        try {
+            FileWriter writer = new FileWriter(path);
+            writer.write(pretty);
+            writer.close();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+		return new ResponseEntity<OperatingSystemLog>(HttpStatus.CREATED);
+	}
 	
 }

@@ -1,6 +1,5 @@
 package com.center;
 
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
@@ -16,6 +15,4 @@ public class CenterApplication {
 		AlarmController ac = ctx.getBean(AlarmController.class);
 		//ac.triggerAlarm();
 	}	
-	
-	
 }

@@ -1,0 +1,86 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+	<a class="navbar-brand" href="#">SIEM centar</a>
+	<button class="navbar-toggler" type="button" data-toggle="collapse"
+		data-target="#navbarColor01" aria-controls="navbarColor01"
+		aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+	</button>
+
+	<div class="collapse navbar-collapse" id="navbarColor01">
+		<ul class="navbar-nav mr-auto">
+			<li class="nav-item"><a class="nav-link" href="app-logs">Logovi
+					aplikacija&emsp;<span class="sr-only">(current)</span>
+			</a></li>
+			<li class="nav-item"><a class="nav-link" href="server-logs">Logovi
+					servera&emsp;<span class="sr-only">(current)</span>
+			</a></li>
+			<li class="nav-item"><a class="nav-link" href="OS-logs">Logovi
+					operativnog sistema&emsp;<span class="sr-only">(current)</span>
+			</a></li>
+			<li class="nav-item"><a class="nav-link" href="firewall-logs">Logovi
+					firewall-a <span class="sr-only">(current)</span>
+			</a></li>
+			<li class="nav-item"><a class="nav-link" href="alarms">Alarmi<span
+					class="sr-only">(current)</span>
+			</a></li>
+			<li class="nav-item"><a class="nav-link" href="createReport">Kreiranje izvestaja<span
+				class="sr-only">(current)</span>
+			</a></li>
+			<li class="nav-item"><a class="nav-link" href="reports">Izvestaji<span
+				class="sr-only">(current)</span>
+			</a></li>
+			<li class="nav-item"><a class="nav-link" href="agents">Agenti<span
+				class="sr-only">(current)</span>
+			</a></li>
+		</ul>
+	</div>
+</nav>
+
+<div>
+	<span *ngIf="error!=''" class="badge badge-danger">Nije pronađen
+		nijedan agent</span>
+	<table class="table" *ngIf="error==''">
+		<thead>
+			<tr>
+				<th></th>
+				<th>Naziv agenta</th>
+				<th>Naziv roditeljske jedinice</th>
+				<th>Lokacija aplikativnih logova</th>
+				<th>Lokacija firewall logova</th>
+				<th>Lokacija logova aplikativnog servera</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr *ngFor="let agent of allAgents">
+				<td>&#8227;</td>
+				<td>{{agent.name}}</td>
+				<td>{{agent.parentName}}
+					<button *ngIf="selectedAgent==null" type="button" class="btn btn-primary btn-xs"
+						(click)="changeParent(agent)">Preusmeri</button>
+					<button *ngIf="selectedAgent!=null && selectedAgent.name != agent.name" type="button" class="btn btn-error btn-xs"
+						(click)="acceptChild(agent)">Odaberi</button>
+					<button *ngIf="selectedAgent!=null && selectedAgent.name == agent.name" type="button" class="btn btn-error btn-xs"
+						(click)="toCenter(agent)">Na centar</button>
+				</td>
+				<th>
+					<input
+						class="searchInput" id="appLogSrc" type="text" value="{{agent.apLogsDest}}">
+					<button type="button" class="btn btn-primary btn-xs"
+						(click)="changeAppLogSource(agent.name)">Izmeni</button>
+				</th>
+				<td>
+					<input
+						class="searchInput" id="fwLogSrc" type="text" value="{{agent.fwLogsDest}}">
+					<button type="button" class="btn btn-primary btn-xs"
+						(click)="changeFwLogSource(agent.name)">Izmeni</button>
+				</td>
+				<th>
+					<input
+					class="searchInput" id="serverLogSrc" type="text" value="{{agent.serverLogsDest}}">
+					<button type="button" class="btn btn-primary btn-xs"(click)="changeAppServerLogSource(agent.name)" >
+						Izmeni</button>
+				</th>
+			</tr>
+		</tbody>
+	</table>
+</div>

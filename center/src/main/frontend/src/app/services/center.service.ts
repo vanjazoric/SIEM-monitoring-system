@@ -5,11 +5,15 @@ import { ApplicationLog } from '../model/appLog';
 import { OperatingSystemLog } from '../model/OSlog'
 import { LogFirewall } from '../model/firewallLog'
 import { LogServer } from '../model/logServer';
+import { Agent } from '../model/agent';
 
 @Injectable({
     providedIn: 'root'
 })
 export class CenterService {
+
+    public headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
 
     constructor(private http: HttpClient) { }
 
@@ -132,5 +136,32 @@ export class CenterService {
         return this.http.get<LogFirewall[]>("/api/logfirewall/" + startDate + "/" + endDate);
     }
 
+    getAgents(){
+        return this.http.get<Agent[]>("/api/agent/getAll");
+    }
+
+    changeAgentParent(agent : Agent, name : string){
+        return this.http.put('/api/change-parent/' + agent.name, agent, {headers:this.headers})
+    }
+
+    changeParent(childName : string, parentName : string){
+        return this.http.post('/api/agent/change-parent/' + childName + "/" + parentName, null, {headers:this.headers})
+    }
+
+    changeFwLogs(agentName : string, newValue : string){
+        return this.http.post('/api/agent/change-fw-source/' + agentName + "/" + newValue, null, {headers:this.headers})
+    }
+
+    changeAppLogs(agentName : string, newValue : string){
+        return this.http.post('/api/agent/change-app-source/' + agentName + "/" + newValue, null, {headers:this.headers})
+    }
+
+    changeServerLogs(agentName : string, newValue : string){
+        return this.http.post('/api/agent/change-server-source/' + agentName + "/" + newValue, null, {headers:this.headers})
+    }
+
+    toCenter(agentName : string){
+        return this.http.post('/api/agent/connect-to-center/' + agentName, null, {headers:this.headers})
+    }
 
 }

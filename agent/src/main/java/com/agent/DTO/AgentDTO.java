@@ -20,6 +20,10 @@ public class AgentDTO {
 	private String centerIp;
 	private ArrayList<String> childrenAgents;
 	
+	private String fwLogsDest;
+	private String apLogsDest;
+	private String serverLogsDest;
+	
 	private Set<Log> logs;
 	
 	public AgentDTO(){}
@@ -35,6 +39,32 @@ public class AgentDTO {
 		this.centerIp = agent.getCenterIp();
 		this.childrenAgents = agent.getChildrenAgents();
 		this.logs = agent.getLogs();	
+		this.fwLogsDest = agent.getFwLogsDest();
+		this.apLogsDest = agent.getApLogsDest();
+		this.serverLogsDest = agent.getServerLogsDest();
+	}
+
+	
+	
+	public AgentDTO(String id, String name, String ip, String port,
+			String parentName, String parentIp, String parentPort,
+			String centerIp, ArrayList<String> childrenAgents,
+			String fwLogsDest, String apLogsDest, String serverLogsDest,
+			Set<Log> logs) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.ip = ip;
+		this.port = port;
+		this.parentName = parentName;
+		this.parentIp = parentIp;
+		this.parentPort = parentPort;
+		this.centerIp = centerIp;
+		this.childrenAgents = childrenAgents;
+		this.fwLogsDest = fwLogsDest;
+		this.apLogsDest = apLogsDest;
+		this.serverLogsDest = serverLogsDest;
+		this.logs = logs;
 	}
 
 	public String getId() {
@@ -115,6 +145,30 @@ public class AgentDTO {
 
 	public void setLogs(Set<Log> logs) {
 		this.logs = logs;
+	}
+
+	public String getFwLogsDest() {
+		return fwLogsDest;
+	}
+
+	public void setFwLogsDest(String fwLogsDest) {
+		this.fwLogsDest = fwLogsDest;
+	}
+
+	public String getApLogsDest() {
+		return apLogsDest;
+	}
+
+	public void setApLogsDest(String apLogsDest) {
+		this.apLogsDest = apLogsDest;
+	}
+
+	public String getServerLogsDest() {
+		return serverLogsDest;
+	}
+
+	public void setServerLogsDest(String serverLogsDest) {
+		this.serverLogsDest = serverLogsDest;
 	}
 	
 	
